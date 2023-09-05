@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>RecordBrowser</class>
+ <widget class="QWidget" name="RecordBrowser">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QListWidget" name="recordList">
+   <property name="geometry">
+    <rect>
+     <x>150</x>
+     <y>120</y>
+     <width>391</width>
+     <height>421</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>字魂59号-创粗黑</family>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+   <property name="mouseTracking">
+    <bool>true</bool>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::StyledPanel</enum>
+   </property>
+   <property name="editTriggers">
+    <set>QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed</set>
+   </property>
+   <property name="alternatingRowColors">
+    <bool>true</bool>
+   </property>
+   <property name="viewMode">
+    <enum>QListView::ListMode</enum>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>150</x>
+     <y>30</y>
+     <width>191</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>微软雅黑 Light</family>
+     <pointsize>24</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>选择存档</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="new_record_button">
+   <property name="geometry">
+    <rect>
+     <x>580</x>
+     <y>120</y>
+     <width>89</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>新游戏</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="delete_record_button">
+   <property name="geometry">
+    <rect>
+     <x>580</x>
+     <y>180</y>
+     <width>89</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>删除</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,0 +1,26 @@
+#ifndef RECORDITEM_H
+#define RECORDITEM_H
+
+#include <QListWidgetItem>
+#include <QDebug>
+#include "record.h"
+
+class RecordItem:public QListWidgetItem
+{
+private:
+    Record record;
+    QString name;
+public:
+    RecordItem(const QString& recordPath,const QString& recordName);
+    ~RecordItem();
+
+    //getters
+    gameMain::gameMode getMode() const;
+    Record& getRecord();
+
+public:
+    void updateText();
+protected:
+};
+
+#endif // RECORDITEM_H
