@@ -1,7 +1,5 @@
 #include "backendprocessor.h"
 #include "objects/boxmap.h"
-#include <QJsonArray>
-#include <QStack>
 
 using namespace box;
 BackendProcessor::BackendProcessor():data(nullptr)

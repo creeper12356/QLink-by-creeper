@@ -1,6 +1,5 @@
 #include "entity.h"
 #include "widgets/gamemain.h"
-#include <QDebug>
 
 #define EPS 1e-8//比较浮点数时的精度
 

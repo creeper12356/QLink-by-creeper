@@ -1,11 +1,6 @@
 #pragma once
 #ifndef ROLE_H
 #define ROLE_H
-#include <QWidget>
-#include <QKeyEvent>
-#include <QMap>
-#include <QVector>
-#include <QTimer>
 
 #include "config.h"
 #include "entity.h"
@@ -42,7 +37,7 @@ public:
     //设置函数
     void setSpeed(qreal s);//设置速度
     void insertMoveKeys(entity::dir dir,int key);//向moveKeys中插入键值对
-    void insertMoveImages(entity::dir d,QString path);//向moveImages中插入键值对（图片以路径传入）
+    void insertMoveImages(entity::dir d,const QString& path);//向moveImages中插入键值对（图片以路径传入）
     void setOverrideFaceDir(entity::dir d);//将新的面部方向d入栈
     void restoreOverrideFaceDir(entity::dir d);//将面部方向d从栈中抽出
     void setDefaultFaceDir(entity::dir d);//设置默认面朝方向

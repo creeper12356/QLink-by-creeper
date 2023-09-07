@@ -1,6 +1,5 @@
 #include "menupage.h"
 #include "ui_menupage.h"
-#include <QKeyEvent>
 
 MenuPage::MenuPage(QWidget *parent) :
     QWidget(parent),
@@ -15,6 +14,38 @@ MenuPage::~MenuPage()
     delete ui;
 }
 
+void MenuPage::switchPauseMode()
+{
+    _mode = pause;
+    ui->info_label->setText("游戏暂停");
+    ui->continue_button->show();
+    ui->next_button->hide();
+    ui->save_button->show();
+}
+
+void MenuPage::switchTimeoutMode()
+{
+    _mode = timeout;
+    ui->info_label->setText("倒计时结束");
+    ui->continue_button->hide();
+    ui->next_button->hide();
+    ui->save_button->hide();
+}
+
+void MenuPage::switchWinMode()
+{
+    _mode = win;
+    ui->info_label->setText("恭喜通关");
+    ui->continue_button->hide();
+    ui->next_button->show();
+    ui->save_button->hide();
+}
+
+mode MenuPage::getMenuMode() const
+{
+    return _mode;
+}
+
 QString MenuPage::info() const
 {
     return ui->info_label->text();
@@ -27,6 +58,11 @@ void MenuPage::setInfo(const QString &str)
 QPushButton* MenuPage::continueButton()
 {
     return ui->continue_button;
+}
+
+QPushButton *MenuPage::nextButton()
+{
+    return ui->next_button;
 }
 
 void MenuPage::keyPressEvent(QKeyEvent *event)

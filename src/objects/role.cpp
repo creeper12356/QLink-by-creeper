@@ -30,7 +30,7 @@ void Role::insertMoveKeys(entity::dir dir, int key)
 {
     moveKeys.insert(dir,key);
 }
-void Role::insertMoveImages(entity::dir d, QString path)
+void Role::insertMoveImages(entity::dir d, const QString &path)
 {
     QPixmap* handle = new QPixmap(path);
     moveImages.insert(d,handle);

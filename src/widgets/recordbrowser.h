@@ -1,9 +1,6 @@
 #ifndef RECORDBROWSER_H
 #define RECORDBROWSER_H
-
-#include <QWidget>
-#include <QDir>
-#include <QFile>
+#include "config.h"
 #include "recorditem.h"
 namespace Ui {
 class RecordBrowser;
@@ -25,13 +22,12 @@ public:
     //getters
     gameMain::gameMode getFilterMode() const{return filterMode;}
 private slots:
-    void on_recordList_itemDoubleClicked(QListWidgetItem *item);
     void on_recordList_currentRowChanged(int currentRow);
     void on_recordList_itemEntered(QListWidgetItem *item);
+    void on_recordList_itemActivated(QListWidgetItem *item);
     void on_new_record_button_clicked();
-    void newRecord(const QString& recordName);
-
     void on_delete_record_button_clicked();
+    void newRecord(const QString& recordName);
 
 protected:
     void showEvent(QShowEvent *event) override;

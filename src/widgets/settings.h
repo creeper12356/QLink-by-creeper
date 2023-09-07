@@ -2,15 +2,6 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 //设置窗口
-#include <QWidget>
-#include <QFile>
-#include <QMap>
-#include <QDir>
-#include <QJsonValue>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QJsonArray>
-#include <QVector>
 #include "config.h"
 
 namespace Ui {
@@ -32,6 +23,7 @@ public:
     const QVector<QJsonObject*>& getRoles()const{return roles;}
     const QStringList& getBoxes() const{return boxes;}
     const QMap<QString,QVector<QJsonObject*>>& getLevels() const{return levels;}
+    const QVector<QJsonObject *> getLevelsInMode(gameMain::gameMode mode) const;
 
 private slots:
     void on_ok_button_clicked();

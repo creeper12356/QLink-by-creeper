@@ -1,10 +1,8 @@
 #pragma once
 #ifndef KEYLINEEDIT_H
 #define KEYLINEEDIT_H
+#include "config.h"
 
-#include <QLineEdit>
-#include <QKeyEvent>
-#include <QDebug>
 //a subclass of QLineEdit only used for settings ui.
 
 class KeyLineEdit:public QLineEdit

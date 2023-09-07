@@ -2,11 +2,7 @@
 #ifndef WELCOMEPAGE_H
 #define WELCOMEPAGE_H
 
-#include <QWidget>
-#include <QDebug>
-#include <QPixmap>
-#include <QPalette>
-
+#include "config.h"
 #include "gamemain.h"
 #include "menupage.h"
 #include "settings.h"
@@ -35,7 +31,7 @@ private:
     void initMenu();
     void initBrowser();
 private:
-//    void startNewGame(gameMain::gameMode mode);
+    void loadNewGame(Record& record);
     void startNewGame(Record& record);
 private slots:
     void on_single_player_button_clicked();
@@ -44,8 +40,12 @@ private slots:
     void on_set_button_clicked();
 
     void recordEnteredSlot(Record &record);
+
     void gameMainClosedSlot();
-    void gamePausedSlot(const QString& info);
+    void gamePausedSlot();
+    void gameTimeoutSlot();
+    void gameWinSlot();
+
     void replayGame();
     void homeClickedSlot();
     void continueClickedSlot();

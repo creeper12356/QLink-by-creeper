@@ -1,8 +1,7 @@
 #pragma once
 #ifndef BACKENDPROCESSOR_H
 #define BACKENDPROCESSOR_H
-#include <QVector>
-#include <QObject>
+
 #include "config.h"
 #include "objects/box.h"
 #include "objects/linkroute.h"

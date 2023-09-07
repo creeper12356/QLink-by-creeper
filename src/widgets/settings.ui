@@ -479,7 +479,7 @@
   <customwidget>
    <class>KeyLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>widgets/keylineedit.h</header>
+   <header>tools/keylineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

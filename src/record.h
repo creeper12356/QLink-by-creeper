@@ -1,13 +1,7 @@
 #ifndef RECORD_H
 #define RECORD_H
 #include "config.h"
-#include <QObject>
-#include <QJsonObject>
-#include <QJsonArray>
-#include <QJsonDocument>
-#include <QSizeF>
-#include <QVector>
-#include <QFile>
+
 //存档类
 struct Basic{
     int wScale;

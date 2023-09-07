@@ -1,6 +1,5 @@
 #include "settings.h"
 #include "ui_settings.h"
-#include <QDebug>
 
 Settings::Settings(QWidget *parent) :
     QWidget(parent),
@@ -36,6 +35,18 @@ Settings::~Settings()
         }
     }
     delete ui;
+}
+
+const QVector<QJsonObject*> Settings::getLevelsInMode(gameMain::gameMode mode) const
+{
+    if(mode == gameMain::singleMode)
+    {
+        return levels["single"];
+    }
+    else
+    {
+        return levels["multi"];
+    }
 }
 
 void Settings::on_ok_button_clicked()

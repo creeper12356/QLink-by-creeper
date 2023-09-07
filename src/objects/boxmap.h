@@ -4,7 +4,6 @@
 #include "config.h"
 #include "plainbox.h"
 #include "propbox.h"
-#include <QVector>
 //存储箱子组织方式的类
 QT_BEGIN_NAMESPACE
 namespace Ui { class Widget; }
@@ -30,16 +29,13 @@ protected:
     QVector<Box*> boxes;//箱子档案
 
 public:
-//    BoxMap(Settings*& sts);
     BoxMap(Settings*& sts,const Record& record);
     ~BoxMap();
 
     //初始化函数
 private:
-//    void initBasicData();//初始化boxmap基本信息
     void initBasicData(const Record& record);
     void init2DArray();//初始化二维数组，分配空间
-//    void initProcessor();//初始化后端处理器
     void initProcessor(const Record& record);
     void initBoxes();
 

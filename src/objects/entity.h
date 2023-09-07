@@ -1,14 +1,6 @@
 #pragma once
 #ifndef ENTITY_H
 #define ENTITY_H
-#include <QPointF>
-#include <QRectF>
-#include <QSizeF>
-#include <QPixmap>
-#include <QDebug>
-#include <QPainter>
-#include <QRandomGenerator>//随机数
-
 #include "config.h"
 
 class Entity//实体类，包括玩家和箱子

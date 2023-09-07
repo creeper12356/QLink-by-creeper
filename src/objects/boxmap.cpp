@@ -5,14 +5,6 @@
 #include "ui_settings.h"
 #include "record.h"
 
-//BoxMap::BoxMap(Settings*& sts)
-//    :settings(sts)
-//{
-//    initBasicData();
-//    initBoxes();
-//    init2DArray();
-//    initProcessor();
-//}
 BoxMap::BoxMap(Settings*& sts,const Record& record)
     :settings(sts)
 {
@@ -42,21 +34,6 @@ BoxMap::~BoxMap()
         delete ptr;
     }
 }
-//void BoxMap::initBasicData()
-//{
-//    QJsonObject* basic = settings->getLevels().value("single").at(0);
-//    wScale = basic->value("hScale").toInt();
-//    hScale = basic->value("hScale").toInt();
-//    corner = QPointF(
-//                basic->value("corner").toArray().at(0).toDouble(),
-//                basic->value("corner").toArray().at(1).toDouble());
-//    size = QSizeF(
-//                basic->value("size").toArray().at(0).toDouble(),
-//                basic->value("size").toArray().at(1).toDouble());
-//    dist = QSizeF(
-//                basic->value("dist").toArray().at(0).toDouble(),
-//                basic->value("dist").toArray().at(1).toDouble());
-//}
 
 void BoxMap::initBasicData(const Record &record)
 {
@@ -81,12 +58,6 @@ void BoxMap::init2DArray()
         }
     }
 }
-//void BoxMap::initProcessor()
-//{
-//    processor = new BackendProcessor(this);
-//    processor->generateFromArray(settings->getLevels().value("single").at(0)->value("map").toArray());//生成箱子
-//    processor->shuffle();//洗牌
-//}
 
 void BoxMap::initProcessor(const Record &record)
 {
@@ -180,19 +151,6 @@ void BoxMap::draw(QPainter &painter, bool isDebugMode)
             painter.drawRect(rectAt(i,j));
         }
     }
-//    QFont font("Calibri");
-//    font.setPointSize(20);
-//    painter.setFont(font);
-//    painter.setPen(QColor(0,0,0,180));
-//    painter.translate(0,size.height() / 2);
-//    for(int i = 0;i <= hScale - 1;++i)
-//    {
-//        for(int j = 0;j <= wScale - 1;++j)
-//        {
-//            //显示箱子坐标
-//            painter.drawText(rectAt(i,j),"(" + QString::number(i) + "," + QString::number(j) + ")");
-//        }
-//    }
     painter.restore();
 }
 bool BoxMap::swapEntityBox(const QPoint& p1,const QPoint& p2)

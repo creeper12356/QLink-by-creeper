@@ -2,24 +2,15 @@
 #ifndef GAMEMAIN_H
 #define GAMEMAIN_H
 
-#include <QWidget>
-#include <QString>
-#include <QTimer>
-#include <QDebug>
-#include <vector>
-#include <QtMath>
-#include <QStack>
-#include <QPushButton>
-
 #include "config.h"
 #include "objects/map.h"
 #include "objects/role.h"
 #include "objects/boxmap.h"
 #include "backendprocessor.h"
 #include "objects/linkroute.h"
-#include "objects/statebar.h"
 
 #include "widgets/settings.h"
+#include "tools/clock.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Widget; }
@@ -43,7 +34,7 @@ protected:
     QVector<LinkRoute*> routes;//连线容器
     QMap<Role*,QVector<QPoint>> activatedBoxes;//从玩家指针 映射到 玩家激活箱子对应的行列坐标
     QVector<QPoint> hintBoxes;//处于提示状态（高亮状态）箱子对应的坐标 容器
-    QMap<Role*,int> scores;//玩家分数
+    QMap<Role*,QLCDNumber*> scoreBoard;//分数板
 
     Clock* gameClk;
 
@@ -71,21 +62,18 @@ private:
 
 //functions
 public:
-//    GameMain(QWidget* parent,Settings*& s,gameMode mode = singleMode);
     GameMain(QWidget* parent, Settings*& s, Record &record);
     ~GameMain();
 
 protected:
     //初始化函数
+    void initUi();//初始化界面
     void initPlayerMoveKeys(Role* player,int playerNum);//初始化玩家方向键，被initPlayer调用
     Role* initPlayer(const QString& id,int playerNum);//通过id初始化玩家，成功返回玩家指针，失败返回nullptr
-//    void initPlayers();//初始化玩家属性
     void initPlayers(const Record& record);
-//    void initBoxes();//初始化箱子
     void initLinkBoxes();//初始化连连看箱子地图
     void initLinkBoxes(const Record& record);
     void initProcessor();//初始化后端处理器,必须在initLinkBoxes之后调用
-    void initGameClk();//初始化倒计时
     void initGameClk(const Record& record);
     void initHintTimer();//初始化提示计时器
 
@@ -158,7 +146,7 @@ public:
     void dizzy(Role* player);//对手10s内移动方向颠倒
     //存档相关
 public:
-    void saveGameToRecord();
+    void saveGameToRecord();//保存游戏到存档
 protected:
     //测试参数
     QTimer testTimer;//测试计时器
@@ -171,6 +159,9 @@ private slots:
 
 signals:
     void gameMainClosed();//游戏窗口被关闭信号，提示主菜单窗口显示
-    void gamePaused(const QString& info);//游戏暂停信号
+//    void gamePaused(const QString& info);//游戏暂停信号
+    void gamePaused();//游戏暂停
+    void gameTimeout();//游戏倒计时结束
+    void gameWin();//游戏通关
 };
 #endif // GAMEMAIN_H

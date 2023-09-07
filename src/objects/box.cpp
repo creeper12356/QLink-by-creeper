@@ -35,7 +35,7 @@ void Box::setIsEntity(bool i)
         breakSound = new QSoundEffect;
     }
 }
-bool Box::setHead(QString path)
+bool Box::setHead(const QString &path)
 {
     return head->load(path);
 }

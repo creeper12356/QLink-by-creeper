@@ -1,58 +1,22 @@
 #include "gamemain.h"
 #include "ui_widget.h"
-#include <QKeyEvent>
-#include <QPainter>
-#include <QString>
-
-#include <QFile>
-#include <QJsonObject>
-#include <QJsonArray>
-
 #include "ui_settings.h"
 #include "record.h"
-//GameMain::GameMain(QWidget* parent,Settings*& s,gameMode mode)
-//    : QWidget(parent)
-//    , ui(new Ui::Widget)
-//    , settings(s)
-//{
-//    ui->setupUi(this);
-//    background = new Map();
-
-//    this->mode = mode;
-
-//    initPlayers();
-//    initBoxes();
-//    initLinkBoxes();
-//    initProcessor();
-//    initGameClk();
-//    initHintTimer();
-
-//    this->setFocus();//保证按键不被按钮捕获
-
-//    this->start();//开始游戏
-//    //测试计时器
-//    connect(&testTimer,&QTimer::timeout,this,&GameMain::statePrinter);
-//    testTimer.start(100);
-//}
 
 GameMain::GameMain(QWidget *parent, Settings *&s, Record &record)
     :QWidget(parent)
     ,ui(new Ui::Widget)
     ,settings(s)
 {
-    qDebug() << "GameMain load record.";
     this->record = &record;
-    ui->setupUi(this);
-    background = new Map();
-
     this->mode = record.getMode();
-
+    background = new Map();
+    initUi();
     initPlayers(record);
     initLinkBoxes(record);
     initProcessor();
     initGameClk(record);
     initHintTimer();
-    this->setFocus();//保证按键不被按钮捕获
 
     this->start();//开始游戏
     //测试计时器
@@ -71,6 +35,15 @@ GameMain::~GameMain()
     {
         delete entity;
     }
+}
+
+void GameMain::initUi()
+{
+    ui->setupUi(this);
+    ui->level_label->setText("第" + QString::number(record->getCurLevel()) +"关");
+    this->setFocus();//保证按键不被按钮捕获
+    ui->shuffle_button->hide();
+    ui->hint_button->hide();
 }
 void GameMain::initPlayerMoveKeys(Role *player,int playerNum)
 {
@@ -138,15 +111,6 @@ Role *GameMain::initPlayer(const QString &id, int playerNum)
     addPlayer(player);
     return player;
 }
-//void GameMain::initPlayers()
-//{
-//    initPlayer("creeper",1);
-//    if(mode == gameMain::singleMode)//单人模式
-//    {
-//        return ;
-//    }
-//    initPlayer("creeper_purple",2);
-//}
 
 void GameMain::initPlayers(const Record &record)
 {
@@ -161,15 +125,6 @@ void GameMain::initPlayers(const Record &record)
         handle->setPos(player.pos);
     }
 }
-//void GameMain::initBoxes()
-//{
-
-//}
-//void GameMain::initLinkBoxes()
-//{
-//    linkBoxes = new BoxMap(settings);
-//    linkBoxes->generateEntities(this);
-//}
 
 void GameMain::initLinkBoxes(const Record &record)
 {
@@ -180,21 +135,17 @@ void GameMain::initProcessor()
 {
     processor = linkBoxes->getProcessor();
 }
-void GameMain::initGameClk()
-{
-    gameClk = new Clock(settings->getLevels().value("single").at(0)->value("gameTime").toInt() * SECOND);//设置游戏时间
-    connect(gameClk,&Clock::timeout,this,&GameMain::clockTimeOutSlot);
-}
+
 
 void GameMain::initGameClk(const Record &record)
 {
-    gameClk = new Clock(settings->getLevels()
-                        ["single"]
-            [record.getCurLevel() - 1]
-            ->operator[]("basic").toObject()
-            ["gameTime"].toInt() * SECOND);//游戏总时间
+    gameClk = new Clock(this,
+                settings->getLevels()["single"][record.getCurLevel() - 1]
+                ->operator[]("basic").toObject()
+                ["gameTime"].toInt() * SECOND);//游戏总时间
 
     gameClk->setTime(record.getBasic().gameTime * SECOND);
+    gameClk->setGeometry(10,0,950,25);
     connect(gameClk,&Clock::timeout,this,&GameMain::clockTimeOutSlot);
 }
 
@@ -220,7 +171,7 @@ void GameMain::keyPressEvent(QKeyEvent *event)
     if(keyPress == Qt::Key_Escape)
     {
         this->pause();
-        emit gamePaused("游戏暂停");
+        emit gamePaused();
     }
     else if(keyPress == Qt::Key_F3)
     {
@@ -262,8 +213,6 @@ void GameMain::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
 
-    //绘制倒计时
-    gameClk->draw(painter);
     //绘制地图
     painter.translate(background->getCorner());//设置绘制地图原点（左上角点）
     painter.scale(1,1);
@@ -299,12 +248,13 @@ void GameMain::paintEvent(QPaintEvent *event)
 }
 void GameMain::mousePressEvent(QMouseEvent *event)
 {
-    qDebug() << event->pos();
+    QPoint pos = event->pos() - background->getCorner();
+    qDebug() << pos;
 
     if(!isDebugMode)
         return ;
     Role* player = players[0];
-    player->setPos(event->pos());
+    player->setPos(pos);
     repaint();
 }
 void GameMain::mouseMoveEvent(QMouseEvent *event)
@@ -352,7 +302,13 @@ void GameMain::addPlayer(Role *r)
     connect(r,&Role::freezeEnd,this,&GameMain::repaintSlot);
 
     activatedBoxes.insert(r,QVector<QPoint>());//激活箱子Map中导入该玩家的键值对
-    scores.insert(r,0);
+    //register scoreBoard
+    QLCDNumber* board = new QLCDNumber(this);
+    scoreBoard.insert(r,board);
+    if(players.size() == 1)
+        scoreBoard[r]->setGeometry(10,40,100,60);
+    else
+        scoreBoard[r]->setGeometry(720,40,100,60);
 }
 void GameMain::addBox(Box *b)
 {
@@ -368,6 +324,9 @@ void GameMain::removePlayer(Role* r)
 {
     players.removeAll(r);
     removeEntity(r);
+
+    activatedBoxes.remove(r);
+    scoreBoard.remove(r);
 }
 void GameMain::removeBox(Box *b)
 {
@@ -430,11 +389,12 @@ void GameMain::deleteBoxAt(const QPoint &pt)
 
 void GameMain::updateScore(Role *player, const LinkRoute *route)
 {
-    int& score = scores[player];
+    int score = scoreBoard[player]->value();
     qDebug() << "size:" << route->size();
     qDebug() << "turn:" << route->turn();
     qDebug() << "add: " << (route->size() + 1) * (route->turn() + 1);
     score += (route->size() + 1) * (route->turn() + 1);//加分
+    scoreBoard[player]->display(score);//update scoreboard
 }
 
 bool GameMain::tryActivate(const QPoint& target,Box *&entityTarget, Role *player)
@@ -514,7 +474,7 @@ void GameMain::movePlayer(Role* player)
 void GameMain::clockTimeOutSlot()
 {
     gameClk->pause();
-    emit gamePaused("倒计时结束");
+    emit gameTimeout();
     this->hide();
 }
 void GameMain::repaintSlot()
@@ -717,12 +677,10 @@ void GameMain::saveGameToRecord()
 //测试更新函数
 void GameMain::statePrinter()
 {
-    update(gameClk->getDrawBox().toRect());
     if(this->isWin())
     {
-        qDebug() << "all boxes are cleared.";
-        qDebug() << "game will end in one sec.";
-        QTimer::singleShot(1000,this,&GameMain::close);
+        this->pause();
+        emit gameWin();
     }
 }
 

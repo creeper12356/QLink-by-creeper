@@ -1,8 +1,6 @@
 #ifndef RECORDITEM_H
 #define RECORDITEM_H
-
-#include <QListWidgetItem>
-#include <QDebug>
+#include "config.h"
 #include "record.h"
 
 class RecordItem:public QListWidgetItem
@@ -10,6 +8,7 @@ class RecordItem:public QListWidgetItem
 private:
     Record record;
     QString name;
+
 public:
     RecordItem(const QString& recordPath,const QString& recordName);
     ~RecordItem();

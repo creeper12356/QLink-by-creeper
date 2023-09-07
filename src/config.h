@@ -1,11 +1,56 @@
 #pragma once
 #ifndef CONFIG_H
 #define CONFIG_H
+
+#include <QSoundEffect>
+#include <QSound>
+
 #include <QPoint>
+#include <QPointF>
+#include <QRectF>
+#include <QSizeF>
+
+#include <QUrl>
+#include <QFile>
+#include <QDir>
+
+#include <QJsonValue>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+
+#include <QVector>
+#include <QMap>
+#include <QString>
+#include <QStack>
+
+#include <QPalette>
+#include <QPixmap>
+#include <QPainter>
+#include <QColor>
+
+#include <QKeyEvent>
+#include <QMouseEvent>
+
+#include <QPushButton>
+#include <QLCDNumber>
+#include <QWidget>
+#include <QListWidgetItem>
+#include <QLineEdit>
+#include <QInputDialog>
+
+#include <QRandomGenerator>
+#include <QTimer>
+#include <QtMath>
+#include <QDebug>
+
 #define SECOND 1000
 
 namespace gameMain {
     enum gameMode{singleMode = 0,multiMode};
+}
+namespace menuPage {
+    enum mode{pause = 0,timeout = 1,win = 2};
 }
 namespace entity {
     enum type{box,role};

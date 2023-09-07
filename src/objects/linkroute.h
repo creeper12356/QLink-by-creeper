@@ -1,12 +1,6 @@
 #pragma once
 #ifndef LINKROUTE_H
 #define LINKROUTE_H
-#include <QPoint>
-#include <QVector>
-#include <QDebug>
-#include <QPainter>
-#include <QMap>
-#include <QPixmap>
 #include "entity.h"
 #include "config.h"
 class BoxMap;

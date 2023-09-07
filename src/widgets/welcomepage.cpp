@@ -1,7 +1,6 @@
 #include "welcomepage.h"
 #include "ui_welcomepage.h"
 #include "record.h"
-#include <QKeyEvent>
 
 WelcomePage::WelcomePage(QWidget* parent) :
     QWidget(parent),
@@ -43,20 +42,18 @@ void WelcomePage::initBrowser()
     connect(browser,&RecordBrowser::browserClosed,this,&WelcomePage::show);
 }
 
-//void WelcomePage::startNewGame(gameMain::gameMode mode)
-//{
-//    gm = new GameMain(nullptr,settings,mode);
-//    connect(gm,&GameMain::gameMainClosed,this,&WelcomePage::gameMainClosedSlot,Qt::QueuedConnection);
-//    connect(gm,&GameMain::gamePaused,this,&WelcomePage::gamePausedSlot,Qt::QueuedConnection);
-//    gm->show();
-//    this->close();
-//}
-
-void WelcomePage::startNewGame(Record &record)
+void WelcomePage::loadNewGame(Record &record)
 {
     gm = new GameMain(nullptr,settings,record);
     connect(gm,&GameMain::gameMainClosed,this,&WelcomePage::gameMainClosedSlot,Qt::QueuedConnection);
     connect(gm,&GameMain::gamePaused,this,&WelcomePage::gamePausedSlot,Qt::QueuedConnection);
+    connect(gm,&GameMain::gameTimeout,this,&WelcomePage::gameTimeoutSlot,Qt::QueuedConnection);
+    connect(gm,&GameMain::gameWin,this,&WelcomePage::gameWinSlot,Qt::QueuedConnection);
+}
+
+void WelcomePage::startNewGame(Record &record)
+{
+    loadNewGame(record);
     gm->show();
     this->close();
 }
@@ -79,19 +76,31 @@ void WelcomePage::gameMainClosedSlot()
     gm = nullptr;//将gameMain设置为nullptr
     this->show();
 }
-void WelcomePage::gamePausedSlot(const QString& info)
+void WelcomePage::gamePausedSlot()
 {
-    menu->setInfo(info);
-    if(info == "倒计时结束")
-    {
-        menu->continueButton()->hide();
-    }
-    else
-    {
-        menu->continueButton()->show();
-    }
+    menu->switchPauseMode();
     menu->show();
     gm->hide();
+}
+
+void WelcomePage::gameTimeoutSlot()
+{
+    menu->switchTimeoutMode();
+    menu->show();
+    gm->hide();
+}
+
+void WelcomePage::gameWinSlot()
+{
+    menu->switchWinMode();
+    menu->show();
+    gm->hide();
+
+    //reach last level
+    if(gm->getRecord().getCurLevel() == settings->getLevelsInMode(gm->getGameMode()).size())
+    {
+        menu->nextButton()->hide();
+    }
 }
 void WelcomePage::continueClickedSlot()
 {
@@ -129,6 +138,11 @@ void WelcomePage::replayGame()
 }
 void WelcomePage::homeClickedSlot()
 {
+    if(menu->getMenuMode() == menuPage::win)//load next level
+    {
+        Record& record = gm->getRecord();
+        record.readFromSettings(settings,gm->getGameMode(),record.getCurLevel() + 1);
+    }
     gm->close();
     menu->close();
 }

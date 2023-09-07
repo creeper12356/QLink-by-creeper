@@ -1,4 +1,3 @@
-#include <QInputDialog>
 #include "recordbrowser.h"
 #include "ui_recordbrowser.h"
 #include "gamemain.h"
@@ -48,17 +47,6 @@ void RecordBrowser::updateText()
         dynamic_cast<RecordItem*>(ui->recordList->item(i))->updateText();
     }
 }
-
-void RecordBrowser::on_recordList_itemDoubleClicked(QListWidgetItem *item)
-{
-    emit recordEntered(dynamic_cast<RecordItem*>(item)->getRecord());//发出待加载存档的信号
-    for(int i = 0;i <= ui->recordList->count() - 1;++i)
-    {
-        ui->recordList->item(i)->setBackground(QColor(0,200,100,180));
-    }
-    this->hide();//必须使用hide,若使用close会重新召回主页面
-}
-
 void RecordBrowser::on_recordList_currentRowChanged(int currentRow)
 {
     for(int i = 0;i <= ui->recordList->count() - 1;++i)
@@ -79,6 +67,7 @@ void RecordBrowser::closeEvent(QCloseEvent *event)
     emit browserClosed();
 }
 
+
 void RecordBrowser::on_recordList_itemEntered(QListWidgetItem *item)
 {
     ui->recordList->setCurrentItem(item);
@@ -97,7 +86,6 @@ void RecordBrowser::on_new_record_button_clicked()
     recordNameGetter.setLabelText("输入存档名称");
     connect(&recordNameGetter,&QInputDialog::textValueSelected,this,&RecordBrowser::newRecord);
     recordNameGetter.exec();
-
 }
 
 void RecordBrowser::newRecord(const QString &recordName)
@@ -118,4 +106,14 @@ void RecordBrowser::on_delete_record_button_clicked()
     }
     delItem->getRecord().setIsDeleted(true);
     delete delItem;
+}
+
+void RecordBrowser::on_recordList_itemActivated(QListWidgetItem *item)
+{
+    emit recordEntered(dynamic_cast<RecordItem*>(item)->getRecord());//发出待加载存档的信号
+    for(int i = 0;i <= ui->recordList->count() - 1;++i)
+    {
+        ui->recordList->item(i)->setBackground(QColor(0,200,100,180));
+    }
+    this->hide();//必须使用hide,若使用close会重新召回主页面
 }

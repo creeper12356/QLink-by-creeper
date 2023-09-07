@@ -1,6 +1,4 @@
 #include "record.h"
-#include <QDebug>
-#include <QVector>
 #include "widgets/settings.h"
 
 void Basic::readFromJsonObject(const QJsonObject &obj)
@@ -92,23 +90,12 @@ void Record::readFromFile(const QString &recordFile)
 bool Record::readFromSettings(const Settings *settings, gameMain::gameMode mode, int level)
 {
     QJsonObject* levelSettings;//mode和level对应的设置
-    if(mode == gameMain::singleMode)
+    if(level > settings->getLevelsInMode(mode).size())
     {
-        qDebug() << "enter singleMode";
-        if(level > settings->getLevels()["single"].size())
-        {
-            return false;
-        }
-        levelSettings = settings->getLevels()["single"][level - 1];
+        return false;
     }
-    else
-    {
-        if(level > settings->getLevels()["multi"].size())
-        {
-            return false;
-        }
-        levelSettings = settings->getLevels()["multi"][level - 1];
-    }
+
+    levelSettings = settings->getLevelsInMode(mode)[level - 1];
     this->mode = mode;
     this->curLevel = level;
     basic.readFromJsonObject(levelSettings->operator[]("basic").toObject());

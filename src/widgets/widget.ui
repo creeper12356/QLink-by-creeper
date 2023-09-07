@@ -39,6 +39,25 @@
     <string>hint</string>
    </property>
   </widget>
+  <widget class="QLabel" name="level_label">
+   <property name="geometry">
+    <rect>
+     <x>410</x>
+     <y>40</y>
+     <width>141</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>微软雅黑 Light</family>
+     <pointsize>22</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>信息</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>
