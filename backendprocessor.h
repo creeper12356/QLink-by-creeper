@@ -24,10 +24,13 @@ private:
 
 public:
     BackendProcessor();
+    BackendProcessor(const Record& record);//用于测试，从record中初始化backendProcessor对象
     BackendProcessor(BoxMap* lkBoxes);
     ~BackendProcessor(){}
 
+    void init2DArray();//用于测试，分配二维数组动态内存
     void load(type** d,int w,int h);//加载二维数组
+    void delete2DArray();//用于测试，回收之前分配的内存，需要外部手动调用
 
     void generateFromArray(const QJsonArray& jArray);//从JsonArray中生成箱子
     void generateFromVector(const QVector<box::type> map);//从QVector中生成箱子

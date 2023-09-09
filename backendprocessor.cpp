@@ -1,15 +1,39 @@
 #include "backendprocessor.h"
 #include "objects/boxmap.h"
-
+#include "record.h"
 using namespace box;
 BackendProcessor::BackendProcessor():data(nullptr)
 {
+}
+
+BackendProcessor::BackendProcessor(const Record& record)
+    :
+      wScale(record.getBasic().wScale),
+      hScale(record.getBasic().hScale)
+{
+    init2DArray();
+    int index = 0;
+    for(int i = 0;i <= wScale - 1;++i){
+        for(int j = 0;j <= hScale - 1;++j){
+            data[i][j] = record.getMap()[index++];
+        }
+    }
 }
 BackendProcessor::BackendProcessor(BoxMap* lkBoxes)
     :data(lkBoxes->getData()),wScale(lkBoxes->getWScale()),hScale(lkBoxes->getHScale())
 {
     linkBoxes = lkBoxes;
 }
+
+void BackendProcessor::init2DArray()
+{
+    data = new box::type* [hScale];
+    for(int i = 0;i <= hScale - 1;++i)
+    {
+        data[i] = new box::type[wScale];
+    }
+}
+
 bool BackendProcessor::isLegal(const QPoint &pt) const
 {
     if(pt.x() < 0 || pt.x() > hScale - 1)
@@ -51,6 +75,15 @@ void BackendProcessor::load(type **d, int w, int h)
     data = d;
     wScale = w;
     hScale = h;
+}
+
+void BackendProcessor::delete2DArray()
+{
+    for(int i = 0;i <= hScale - 1;++i)
+    {
+        delete [] data[i];
+    }
+    delete [] data;
 }
 
 void BackendProcessor::generateFromArray(const QJsonArray &jArray)
