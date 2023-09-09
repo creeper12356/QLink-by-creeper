@@ -343,19 +343,12 @@ bool BackendProcessor::checkLink(const QPoint &p1, const QPoint &p2,LinkRoute*& 
     bestRoute->appendNode(p2,linkRoute::no_dir);
     return true;
 }
-QVector<QPoint> BackendProcessor::hint() const
-{
-    QVector<QPoint> ans;
 
+QPoint BackendProcessor::hintFrom(const QPoint &startPt) const
+{
     Tile startTile;
-    QPoint startPt(0,0);
-    do
-    {
-        startPt.rx() = QRandomGenerator::global()->bounded(hScale);
-        startPt.ry() = QRandomGenerator::global()->bounded(wScale);
-    }while(dataAt(startPt) == null || Box::typeToDivision(dataAt(startPt)) == prop_box);
-    ans.push_back(startPt);
-    startTile.pos = startPt;//从(0,0)开始寻找
+
+    startTile.pos = startPt;
     startTile.depth = 0;
 
     QStack<Tile> sta;//深度优先遍历辅助栈
@@ -406,14 +399,49 @@ QVector<QPoint> BackendProcessor::hint() const
             {
                 sta.push(curTile);
             }
-            else if(dataAt(curTile.pos) == dataAt(startTile.pos))//找到可以连接的方块
+            else if(dataAt(curTile.pos) == dataAt(startTile.pos) //找到可以连接的方块
+                    && !linkBoxes->getPtrDataAt(curTile.pos)->isLocked)//且未上锁
             {
-                ans.push_back(curTile.pos);
-                return ans;
+                return curTile.pos;
             }
-
         }
     }
-    ans.clear();
+    //no endPt
+    return QPoint(-1,-1);
+}
+QVector<QPoint> BackendProcessor::hint() const
+{
+    QVector<QPoint> ans;
+
+    QVector<QPoint> traversePos;
+    for(int i = 0;i <= hScale - 1;++i)
+    {
+        for(int j = 0;j <= wScale - 1;++j)
+        {
+            if(dataAt(i,j) != null //all entity boxes
+            && !linkBoxes->getPtrDataAt(i,j)->isLocked //all plain_box except locked one
+            && Box::typeToDivision(dataAt(i,j)) != prop_box //all plain_box and null
+            ){
+                traversePos.push_back(QPoint(i,j));
+            }
+        }
+    }
+    //shuffle for times
+    for(int i = 0;i <= traversePos.size() - 1;++i){
+        int i1 = QRandomGenerator::global()->bounded(traversePos.size()),
+            i2 = QRandomGenerator::global()->bounded(traversePos.size());
+        qSwap(traversePos[i1],traversePos[i2]);
+    }
+    qDebug() << "traverPos" << traversePos;
+
+    for(int i = 0;i <= traversePos.size() - 1;++i){
+        QPoint endPt = hintFrom(traversePos[i]);
+        if(endPt.x() != -1){
+            ans.push_back(traversePos[i]);
+            ans.push_back(endPt);
+            return ans;
+        }
+    }
+    //no solve
     return ans;
 }

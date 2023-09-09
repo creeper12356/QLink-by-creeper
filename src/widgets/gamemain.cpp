@@ -42,8 +42,8 @@ void GameMain::initUi()
     ui->setupUi(this);
     ui->level_label->setText("第" + QString::number(record->getCurLevel()) +"关");
     this->setFocus();//保证按键不被按钮捕获
-    ui->shuffle_button->hide();
-    ui->hint_button->hide();
+//    ui->shuffle_button->hide();
+//    ui->hint_button->hide();
 }
 void GameMain::initPlayerMoveKeys(Role *player,int playerNum)
 {
@@ -143,7 +143,7 @@ void GameMain::initGameClk(const Record &record)
                 settings->getLevels()["single"][record.getCurLevel() - 1]
                 ->operator[]("basic").toObject()
                 ["gameTime"].toInt() * SECOND);//游戏总时间
-
+    qDebug() << "gametime" << record.getBasic().gameTime;
     gameClk->setTime(record.getBasic().gameTime * SECOND);
     gameClk->setGeometry(10,0,950,25);
     connect(gameClk,&Clock::timeout,this,&GameMain::clockTimeOutSlot);
@@ -717,24 +717,15 @@ void GameMain::on_shuffle_button_clicked()
 
 void GameMain::on_hint_button_clicked()
 {
-    //寻找有效提示（size == 2)
-    do
-    {
-        hintBoxes = processor->hint();
-        if(hintBoxes.size() == 2)
-        {
-            for(auto& hintBox:hintBoxes)
-            {
-                if(linkBoxes->getPtrDataAt(hintBox)->isLocked)//如果选中上锁箱子，则跳过
-                {
-                    hintBoxes.clear();
-                    continue;
-                }
-            }
-            linkBoxes->getPtrDataAt(hintBoxes.at(0))->isHighlighted = true;
-            linkBoxes->getPtrDataAt(hintBoxes.at(1))->isHighlighted = true;
-            update();
-        }
-    }while(hintBoxes.size() == 0);
     this->setFocus();
+    //寻找有效提示（size == 2)
+    hintBoxes = processor->hint();
+    if(hintBoxes.size() != 2){
+        return ;
+    }
+
+    //change highlight state
+    linkBoxes->getPtrDataAt(hintBoxes.at(0))->isHighlighted = true;
+    linkBoxes->getPtrDataAt(hintBoxes.at(1))->isHighlighted = true;
+    update();
 }
