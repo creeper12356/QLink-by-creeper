@@ -8,8 +8,10 @@
 
 int main(int argc, char *argv[])
 {
-
+    // hello world
+    
      QDir::setCurrent("..");
+
     QApplication a(argc, argv);
 //    QGraphicsScene scene;
 //    QGraphicsView view;
