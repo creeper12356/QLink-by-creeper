@@ -120,9 +120,7 @@ void Record::readFromJsonObject(const QJsonObject &obj)
 {
     if(obj.contains("gameMode"))
     {
-        qDebug() << "contains gameMode";
         mode = gameMain::gameMode(obj["gameMode"].toInt());
-        qDebug() << obj.value("gameMode").toInt();
     }
     if(obj.contains("curLevel"))
     {
