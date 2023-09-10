@@ -552,6 +552,8 @@ void GameMain::processPropBoxTarget(const QPoint &target,Box*& entityTarget, Rol
     linkBoxes->removeBoxAt(target);
     //技能函数
     propBox->execProp(this,player);
+    //update score
+    scoreBoard[player]->display(scoreBoard[player]->value() + QRandomGenerator::global()->bounded(10));
 }
 
 bool GameMain::isHint() const

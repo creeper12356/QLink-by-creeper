@@ -27,8 +27,6 @@ public:
     QString info() const;
     void setInfo(const QString& str);
     QPushButton* continueButton();
-//    QPushButton* replayButton();
-//    QPushButton* homeButton();
     QPushButton* nextButton();
 
 protected:

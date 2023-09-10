@@ -67,6 +67,13 @@ void RecordBrowser::closeEvent(QCloseEvent *event)
     emit browserClosed();
 }
 
+void RecordBrowser::keyPressEvent(QKeyEvent *event)
+{
+    if(event->key() == Qt::Key_Escape){
+        close();
+    }
+}
+
 
 void RecordBrowser::on_recordList_itemEntered(QListWidgetItem *item)
 {
@@ -116,4 +123,9 @@ void RecordBrowser::on_recordList_itemActivated(QListWidgetItem *item)
         ui->recordList->item(i)->setBackground(QColor(0,200,100,180));
     }
     this->hide();//必须使用hide,若使用close会重新召回主页面
+}
+
+void RecordBrowser::on_cancel_button_clicked()
+{
+    this->close();
 }

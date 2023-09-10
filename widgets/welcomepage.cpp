@@ -11,9 +11,8 @@ WelcomePage::WelcomePage(QWidget* parent) :
     settings = new Settings();
     initBrowser();
 
-    QPixmap pixmap("C:/Users/11814/Desktop/temp/SEP/SEP-QLink/testWidget/testWidget/background.jpg");
     QPalette palette;
-    palette.setBrush(QPalette::Background, QBrush(pixmap));
+    palette.setBrush(QPalette::Background, QColor(0,200,180,255));
     this->setPalette(palette);
 }
 

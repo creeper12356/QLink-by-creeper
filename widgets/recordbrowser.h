@@ -29,9 +29,12 @@ private slots:
     void on_delete_record_button_clicked();
     void newRecord(const QString& recordName);
 
+    void on_cancel_button_clicked();
+
 protected:
     void showEvent(QShowEvent *event) override;
     void closeEvent(QCloseEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
 private:
     Ui::RecordBrowser *ui;
 signals:
