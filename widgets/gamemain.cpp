@@ -42,8 +42,8 @@ void GameMain::initUi()
     ui->setupUi(this);
     ui->level_label->setText("第" + QString::number(record->getCurLevel()) +"关");
     this->setFocus();//保证按键不被按钮捕获
-    ui->shuffle_button->hide();
-    ui->hint_button->hide();
+//    ui->shuffle_button->hide();
+//    ui->hint_button->hide();
 }
 void GameMain::initPlayerMoveKeys(Role *player,int playerNum)
 {
