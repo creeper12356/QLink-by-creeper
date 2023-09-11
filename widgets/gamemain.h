@@ -161,8 +161,9 @@ private slots:
 signals:
     void gameMainDeleted();//析构函数调用时发出
     void gameMainClosed();//游戏窗口被关闭信号，提示主菜单窗口显示
-    void gamePaused();//游戏暂停
-    void gameTimeout();//游戏倒计时结束
-    void gameWin(ScoreBoard* scoreBoard);//游戏通关，发送通关的玩家分数板
+    void gamePaused(const QString &info = "游戏暂停");//游戏暂停
+    void gameTimeout(const QString &info = "倒计时结束");//游戏倒计时结束
+    void gameWin(ScoreBoard* scoreBoard,const QString &info = "恭喜通关");//游戏通关，发送通关的玩家分数板
+    void boxDeleted();//箱子被移除信号
 };
 #endif // GAMEMAIN_H

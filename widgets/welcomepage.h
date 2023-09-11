@@ -43,9 +43,9 @@ private slots:
 
     void gameMainDeletedSlot();
     void gameMainClosedSlot();
-    void gamePausedSlot();
-    void gameTimeoutSlot();
-    void gameWinSlot(ScoreBoard *scoreBoard);
+    void gamePausedSlot(const QString& info);
+    void gameTimeoutSlot(const QString& info);
+    void gameWinSlot(ScoreBoard *scoreBoard,const QString& info);
 
     void replayGame();
     void homeClickedSlot();

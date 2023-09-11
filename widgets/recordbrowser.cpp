@@ -101,7 +101,7 @@ void RecordBrowser::newRecord(QString recordName)
     for(int i = 0;i <= ui->recordList->count() - 1;++i){
         QString existName = dynamic_cast<RecordItem*>(ui->recordList->item(i))->getName();
         if(recordName == existName){
-            QMessageBox::warning(this,"警告","存档名已存在，创建游戏失败。");\
+            QMessageBox::warning(this,"警告","存档名已存在，创建游戏失败。");
             return ;
         }
     }

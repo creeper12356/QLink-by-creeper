@@ -18,9 +18,9 @@ public:
     ~MenuPage();
 
 public:
-    void switchPauseMode();
-    void switchTimeoutMode();
-    void switchWinMode();
+    void switchPauseMode(const QString &info = "游戏暂停");
+    void switchTimeoutMode(const QString& info = "倒计时结束");
+    void switchWinMode(const QString& info = "恭喜通关");
 
     mode getMenuMode() const;
 

@@ -38,21 +38,12 @@ public:
     void shuffle(int times);//随机洗牌
     void shuffle();//随机洗牌
 
-    //接口
-
-//    //判断是否可以消除的函数（已不需要）
-//        //判断是否可以0次转折消除
-//    bool checkLinkTwistZero(const QPoint& p1,const QPoint& p2) const;
-//        //判断是否可以1次转折消除
-//    bool checkLinkTwistOnce(const QPoint& p1,const QPoint& p2) const;
-//        //判断是否可以2次转折消除
-//    bool checkLinkTwistTwice(const QPoint& p1,const QPoint& p2) const;
-
     //返回位于p1,p2的箱子能否消除，如果不能，将bestRoute置nullptr,若能，bestRoute指向堆空间的动态对象，表示最短路径
     bool checkLink(const QPoint& p1, const QPoint& p2, LinkRoute *&bestRoute) const;
     //选择一个出发点（StartPt)，返回一个可连接的结束点(EndPt)，若不存在返回(-1,-1)
     QPoint hintFrom(const QPoint& startPt) const;
     QVector<QPoint> hint() const;//提示功能
+    bool isSolvable() const;//判断当前地图是否有解
 signals:
 };
 

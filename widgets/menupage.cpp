@@ -14,28 +14,28 @@ MenuPage::~MenuPage()
     delete ui;
 }
 
-void MenuPage::switchPauseMode()
+void MenuPage::switchPauseMode(const QString& info)
 {
     _mode = pause;
-    ui->info_label->setText("游戏暂停");
+    ui->info_label->setText(info);
     ui->continue_button->show();
     ui->next_button->hide();
     ui->save_button->show();
 }
 
-void MenuPage::switchTimeoutMode()
+void MenuPage::switchTimeoutMode(const QString& info)
 {
     _mode = timeout;
-    ui->info_label->setText("倒计时结束");
+    ui->info_label->setText(info);
     ui->continue_button->hide();
     ui->next_button->hide();
     ui->save_button->hide();
 }
 
-void MenuPage::switchWinMode()
+void MenuPage::switchWinMode(const QString& info)
 {
     _mode = win;
-    ui->info_label->setText("恭喜通关");
+    ui->info_label->setText(info);
     ui->continue_button->hide();
     ui->next_button->show();
     ui->save_button->hide();

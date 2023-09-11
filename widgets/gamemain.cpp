@@ -20,7 +20,7 @@ GameMain::GameMain(QWidget *parent, Settings *&s, Record &record)
 
     this->start();//开始游戏
     //测试计时器
-    connect(&testTimer,&QTimer::timeout,this,&GameMain::statePrinter);
+    connect(this,&GameMain::boxDeleted,this,&GameMain::statePrinter);
     testTimer.start(100);
 }
 
@@ -391,6 +391,8 @@ void GameMain::deleteBoxAt(const QPoint &pt)
     removeBox(linkBoxes->getPtrDataAt(pt));
     //从linkBoxes中删除实体
     linkBoxes->removeBoxAt(pt);
+    emit boxDeleted();
+
 }
 
 void GameMain::updateScore(Role *player, const LinkRoute *route)
@@ -553,13 +555,12 @@ void GameMain::processPropBoxTarget(const QPoint &target,Box*& entityTarget, Rol
 
     //播放音效
     entityTarget->playBreakSound();
-    //删除箱子
-    removeBox(entityTarget);
-    linkBoxes->removeBoxAt(target);
     //技能函数
     propBox->execProp(this,player);
     //update score
     scoreBoards[player]->setScore(scoreBoards[player]->score() + QRandomGenerator::global()->bounded(10));
+    //删除箱子
+    deleteBoxAt(target);
 }
 
 bool GameMain::isHint() const
@@ -695,6 +696,10 @@ void GameMain::statePrinter()
             }
         }
         emit gameWin(winScoreBoard);
+        return ;
+    }
+    if(!processor->isSolvable()){
+        emit gameTimeout("游戏无解");
     }
 }
 

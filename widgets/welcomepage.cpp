@@ -76,23 +76,23 @@ void WelcomePage::gameMainClosedSlot()
     gm = nullptr;//将gameMain设置为nullptr
     this->show();
 }
-void WelcomePage::gamePausedSlot()
+void WelcomePage::gamePausedSlot(const QString& info)
 {
-    menu->switchPauseMode();
+    menu->switchPauseMode(info);
     menu->show();
     gm->hide();
 }
 
-void WelcomePage::gameTimeoutSlot()
+void WelcomePage::gameTimeoutSlot(const QString& info)
 {
-    menu->switchTimeoutMode();
+    menu->switchTimeoutMode(info);
     menu->show();
     gm->hide();
 }
 
-void WelcomePage::gameWinSlot(ScoreBoard* scoreBoard)
+void WelcomePage::gameWinSlot(ScoreBoard* scoreBoard,const QString& info)
 {
-    menu->switchWinMode();
+    menu->switchWinMode(info);
     menu->show();
     *menu->winnerBoard() = *scoreBoard;
     gm->hide();

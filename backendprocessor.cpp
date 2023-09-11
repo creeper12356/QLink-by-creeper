@@ -152,138 +152,6 @@ void BackendProcessor::shuffle()
 {
     shuffle(wScale * hScale);
 }
-/*checkLink过时算法
-bool BackendProcessor::checkLinkTwistZero(const QPoint &p1, const QPoint &p2) const
-{
-    if(p1.x() == p2.x())//同一行
-    {
-        int minY = qMin(p1.y(),p2.y());
-        int maxY = qMax(p1.y(),p2.y());
-        for(int j = minY + 1;j <= maxY - 1;++j)
-        {
-            if(dataAt(p1.x(),j) != null)//有阻碍方块
-            {
-                return false;
-            }
-        }
-        return true;
-    }
-    else if(p1.y() == p2.y())//同一列
-    {
-        int minX = qMin(p1.x(),p2.x());
-        int maxX = qMax(p1.x(),p2.x());
-        for(int i = minX + 1;i <= maxX - 1;++i)
-        {
-            if(dataAt(i,p1.y()) != null)//有阻碍方块
-            {
-                return false;
-            }
-        }
-        return true;
-    }
-    else return false;//既不在同一行也不再同一列
-}
-bool BackendProcessor::checkLinkTwistOnce(const QPoint &p1, const QPoint &p2) const
-{
-    if(p1.x() == p2.x() || p1.y() == p2.y())//同一行或同一列
-    {
-        return false;
-    }
-    QPoint twist;//转折点
-    //case 1
-    twist.rx() = p1.x();
-    twist.ry() = p2.y();
-    if(dataAt(twist) == null
-            && checkLinkTwistZero(p1,twist)
-            && checkLinkTwistZero(p2,twist))
-    {
-        return true;
-    }
-    //case 2
-    twist.rx() = p2.x();
-    twist.ry() = p1.y();
-    if(dataAt(twist) == null
-            && checkLinkTwistZero(p1,twist)
-            && checkLinkTwistZero(p2,twist))
-    {
-        return true;
-    }
-    //default
-    return false;
-
-}
-// 最复杂的两个转折连通情况:
-// 两点A,B不在同一行也不在同一列，在A,B所在行、列所在四条直线找点C
-// 如果存在C使得
-// C与A行（或列）连通且C与B单拐点连通
-// 或
-// C与B行（或列）连通且C与A单拐点连通
-//
-// 则两点可以通过两个转折连通
-bool BackendProcessor::checkLinkTwistTwice(const QPoint &p1, const QPoint &p2) const
-{
-
-    for(int i = -1;i <= hScale;++i)
-    {
-        for(int j = -1;j <= wScale;++j)
-        {
-            if(dataAt(i,j) != box::null)//不为空不能作为拐点
-            {
-                continue;
-            }
-            if(i != p1.x()
-                    && i != p2.x()
-                    && j != p1.y()
-                    && j != p2.y())
-                //不在搜索的四条直线上
-            {
-                continue;
-            }
-            if((i == p1.x() && j == p1.y())
-                    || (i == p2.x() && j == p2.y())
-                    || (i == p1.x() && j == p2.y())
-                    || (i == p2.x() && j == p1.y()))
-                //四条直线交点也要过滤掉
-            {
-                continue;
-            }
-
-            QPoint searchPt(i,j);
-            if((checkLinkTwistZero(searchPt,p1) && checkLinkTwistOnce(searchPt,p2))
-                    ||(checkLinkTwistZero(searchPt,p2) && checkLinkTwistOnce(searchPt,p1)))
-            {
-                return true;
-            }
-
-        }
-    }
-    return false;//找不到满足条件的点
-
-}
-*/
-/*未使用深度优先遍历的checkLink函数
-bool BackendProcessor::checkLink(const QPoint &p1, const QPoint &p2) const
-{
-    if(dataAt(p1) != dataAt(p2))//不是同一种
-    {
-        return false;
-    }
-    //相同种类方块
-    if(checkLinkTwistZero(p1,p2))
-    {
-        return true;
-    }
-    if(checkLinkTwistOnce(p1,p2))
-    {
-        return true;
-    }
-    if(checkLinkTwistTwice(p1,p2))
-    {
-        return true;
-    }
-    return false;
-}
-*/
 
 bool BackendProcessor::checkLink(const QPoint &p1, const QPoint &p2,LinkRoute*& bestRoute) const
 {
@@ -477,4 +345,17 @@ QVector<QPoint> BackendProcessor::hint() const
     }
     //no solve
     return ans;
+}
+
+bool BackendProcessor::isSolvable() const
+{
+    for(int i = 0;i <= hScale - 1;++i){
+        for(int j = 0;j <= wScale - 1;++j){
+            if(Box::typeToDivision(dataAt(i,j)) == prop_box){//只要有道具存在就有解
+                return true;
+            }
+        }
+    }
+    //不存在道具
+    return (hint().size() == 2);
 }
