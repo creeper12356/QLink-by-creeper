@@ -1,7 +1,7 @@
 QT       += core gui
 QT	 += multimedia
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets testlib
 
 CONFIG += c++11
 
@@ -18,6 +18,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     backendprocessor.cpp \
+    checklinktest.cpp \
     main.cpp \
     objects/box.cpp \
     objects/boxmap.cpp \
@@ -41,6 +42,7 @@ SOURCES += \
 
 HEADERS += \
     backendprocessor.h \
+    checklinktest.h \
     config.h \
     objects/box.h \
     objects/boxmap.h \

@@ -99,6 +99,7 @@ class Map;
 class Role;
 class Record;
 class ScoreBoard;
+class LinkRoute;
 class Tile
 {
 public:
