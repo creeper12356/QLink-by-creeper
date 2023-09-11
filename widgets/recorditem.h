@@ -16,6 +16,7 @@ public:
     //getters
     gameMain::gameMode getMode() const;
     Record& getRecord();
+    const QString& getName() const;
 
 public:
     void updateText();

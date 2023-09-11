@@ -17,6 +17,7 @@ struct PlayerInfo{
     QString id;
     QPointF pos;
     entity::dir faceDir;
+    int score;
     void readFromJsonObject(const QJsonObject& obj);
     QJsonObject writeToJsonObject() const;
 };

@@ -27,7 +27,7 @@ private slots:
     void on_recordList_itemActivated(QListWidgetItem *item);
     void on_new_record_button_clicked();
     void on_delete_record_button_clicked();
-    void newRecord(const QString& recordName);
+    void newRecord(QString recordName);
 
     void on_cancel_button_clicked();
 

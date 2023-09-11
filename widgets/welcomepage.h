@@ -41,10 +41,11 @@ private slots:
 
     void recordEnteredSlot(Record &record);
 
+    void gameMainDeletedSlot();
     void gameMainClosedSlot();
     void gamePausedSlot();
     void gameTimeoutSlot();
-    void gameWinSlot();
+    void gameWinSlot(ScoreBoard *scoreBoard);
 
     void replayGame();
     void homeClickedSlot();

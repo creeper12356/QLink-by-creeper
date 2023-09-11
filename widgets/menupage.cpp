@@ -65,6 +65,11 @@ QPushButton *MenuPage::nextButton()
     return ui->next_button;
 }
 
+ScoreBoard *MenuPage::winnerBoard()
+{
+    return ui->winner_board;
+}
+
 void MenuPage::keyPressEvent(QKeyEvent *event)
 {
     if(event->key() == Qt::Key_Escape

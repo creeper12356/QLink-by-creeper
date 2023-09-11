@@ -44,6 +44,7 @@ void WelcomePage::initBrowser()
 void WelcomePage::loadNewGame(Record &record)
 {
     gm = new GameMain(nullptr,settings,record);
+    connect(gm,&GameMain::gameMainDeleted,this,&WelcomePage::gameMainDeletedSlot,Qt::QueuedConnection);
     connect(gm,&GameMain::gameMainClosed,this,&WelcomePage::gameMainClosedSlot,Qt::QueuedConnection);
     connect(gm,&GameMain::gamePaused,this,&WelcomePage::gamePausedSlot,Qt::QueuedConnection);
     connect(gm,&GameMain::gameTimeout,this,&WelcomePage::gameTimeoutSlot,Qt::QueuedConnection);
@@ -89,10 +90,11 @@ void WelcomePage::gameTimeoutSlot()
     gm->hide();
 }
 
-void WelcomePage::gameWinSlot()
+void WelcomePage::gameWinSlot(ScoreBoard* scoreBoard)
 {
     menu->switchWinMode();
     menu->show();
+    *menu->winnerBoard() = *scoreBoard;
     gm->hide();
 
     //reach last level
@@ -159,6 +161,11 @@ void WelcomePage::on_set_button_clicked()
 void WelcomePage::recordEnteredSlot(Record &record)
 {
     startNewGame(record);
+}
+
+void WelcomePage::gameMainDeletedSlot()
+{
+    menu->winnerBoard()->setPlayer(nullptr);
 }
 
 void WelcomePage::keyPressEvent(QKeyEvent *event)

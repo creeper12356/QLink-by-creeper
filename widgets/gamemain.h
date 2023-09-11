@@ -11,6 +11,7 @@
 
 #include "widgets/settings.h"
 #include "tools/clock.h"
+#include "tools/scoreboard.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Widget; }
@@ -34,7 +35,7 @@ protected:
     QVector<LinkRoute*> routes;//连线容器
     QMap<Role*,QVector<QPoint>> activatedBoxes;//从玩家指针 映射到 玩家激活箱子对应的行列坐标
     QVector<QPoint> hintBoxes;//处于提示状态（高亮状态）箱子对应的坐标 容器
-    QMap<Role*,QLCDNumber*> scoreBoard;//分数板
+    QMap<Role*,ScoreBoard*> scoreBoards;//分数板
 
     Clock* gameClk;
 
@@ -158,10 +159,10 @@ private slots:
     void on_hint_button_clicked();//按下hint按钮的槽函数
 
 signals:
+    void gameMainDeleted();//析构函数调用时发出
     void gameMainClosed();//游戏窗口被关闭信号，提示主菜单窗口显示
-//    void gamePaused(const QString& info);//游戏暂停信号
     void gamePaused();//游戏暂停
     void gameTimeout();//游戏倒计时结束
-    void gameWin();//游戏通关
+    void gameWin(ScoreBoard* scoreBoard);//游戏通关，发送通关的玩家分数板
 };
 #endif // GAMEMAIN_H

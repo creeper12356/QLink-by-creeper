@@ -36,6 +36,12 @@ void PlayerInfo::readFromJsonObject(const QJsonObject &obj)
     pos.setX(obj.value("pos").toArray().at(0).toDouble());
     pos.setY(obj.value("pos").toArray().at(1).toDouble());
     faceDir = entity::dir(obj.value("faceDir").toInt());
+    if(obj.contains("score")){
+        score = obj.value("score").toInt();
+    }
+    else{
+            score = 0;
+    }
 }
 
 QJsonObject PlayerInfo::writeToJsonObject() const
@@ -44,6 +50,7 @@ QJsonObject PlayerInfo::writeToJsonObject() const
     obj.insert("id",id);
     obj.insert("pos",QJsonArray({pos.x(),pos.y()}));
     obj.insert("faceDir",faceDir);
+    obj.insert("score",score);
     return obj;
 }
 Record::Record(const QString &recordFilePath)

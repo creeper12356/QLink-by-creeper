@@ -31,6 +31,7 @@ SOURCES += \
     tools/clock.cpp \
     tools/indexbar.cpp \
     tools/keylineedit.cpp \
+    tools/scoreboard.cpp \
     widgets/gamemain.cpp \
     widgets/menupage.cpp \
     widgets/recordbrowser.cpp \
@@ -53,6 +54,7 @@ HEADERS += \
     tools/clock.h \
     tools/indexbar.h \
     tools/keylineedit.h \
+    tools/scoreboard.h \
     widgets/gamemain.h \
     widgets/menupage.h \
     widgets/recordbrowser.h \

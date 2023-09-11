@@ -28,6 +28,7 @@ public:
     void setInfo(const QString& str);
     QPushButton* continueButton();
     QPushButton* nextButton();
+    ScoreBoard* winnerBoard();
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;

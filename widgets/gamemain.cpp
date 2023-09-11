@@ -35,6 +35,7 @@ GameMain::~GameMain()
     {
         delete entity;
     }
+    emit gameMainDeleted();
 }
 
 void GameMain::initUi()
@@ -109,6 +110,13 @@ Role *GameMain::initPlayer(const QString &id, int playerNum)
     player->insertMoveImages(entity::right,targetPlayer->value("moveImages").toObject().value("right").toString());
 
     addPlayer(player);
+    if(playerNum == 1){
+        scoreBoards[player]->setGeometry(10,22,180,80);
+    }
+    else{
+        scoreBoards[player]->setGeometry(640,22,180,80);
+    }
+
     return player;
 }
 
@@ -123,6 +131,7 @@ void GameMain::initPlayers(const Record &record)
         }
         handle->setDefaultFaceDir(player.faceDir);
         handle->setPos(player.pos);
+        scoreBoards[handle]->setScore(player.score);
     }
 }
 
@@ -139,8 +148,9 @@ void GameMain::initProcessor()
 
 void GameMain::initGameClk(const Record &record)
 {
+    QString item = (mode == singleMode)?"single":"multi";
     gameClk = new Clock(this,
-                settings->getLevels()["single"][record.getCurLevel() - 1]
+                settings->getLevels()[item][record.getCurLevel() - 1]
                 ->operator[]("basic").toObject()
                 ["gameTime"].toInt() * SECOND);//游戏总时间
     qDebug() << "gametime" << record.getBasic().gameTime;
@@ -302,13 +312,8 @@ void GameMain::addPlayer(Role *r)
     connect(r,&Role::freezeEnd,this,&GameMain::repaintSlot);
 
     activatedBoxes.insert(r,QVector<QPoint>());//激活箱子Map中导入该玩家的键值对
-    //register scoreBoard
-    QLCDNumber* board = new QLCDNumber(this);
-    scoreBoard.insert(r,board);
-    if(players.size() == 1)
-        scoreBoard[r]->setGeometry(10,40,100,60);
-    else
-        scoreBoard[r]->setGeometry(720,40,100,60);
+//    register scoreBoard
+    scoreBoards.insert(r,new ScoreBoard(this,r));
 }
 void GameMain::addBox(Box *b)
 {
@@ -326,7 +331,7 @@ void GameMain::removePlayer(Role* r)
     removeEntity(r);
 
     activatedBoxes.remove(r);
-    scoreBoard.remove(r);
+    scoreBoards.remove(r);
 }
 void GameMain::removeBox(Box *b)
 {
@@ -357,6 +362,7 @@ void GameMain::start()
         }
     }
 }
+
 void GameMain::pause()
 {
     gameClk->pause();
@@ -389,12 +395,12 @@ void GameMain::deleteBoxAt(const QPoint &pt)
 
 void GameMain::updateScore(Role *player, const LinkRoute *route)
 {
-    int score = scoreBoard[player]->value();
+    int score = scoreBoards[player]->score();
     qDebug() << "size:" << route->size();
     qDebug() << "turn:" << route->turn();
     qDebug() << "add: " << (route->size() + 1) * (route->turn() + 1);
     score += (route->size() + 1) * (route->turn() + 1);//加分
-    scoreBoard[player]->display(score);//update scoreboard
+    scoreBoards[player]->setScore(score);//update scoreboard
 }
 
 bool GameMain::tryActivate(const QPoint& target,Box *&entityTarget, Role *player)
@@ -553,7 +559,7 @@ void GameMain::processPropBoxTarget(const QPoint &target,Box*& entityTarget, Rol
     //技能函数
     propBox->execProp(this,player);
     //update score
-    scoreBoard[player]->display(scoreBoard[player]->value() + QRandomGenerator::global()->bounded(10));
+    scoreBoards[player]->setScore(scoreBoards[player]->score() + QRandomGenerator::global()->bounded(10));
 }
 
 bool GameMain::isHint() const
@@ -655,7 +661,7 @@ void GameMain::saveGameToRecord()
         pos.append(player->getPos().y());
         playerInfo.insert("pos",pos);
         playerInfo.insert("faceDir",player->getFaceDir());
-
+        playerInfo.insert("score",scoreBoards[player]->score());
         playerInfos.append(playerInfo);
     }
 
@@ -682,7 +688,13 @@ void GameMain::statePrinter()
     if(this->isWin())
     {
         this->pause();
-        emit gameWin();
+        ScoreBoard* winScoreBoard = nullptr;
+        for(auto& sb:scoreBoards){
+            if(winScoreBoard == nullptr || winScoreBoard->score() < sb->score()){
+                winScoreBoard = sb;
+            }
+        }
+        emit gameWin(winScoreBoard);
     }
 }
 

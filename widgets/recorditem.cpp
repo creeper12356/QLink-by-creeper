@@ -21,6 +21,11 @@ Record &RecordItem::getRecord()
     return record;
 }
 
+const QString &RecordItem::getName() const
+{
+    return name;
+}
+
 void RecordItem::updateText()
 {
     QString text;

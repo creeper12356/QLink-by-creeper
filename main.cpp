@@ -5,11 +5,9 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QApplication>
-
+#include "tools/scoreboard.h"
 int main(int argc, char *argv[])
 {
-    // hello world
-    
      QDir::setCurrent("..");
 
     QApplication a(argc, argv);

@@ -95,8 +95,17 @@ void RecordBrowser::on_new_record_button_clicked()
     recordNameGetter.exec();
 }
 
-void RecordBrowser::newRecord(const QString &recordName)
+void RecordBrowser::newRecord(QString recordName)
 {
+    //avoid name repeat problem.
+    for(int i = 0;i <= ui->recordList->count() - 1;++i){
+        QString existName = dynamic_cast<RecordItem*>(ui->recordList->item(i))->getName();
+        if(recordName == existName){
+            QMessageBox::warning(this,"警告","存档名已存在，创建游戏失败。");\
+            return ;
+        }
+    }
+
     RecordItem* newItem = new RecordItem("records/" + recordName + ".json",recordName);
     newItem->getRecord().readFromSettings(settings,getFilterMode(),1);//start from level 1
     ui->recordList->addItem(newItem);

@@ -38,6 +38,8 @@
 #include <QListWidgetItem>
 #include <QLineEdit>
 #include <QInputDialog>
+#include <QLabel>
+#include <QMessageBox>
 
 #include <QRandomGenerator>
 #include <QTimer>
@@ -96,6 +98,7 @@ class BoxMap;
 class Map;
 class Role;
 class Record;
+class ScoreBoard;
 class Tile
 {
 public:
