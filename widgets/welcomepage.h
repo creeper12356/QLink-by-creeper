@@ -21,6 +21,7 @@ private:
     MenuPage* menu = nullptr;//菜单页面，需要时打开
     Settings* settings = nullptr;//设置页面
     RecordBrowser* browser = nullptr;//存档选择页面
+    QMediaPlayer* bgmPlayer = nullptr;//背景音乐播放器
 
 public:
     explicit WelcomePage(QWidget* parent = 0);

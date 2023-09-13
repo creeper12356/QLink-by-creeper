@@ -4,6 +4,7 @@
 
 #include <QSoundEffect>
 #include <QSound>
+#include <QMediaPlayer>
 
 #include <QPoint>
 #include <QPointF>
