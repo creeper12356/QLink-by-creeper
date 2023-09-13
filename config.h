@@ -48,6 +48,7 @@
 #include <QDebug>
 
 #define SECOND 1000
+#define EPS 1e-8//比较浮点数时的精度
 
 namespace gameMain {
     enum gameMode{singleMode = 0,multiMode};
@@ -59,7 +60,8 @@ namespace entity {
     enum type{box,role};
     enum dir{no_dir = -1,up = 0,down,left,right};//方向枚举类
     dir opsiteDir(dir d);//返回d的反方向
-    QPoint unitDisplacement(const QPoint& staPt,dir d);//返回出发点staPt经过d方向移动单位长度后的坐标（行列坐标）
+    QPoint unitDisplacement(const QPoint& staPt,dir d);//返回出发点staPt经过d方向移动单位格子后的坐标（行列坐标）
+    QPointF pureMove(const QPointF& originPt,dir d,qreal step = 1.0);//originPt为像素坐标，返回dir移动step后的坐标
 }
 namespace box{
     enum type{null = -1,

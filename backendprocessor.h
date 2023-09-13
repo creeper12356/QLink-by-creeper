@@ -17,7 +17,6 @@ private:
 
     BoxMap* linkBoxes;//前端
 
-    bool isLegal(const QPoint& pt) const;//判断数组行列是否合法（不越界）
     bool isGeneralizedLegal(const QPoint& pt) const;//判断数组行列是否广义合法（合法+周围一圈）
     type dataAt(int x,int y)const;
     type dataAt(const QPoint& pt) const;
@@ -27,6 +26,8 @@ public:
     BackendProcessor(const Record& record);//用于测试，从record中初始化backendProcessor对象
     BackendProcessor(BoxMap* lkBoxes);
     ~BackendProcessor(){}
+
+    bool isLegal(const QPoint& pt) const;//判断数组行列是否合法（不越界）
 
     void init2DArray();//用于测试，分配二维数组动态内存
     void load(type** d,int w,int h);//加载二维数组

@@ -48,6 +48,12 @@ public:
     QPointF boxPosAtData(int i,int j);//计算data[i][j]对应箱子实体的坐标
     QRectF rectAt(int i,int j);//返回boxMap位于data[i][j]对应的矩形
 
+    QPoint posToDataCoord(const QPointF& pos);//如果不区分返回值(-1,-1) 是否为缝隙，可以使用此重载
+    QPoint posToDataCoord(const QPointF& pos,bool* ok);//实体点坐标所在的boxMap箱子的行列坐标（不一定合法），ok传出是否有对应坐标
+private:
+    int calculateIndex(const qreal& pos,const qreal& corner,const qreal& size,const qreal& dist,bool *ok);//posToDataCoord调用的抽象函数
+public:
+
     //接口函数
     int getWScale() const{return wScale;}
     int getHScale() const{return hScale;}

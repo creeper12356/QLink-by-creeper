@@ -104,123 +104,23 @@ qreal Role::move(GameMain *parent, qreal singleMove, int dir)
 }
 QPoint Role::findTarget(GameMain *parent)
 {
-    //player
     entity::dir faceDir = getFaceDir();//玩家面部朝向
     const QRectF& entityBox = getEntityBox();
-    //linkBoxes
     BoxMap* linkBoxes = parent->getLinkBoxes();
-    int wScale = linkBoxes->getWScale();
-    int hScale = linkBoxes->getHScale();
-    QSizeF size = linkBoxes->getSize();
-    QPointF corner = linkBoxes->getCorner();
-    QSizeF dist = linkBoxes->getDist();
-
-    QPoint target(-1,-1);//被激活箱子在linkBoxes中的行、列
-    if(faceDir == entity::up)//向上移动
-    {
-        int i = (entityBox.top()
-                 - size.height()
-                 - corner.y()
-                 - dist.height() / 2)
-                / (dist.height() + size.height());
-
-        qreal num = entityBox.center().x()
-                - corner.x()
-                - dist.width() / 2;
-        qreal den = dist.width() + size.width();
-
-        int j1 = qFloor(num / den) , j2 = qFloor((num - size.width()) / den);
-
-
-        if(j1 != j2)
-        {
-            if(i >= 0 && i <= hScale - 1
-                    &&
-                j1 >= 0 && j1 <= wScale - 1)
-            {
-                target.rx() = i;
-                target.ry() = j1;
-            }
-        }
+    QPointF digPt;//从玩家的中心开始，朝dir方向挖掘至方块内部的点坐标
+    qreal step;
+    if(faceDir <= entity::down){
+        step = getHeight() + linkBoxes->getSize().height()/ 2 + EPS;
     }
-    else if(faceDir == entity::down)
-    {
-        int i = (entityBox.bottom()
-                 - corner.y()
-                 - dist.height() / 2)
-                / (dist.height() + size.height());
-
-        qreal num = entityBox.center().x()
-                - corner.x()
-                - dist.width() / 2;
-        qreal den = dist.width() + size.width();
-
-        int j1 = qFloor(num / den) , j2 = qFloor((num - size.width()) / den);
-
-
-        if(j1 != j2)
-        {
-            if(i >= 0 && i <= hScale - 1
-                    &&
-                j1 >= 0 && j1 <= wScale - 1)
-            {
-                target.rx() = i;
-                target.ry() = j1;
-            }
-        }
+    else{
+        step = getWidth() / 2 + EPS;
     }
-    else if(faceDir == entity::left)
-    {
-        int j = (entityBox.left()
-                 - size.width()
-                 - corner.x()
-                 - dist.width() / 2)
-                / (dist.width() + size.width());
-
-        qreal num = entityBox.center().y()
-                - corner.y()
-                - dist.height() / 2;
-        qreal den = dist.height() + size.height();
-
-        int i1 = qFloor(num / den) , i2 = qFloor((num - size.height()) / den);
-
-        if(i1 != i2)
-        {
-            if(j >= 0 && j <= wScale - 1
-                    &&
-                i1 >= 0 && i1 <= hScale - 1)
-            {
-                target.rx() = i1;
-                target.ry() = j;
-            }
-        }
+    digPt = entity::pureMove(entityBox.center(),faceDir,step);
+    QPoint target = linkBoxes->posToDataCoord(digPt);
+    if(linkBoxes->getProcessor()->isLegal(target)){
+        return target;
     }
-    else if(faceDir == entity::right)
-    {
-        int j = (entityBox.right()
-                 - corner.x()
-                 - dist.width() / 2)
-                / (dist.width() + size.width());
-
-        qreal num = entityBox.center().y()
-                - corner.y()
-                - dist.height() / 2;
-        qreal den = dist.height() + size.height();
-
-        int i1 = qFloor(num / den) , i2 = qFloor((num - size.height()) / den);
-
-        if(i1 != i2)
-        {
-            if(j >= 0 && j <= wScale - 1
-                    &&
-                i1 >= 0 && i1 <= hScale - 1)
-            {
-                target.rx() = i1;
-                target.ry() = j;
-            }
-        }
-    }
-    return target;
+    else return QPoint(-1,-1);
 }
 void Role::emitMonitorTimeout()
 {

@@ -135,6 +135,49 @@ QRectF BoxMap::rectAt(int i, int j)
     return rect;
 }
 
+QPoint BoxMap::posToDataCoord(const QPointF &pos)
+{
+    bool ok;
+    return posToDataCoord(pos,&ok);
+}
+
+QPoint BoxMap::posToDataCoord(const QPointF &pos, bool *ok)
+{
+    QPoint coord(-1,-1);
+    //determine j
+    coord.ry() = calculateIndex(pos.x(),corner.x(),size.width(),dist.width(),ok);
+    if(!*ok){
+        return QPoint(-1,-1);
+    }
+    //determine i
+    coord.rx() = calculateIndex(pos.y(),corner.y(),size.height(),dist.height(),ok);
+    if(!*ok){
+        return QPoint(-1,-1);
+    }
+
+    return coord;
+}
+
+int BoxMap::calculateIndex(const qreal &pos, const qreal &corner, const qreal &size, const qreal &dist, bool *ok)
+{
+    qreal num = pos
+            - corner
+            - dist / 2;
+    qreal den = dist + size;
+
+    int i1 = qFloor(num / den) , i2 = qFloor((num - size) / den);
+
+    if(i1 != i2)
+    {
+        *ok = true;
+        return i1;
+    }
+    else{
+        *ok = false;
+        return -1;
+    }
+}
+
 void BoxMap::draw(QPainter &painter, bool isDebugMode)
 {
     if(!isDebugMode)
