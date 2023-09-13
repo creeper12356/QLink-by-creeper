@@ -165,7 +165,7 @@ bool BackendProcessor::checkLink(const QPoint &p1, const QPoint &p2,LinkRoute*& 
 
     QStack<Tile> sta;//深度优先遍历辅助栈
     LinkRoute route;//记录路径
-    bestRoute = new LinkRoute;//最短路径，存储在堆上，便于发送指针
+    bestRoute = new LinkRoute;//最短路径，存储在堆上
     int result = 0;//记录从p1到p2路径总数
 
     sta.push(startTile);
@@ -215,7 +215,6 @@ bool BackendProcessor::checkLink(const QPoint &p1, const QPoint &p2,LinkRoute*& 
             }
             else if(curTile.pos == p2)//找到终点
             {
-                //.test
                 route.rturn() = curTile.turn;
                 if(result == 0)
                 {
