@@ -158,15 +158,21 @@ QPoint BoxMap::posToDataCoord(const QPointF &pos, bool *ok)
     return coord;
 }
 
-int BoxMap::calculateIndex(const qreal &pos, const qreal &corner, const qreal &size, const qreal &dist, bool *ok)
+qreal BoxMap::smallerEdge(const qreal &pos, const qreal &corner, const qreal &size, const qreal &dist) const
 {
-    qreal num = pos
-            - corner
-            - dist / 2;
-    qreal den = dist + size;
+    return (pos - corner - dist / 2 - size) / (dist + size);
+}
 
-    int i1 = qFloor(num / den) , i2 = qFloor((num - size) / den);
+qreal BoxMap::largerEdge(const qreal &pos, const qreal &corner, const qreal &size, const qreal &dist) const
+{
+    return (pos - corner - dist / 2) / (dist + size);
+}
 
+int BoxMap::calculateIndex(const qreal &pos, const qreal &corner, const qreal &size, const qreal &dist, bool *ok) const
+{
+    //i1 >= i2
+    int i1 = qFloor(largerEdge(pos,corner,size,dist)),
+        i2 = qFloor(smallerEdge(pos,corner,size,dist));
     if(i1 != i2)
     {
         *ok = true;
@@ -176,6 +182,40 @@ int BoxMap::calculateIndex(const qreal &pos, const qreal &corner, const qreal &s
         *ok = false;
         return -1;
     }
+}
+
+QVector<int> BoxMap::coverIndex(const qreal &corner, const qreal &size, const qreal &dist, qreal min, qreal max)
+{
+    Q_ASSERT(min < max);
+
+    //min增大方向第一个smallerEdge
+    int CeilIncreaseSmallerEdge = qCeil(smallerEdge(min,corner,size,dist));
+    //max减小方向第一个largerEdge
+    int FloorDecreaseLargerEdge = qFloor(largerEdge(max,corner,size,dist));
+
+    //result
+    QVector<int> indexes;
+    indexes.push_back(CeilIncreaseSmallerEdge);
+    if(CeilIncreaseSmallerEdge != FloorDecreaseLargerEdge){
+        indexes.push_back(FloorDecreaseLargerEdge);
+    }
+    return indexes;
+}
+
+QVector<QPoint> BoxMap::coverDataCoords(const QRectF &entityBox)
+{
+    //行坐标集
+    QVector<int> rowIndexes = coverIndex(corner.y(),size.height(),dist.height(),entityBox.top(),entityBox.bottom());
+    //纵坐标集
+    QVector<int> colIndexes = coverIndex(corner.x(),size.width(),dist.width(),entityBox.left(),entityBox.right());
+    //组合
+    QVector<QPoint> coverCoords;
+    for(int r:rowIndexes){
+        for(int c:colIndexes){
+            coverCoords.push_back(QPoint(r,c));
+        }
+    }
+    return coverCoords;
 }
 
 void BoxMap::draw(QPainter &painter, bool isDebugMode)

@@ -110,7 +110,7 @@ QPoint Role::findTarget(GameMain *parent)
     QPointF digPt;//从玩家的中心开始，朝dir方向挖掘至方块内部的点坐标
     qreal step;
     if(faceDir <= entity::down){
-        step = getHeight() + linkBoxes->getSize().height()/ 2 + EPS;
+        step = getHeight() / 2 + EPS;
     }
     else{
         step = getWidth() / 2 + EPS;

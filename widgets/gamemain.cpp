@@ -259,15 +259,17 @@ void GameMain::paintEvent(QPaintEvent *event)
 void GameMain::mousePressEvent(QMouseEvent *event)
 {
     QPoint pos = event->pos() - background->getCorner();
-    qDebug() << pos;
-    bool ok;
-    qDebug() << linkBoxes->posToDataCoord(pos,&ok);
+//    qDebug() << pos;
+//    bool ok;
+//    qDebug() << linkBoxes->posToDataCoord(pos,&ok);
+//    linkBoxes->getPtrDataAt(linkBoxes->posToDataCoord(pos,&ok))->isActivated = true;
+//    update();
 
     if(!isDebugMode)
         return ;
-//    Role* player = players[0];
-//    player->setPos(pos);
-//    repaint();
+    Role* player = players[0];
+    player->setPos(pos);
+    repaint();
 }
 void GameMain::mouseMoveEvent(QMouseEvent *event)
 {
