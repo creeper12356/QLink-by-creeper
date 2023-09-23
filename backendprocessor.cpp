@@ -346,6 +346,42 @@ QVector<QPoint> BackendProcessor::hint() const
     return ans;
 }
 
+QVector<QPoint> BackendProcessor::reachableFrom(const QPoint &startPt) const
+{
+    //using bfs traverse
+    QVector<QPoint> ans;
+    QQueue<QPoint> qu;
+    QMap<type*,bool> visited;
+    qu.push_back(startPt);
+    QPoint cur;
+    while(!qu.empty()){
+        cur = qu.front();
+        qDebug() << "reachableFrom: cur = " << cur;
+        qu.pop_front();
+        visited[&data[cur.x()][cur.y()]] = true;
+        //遍历四个方向
+        for(int i = 0;i <= 3;++i){
+            QPoint tar = entity::unitDisplacement(cur,entity::dir(i));
+            if(!isGeneralizedLegal(tar)){
+                continue;
+            }
+            if(visited.contains(&data[tar.x()][tar.y()])
+                    && visited.value(&data[tar.x()][tar.y()])){
+                continue;
+            }
+            if(dataAt(tar) == null){
+                if(!qu.contains(tar)){
+                    qu.push_back(tar);
+                }
+            }
+            else{
+                    ans.push_back(tar);
+            }
+        }
+    }
+    return ans;
+}
+
 bool BackendProcessor::isSolvable() const
 {
     for(int i = 0;i <= hScale - 1;++i){

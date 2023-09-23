@@ -269,6 +269,13 @@ void GameMain::mousePressEvent(QMouseEvent *event)
         return ;
     Role* player = players[0];
     player->setPos(pos);
+    QPoint tar = linkBoxes->posToDataCoord(pos);
+    qDebug() << "tar = " << tar;
+    QVector<QPoint> reachable = processor->reachableFrom(tar);
+    qDebug() << "reachable = " << reachable;
+    for(auto pt:reachable){
+        linkBoxes->getPtrDataAt(pt)->isHighlighted = true;
+    }
     repaint();
 }
 void GameMain::mouseMoveEvent(QMouseEvent *event)
