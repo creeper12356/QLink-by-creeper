@@ -348,6 +348,10 @@ QVector<QPoint> BackendProcessor::hint() const
 
 QVector<QPoint> BackendProcessor::reachableFrom(const QPoint &startPt) const
 {
+    //边界情况，重定向到(-1,-1)
+    if(!isGeneralizedLegal(startPt)){
+        return reachableFrom(QPoint(-1,-1));
+    }
     //using bfs traverse
     QVector<QPoint> ans;
     QQueue<QPoint> qu;
@@ -356,7 +360,6 @@ QVector<QPoint> BackendProcessor::reachableFrom(const QPoint &startPt) const
     QPoint cur;
     while(!qu.empty()){
         cur = qu.front();
-        qDebug() << "reachableFrom: cur = " << cur;
         qu.pop_front();
         visited[&data[cur.x()][cur.y()]] = true;
         //遍历四个方向

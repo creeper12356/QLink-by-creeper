@@ -157,6 +157,7 @@ private slots:
     void statePrinter();
     void on_shuffle_button_clicked();//按下shuffle按钮的槽函数
     void on_hint_button_clicked();//按下hint按钮的槽函数
+    void on_clear_button_clicked();
 
 signals:
     void gameMainDeleted();//析构函数调用时发出

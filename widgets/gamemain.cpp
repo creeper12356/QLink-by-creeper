@@ -259,24 +259,12 @@ void GameMain::paintEvent(QPaintEvent *event)
 void GameMain::mousePressEvent(QMouseEvent *event)
 {
     QPoint pos = event->pos() - background->getCorner();
-//    qDebug() << pos;
-//    bool ok;
-//    qDebug() << linkBoxes->posToDataCoord(pos,&ok);
-//    linkBoxes->getPtrDataAt(linkBoxes->posToDataCoord(pos,&ok))->isActivated = true;
-//    update();
 
     if(!isDebugMode)
         return ;
     Role* player = players[0];
     player->setPos(pos);
-    QPoint tar = linkBoxes->posToDataCoord(pos);
-    qDebug() << "tar = " << tar;
-    QVector<QPoint> reachable = processor->reachableFrom(tar);
-    qDebug() << "reachable = " << reachable;
-    for(auto pt:reachable){
-        linkBoxes->getPtrDataAt(pt)->isHighlighted = true;
-    }
-    repaint();
+    update();
 }
 void GameMain::mouseMoveEvent(QMouseEvent *event)
 {
@@ -757,5 +745,25 @@ void GameMain::on_hint_button_clicked()
     //change highlight state
     linkBoxes->getPtrDataAt(hintBoxes.at(0))->isHighlighted = true;
     linkBoxes->getPtrDataAt(hintBoxes.at(1))->isHighlighted = true;
+    update();
+}
+
+void GameMain::on_clear_button_clicked()
+{
+    //clear all effects of all boxes
+    for(auto& box:boxes){
+        if(box->isLocked){
+            box->isLocked = false;
+        }
+        if(box->isActivated){
+            box->isActivated = false;
+        }
+        if(box->isHighlighted){
+            box->isHighlighted = false;
+        }
+    }
+    for(auto& player:players){
+        activatedBoxes[player].clear();
+    }
     update();
 }

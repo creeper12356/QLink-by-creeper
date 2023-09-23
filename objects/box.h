@@ -25,7 +25,7 @@ public:
     void setBoxDivision(box::division d);//设置箱子功能类型
     void setIsEntity(bool i);//如果设置为非实体，分配部分堆空间（只能调用1次）
     bool setHead(const QString& path);//加载head图片，返回是否加载成功
-    void setHead(QPixmap* pix);//设置head指向
+    void setHead(QPixmap *pix);//设置head指向
     void copyStyle(const Box* other);//赋值另一个箱子的样式（大小、图片），可移动性
     bool setBreakSound(const QString& path);//加载破坏音效,返回path是否有效
     void setBreakSoundVolume(qreal v);//设置破坏音效音量

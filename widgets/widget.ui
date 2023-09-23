@@ -58,6 +58,19 @@
     <string>信息</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="clear_button">
+   <property name="geometry">
+    <rect>
+     <x>860</x>
+     <y>190</y>
+     <width>89</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>clear</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>
