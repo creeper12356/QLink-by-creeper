@@ -153,7 +153,7 @@ void GameMain::initGameClk(const Record &record)
                 settings->getLevels()[item][record.getCurLevel() - 1]
                 ->operator[]("basic").toObject()
                 ["gameTime"].toInt() * SECOND);//游戏总时间
-    qDebug() << "gametime" << record.getBasic().gameTime;
+
     gameClk->setTime(record.getBasic().gameTime * SECOND);
     gameClk->setGeometry(10,0,950,25);
     connect(gameClk,&Clock::timeout,this,&GameMain::clockTimeOutSlot);

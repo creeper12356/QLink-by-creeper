@@ -48,6 +48,6 @@ void IndexBar::paintEvent(QPaintEvent *event)
     painter.setBrush(QColor(f_color));
     painter.drawRect(rect().x(),
                      rect().y(),
-                     rect().width() * _index / (_fullIndex + 0.0),
+                     rect().width() * (_index / (_fullIndex + 0.0)),
                      rect().height());
 }
