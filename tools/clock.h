@@ -14,7 +14,10 @@ public:
     Clock(QWidget* parent,int gameTime);
     ~Clock();
 
+    //getters
     int getCurTime() const;
+    int getGameTime() const;
+
     void setUpdateInterval(int interval);
     void start();
     void pause();
