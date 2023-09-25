@@ -25,6 +25,8 @@
 #include <QString>
 #include <QStack>
 #include <QQueue>
+#include <QList>
+#include <QSet>
 
 #include <QPalette>
 #include <QPixmap>

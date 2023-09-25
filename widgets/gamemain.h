@@ -116,8 +116,9 @@ protected:
     bool isHint() const;//判断是否处于提示状态
     void startHintTimer();
     void pauseHintTimer();
-    void clearHint();//清空所有提示记录
+    QVector<QPoint> clearHint();//清空所有提示记录，返回所有清空点坐标
     void updateHint();//更新提示
+    void localHint(const QPoint& standPt);//给出相对于standPt的局部提示，被hint函数调用
 private slots:
     void movePlayer(Role* player);//与moveVector::monitor绑定，处理玩家的移动
     void clockTimeOutSlot();
@@ -158,6 +159,7 @@ private slots:
     void on_shuffle_button_clicked();//按下shuffle按钮的槽函数
     void on_hint_button_clicked();//按下hint按钮的槽函数
     void on_clear_button_clicked();
+    void on_win_button_clicked();//删除所有箱子并通关
 
 signals:
     void gameMainDeleted();//析构函数调用时发出

@@ -30,7 +30,7 @@ private:
     std::vector<Block*> blocks;//方块档案
 
 public:
-    Map(int w = 16,int h = 15,QPoint corner = QPoint(10,100),int blockSize = 50);
+    Map(int wScale = 16,int hScale = 17,QPoint corner = QPoint(10,100),int blockSize = 50);
     ~ Map();
     void initBlocks();//初始化所有方块信息
     void addBlock(Block* newBlock);
