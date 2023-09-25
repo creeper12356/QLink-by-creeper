@@ -118,7 +118,7 @@ protected:
     void pauseHintTimer();
     QVector<QPoint> clearHint();//清空所有提示记录，返回所有清空点坐标
     void updateHint();//更新提示
-    void localHint(const QPoint& standPt);//给出相对于standPt的局部提示，被hint函数调用
+    bool localHint(const QPoint& standPt);//给出相对于standPt的局部提示，被hint函数调用
 private slots:
     void movePlayer(Role* player);//与moveVector::monitor绑定，处理玩家的移动
     void clockTimeOutSlot();

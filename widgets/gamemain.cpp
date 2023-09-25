@@ -605,17 +605,18 @@ void GameMain::updateHint()
     }
 }
 
-void GameMain::localHint(const QPoint &standPt)
+bool GameMain::localHint(const QPoint &standPt)
 {
     hintBoxes = processor->hint(standPt);
     if(hintBoxes.size() != 2){
-        return ;
+        return false;
     }
 
     //change highlight state
     linkBoxes->getPtrDataAt(hintBoxes.at(0))->isHighlighted = true;
     linkBoxes->getPtrDataAt(hintBoxes.at(1))->isHighlighted = true;
     update();
+    return true;
 }
 
 void GameMain::addTime(Role *player)
@@ -633,12 +634,11 @@ void GameMain::shuffle(Role* player)
 void GameMain::hint(Role *player)
 {
     qDebug() << "hint";
-    if(isHint())//已经处于提示状态
-    {
+    if(isHint()){//已经处于提示状态
         hintTimer.stop();
     }
     else{
-        localHint(linkBoxes->coverDataCoords(player->getEntityBox())[0]);
+        localHint(linkBoxes->coverDataCoords(player->getEntityBox())[0]);//note：玩家至少覆盖一个方块
     }
     startHintTimer();
 }
