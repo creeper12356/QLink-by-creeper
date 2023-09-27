@@ -13,7 +13,6 @@ class Settings : public QWidget
     Q_OBJECT
 private:
     QVector<QJsonObject*> roles;//玩家基本设置
-//    QStringList boxes;//箱子 基本设置
     QVector<QJsonObject*> boxes;
     QMap<QString,QVector<QJsonObject*>> levels;//关卡基本设置
 public:

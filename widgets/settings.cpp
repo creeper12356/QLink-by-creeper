@@ -23,8 +23,7 @@ Settings::~Settings()
     writeCtrlSettings();
     writeAudioSettings();
 
-    for(auto obj:roles)
-    {
+    for(auto obj:roles){
         delete obj;
     }
     for(auto box:boxes){
