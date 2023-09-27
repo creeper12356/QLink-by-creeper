@@ -73,9 +73,9 @@ void BoxMap::initBoxes()
         handle->setIsEntity(false);
         handle->setHead(":/images/boxes/" + id + ".png");
 
-        if(!handle->setBreakSound(":/audios/" + id + ".wav"))
+        if(!handle->setBreakSound(":/audios/" + id + ".wav"))//如果没有找到对应的音效
         {
-            handle->setBreakSound(":/audios/block.wav");
+            handle->setBreakSound(":/audios/block.wav");//使用默认音效
         }
         handle->setBreakSoundVolume(settings->getUi()->entity_audio_slider->value() / 100.0);
         handle->setSize(size);

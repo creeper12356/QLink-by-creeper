@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>QLink</string>
   </property>
   <widget class="QPushButton" name="single_player_button">
    <property name="geometry">

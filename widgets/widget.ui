@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Widget</string>
+   <string>游戏</string>
   </property>
   <widget class="QPushButton" name="shuffle_button">
    <property name="geometry">

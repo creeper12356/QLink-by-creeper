@@ -63,6 +63,11 @@ void Box::setBreakSoundVolume(qreal v)
 {
     breakSound->setVolume(v);
 }
+
+void Box::setBreakScore(int bs)
+{
+    breakScore = bs;
+}
 void Box::draw(QPainter &painter,bool isDebugMode)
 {
     Entity::draw(painter,isDebugMode);

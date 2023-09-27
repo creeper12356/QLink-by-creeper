@@ -443,9 +443,11 @@ bool GameMain::tryDeactivate(const QPoint &target, Box *&entityTarget, Role *pla
 
 void GameMain::addRawRoute(LinkRoute *&route)
 {
+    //update route
     route->updateDir();
     route->removeFirst();
     route->removeLast();
+
     routes.push_back(route);
     QTimer::singleShot(routeLifeSpan * SECOND,this,[this,route]//定时消除路径
     {
