@@ -67,8 +67,8 @@ void BoxMap::initProcessor(const Record &record)
 void BoxMap::initBoxes()
 {
     Box* handle;
-    for(const QString& id:settings->getBoxes())
-    {
+    for(auto box:settings->getBoxes()){
+        QString id = box->value("id").toString();
         handle = new Box;
         handle->setIsEntity(false);
         handle->setHead(":/images/boxes/" + id + ".png");
@@ -77,8 +77,10 @@ void BoxMap::initBoxes()
         {
             handle->setBreakSound(":/audios/block.wav");//使用默认音效
         }
+        handle->setBreakScore(box->value("breakScore").toInt());
         handle->setBreakSoundVolume(settings->getUi()->entity_audio_slider->value() / 100.0);
         handle->setSize(size);
+
         boxes.push_back(handle);
     }
 }

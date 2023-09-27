@@ -47,6 +47,7 @@ void Box::copyStyle(const Box *other)
 {
     this->head = other->head;
     this->breakSound = other->breakSound;
+    this->breakScore = other->breakScore;
     this->entityBox.setSize(other->entityBox.size());
     this->isMovable = other->isMovable;
 }

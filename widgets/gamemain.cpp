@@ -396,14 +396,9 @@ void GameMain::deleteBoxAt(const QPoint &pt)
     emit boxDeleted();
 }
 
-void GameMain::updateScore(Role *player, const LinkRoute *route)
+int GameMain::calculateScore(int size, int turn, int breakScore)
 {
-    int score = scoreBoards[player]->score();
-    qDebug() << "size:" << route->size();
-    qDebug() << "turn:" << route->turn();
-    qDebug() << "add: " << (route->size() + 1) * (route->turn() + 1);
-    score += (route->size() + 1) * (route->turn() + 1);//加分
-    scoreBoards[player]->setScore(score);//update scoreboard
+    return (size + 1) * (turn + 1) + breakScore;
 }
 
 bool GameMain::tryActivate(const QPoint& target,Box *&entityTarget, Role *player)
@@ -515,7 +510,9 @@ bool GameMain::tryLink(Role *player)
     frontBox->isLocked = true;
     backBox->isLocked = true;
     addRawRoute(route);
-    updateScore(player,route);
+    scoreBoards[player]->add(calculateScore(route->size(),
+                                            route->turn(),
+                                            frontBox->getBreakScore()));
     for(auto& p:players)
     {
         activatedBoxes[p].removeAll(frontPt);
@@ -560,7 +557,7 @@ void GameMain::processPropBoxTarget(const QPoint &target,Box*& entityTarget, Rol
     //技能函数
     propBox->execProp(this,player);
     //update score
-    scoreBoards[player]->setScore(scoreBoards[player]->score() + QRandomGenerator::global()->bounded(10));
+    scoreBoards[player]->add(entityTarget->getBreakScore());
     //删除箱子
     deleteBoxAt(target);
 }

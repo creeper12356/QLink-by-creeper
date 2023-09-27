@@ -103,7 +103,7 @@ public:
 
 protected:
     void deleteBoxAt(const QPoint& pt);//从游戏中完全删除位于pt的箱子，被tryLink函数调用
-    void updateScore(Role* player,const LinkRoute* route);
+    int calculateScore(int size,int turn,int breakScore);//计算加分
     bool tryActivate(const QPoint &target, Box*& entityTarget, Role* player);//尝试激活方块
     bool tryDeactivate(const QPoint& target,Box*& entityTarget,Role* player);//尝试取消激活方块,返回是否更新isActivated字段
     void addRawRoute(LinkRoute*& route);//加入由updateScore生成的路径
