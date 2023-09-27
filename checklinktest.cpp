@@ -16,7 +16,22 @@ void CheckLinkTest::initTestCase()
 
 void CheckLinkTest::case1_test()
 {
-    QVERIFY(processor->checkLink(QPoint(0,0),QPoint(0,8),route));
+    QVERIFY(processor->checkLink(QPoint(0,9),QPoint(4,9),route));
+}
+
+void CheckLinkTest::case2_test()
+{
+    QVERIFY(processor->checkLink(QPoint(4,6),QPoint(5,8),route));
+}
+
+void CheckLinkTest::case3_test()
+{
+    QVERIFY(processor->checkLink(QPoint(7,9),QPoint(9,8),route) == false);
+}
+
+void CheckLinkTest::case4_test()
+{
+    QVERIFY(processor->checkLink(QPoint(6,0),QPoint(9,1),route));
 }
 
 void CheckLinkTest::cleanupTestCase()

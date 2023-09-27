@@ -15,6 +15,9 @@ private:
 private slots:
     void initTestCase();
     void case1_test();
+    void case2_test();
+    void case3_test();
+    void case4_test();
     void cleanupTestCase();
 public:
     CheckLinkTest();
