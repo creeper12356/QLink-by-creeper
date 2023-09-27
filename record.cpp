@@ -70,6 +70,11 @@ Record::~Record()
     }
 }
 
+bool Record::fileExists() const
+{
+    return QFile::exists(recordFilePath);
+}
+
 void Record::setCurLevel(int level)
 {
     curLevel = level;

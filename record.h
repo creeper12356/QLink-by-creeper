@@ -35,7 +35,7 @@ private:
     //flags
     bool isDeleted = false;//若该字段为true，则析构时不写入文件
 public:
-    Record(const QString& recordFilePath);
+    Record(const QString& recordFilePath = "");
     ~Record();
     //getters
     gameMain::gameMode getMode() const{return mode;}
@@ -44,6 +44,8 @@ public:
     const QVector<PlayerInfo>& getPlayers() const{return players;}
     const QVector<box::type>& getMap() const{return map;}
     bool getIsDeleted() const{return isDeleted;}
+
+    bool fileExists() const;//返回路径是否存在
     //setters
     void setCurLevel(int level);
     void setIsDeleted(bool flag);

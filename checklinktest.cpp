@@ -2,22 +2,37 @@
 #include "backendprocessor.h"
 #include "record.h"
 
+void CheckLinkTest::initTestCase()
+{
+    qDebug() << "init";
+    testRecord = new Record("../records/testRecord.json");
+    //file must exist
+    if(!testRecord->fileExists())
+    {
+        throw "RECORD_FILE_NOT_EXIST";
+    }
+    processor = new BackendProcessor(*testRecord);
+}
+
 void CheckLinkTest::case1_test()
 {
     QVERIFY(processor->checkLink(QPoint(0,0),QPoint(0,8),route));
-    if(route != nullptr){
-        delete route;
-    }
+}
+
+void CheckLinkTest::cleanupTestCase()
+{
+    qDebug() << "cleanup";
+    delete testRecord;
+    delete processor;
 }
 
 CheckLinkTest::CheckLinkTest()
 {
-    Record testRecord("../records/testRecord.json");
-    processor = new BackendProcessor(testRecord);
+
 }
 
 CheckLinkTest::~CheckLinkTest()
 {
-    delete processor;
+
 }
 QTEST_MAIN(CheckLinkTest)

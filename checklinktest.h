@@ -11,8 +11,11 @@ class CheckLinkTest : public QObject
 private:
     BackendProcessor* processor;
     LinkRoute *route = nullptr;
+    Record* testRecord = nullptr;
 private slots:
+    void initTestCase();
     void case1_test();
+    void cleanupTestCase();
 public:
     CheckLinkTest();
     ~CheckLinkTest();
