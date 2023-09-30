@@ -41,6 +41,8 @@ public:
 
     //返回位于p1,p2的箱子能否消除，如果不能，将bestRoute置nullptr,若能，bestRoute指向堆空间的动态对象，表示最短路径
     bool checkLink(const QPoint& p1, const QPoint& p2, LinkRoute *&bestRoute) const;
+    //overload for test
+    bool checkLink(const QPoint& p1, const QPoint& p2) const;
 
     //选择一个出发点（startPt)，返回所有可以连线的方块坐标
     QVector<QPoint> hintFrom(const QPoint& startPt) const;
