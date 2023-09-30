@@ -34,7 +34,15 @@ ScoreBoard &ScoreBoard::operator-=(int mScore)
     return *this;
 }
 
+void ScoreBoard::add(int aScore)
+{
+    (*this) += aScore;
+}
 
+void ScoreBoard::minus(int mScore)
+{
+    (*this) -= mScore;
+}
 
 int ScoreBoard::score() const
 {

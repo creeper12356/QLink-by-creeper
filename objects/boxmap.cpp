@@ -67,18 +67,20 @@ void BoxMap::initProcessor(const Record &record)
 void BoxMap::initBoxes()
 {
     Box* handle;
-    for(const QString& id:settings->getBoxes())
-    {
+    for(auto box:settings->getBoxes()){
+        QString id = box->value("id").toString();
         handle = new Box;
         handle->setIsEntity(false);
         handle->setHead(":/images/boxes/" + id + ".png");
 
-        if(!handle->setBreakSound(":/audios/" + id + ".wav"))
+        if(!handle->setBreakSound(":/audios/" + id + ".wav"))//如果没有找到对应的音效
         {
-            handle->setBreakSound(":/audios/block.wav");
+            handle->setBreakSound(":/audios/block.wav");//使用默认音效
         }
+        handle->setBreakScore(box->value("breakScore").toInt());
         handle->setBreakSoundVolume(settings->getUi()->entity_audio_slider->value() / 100.0);
         handle->setSize(size);
+
         boxes.push_back(handle);
     }
 }
@@ -133,6 +135,89 @@ QRectF BoxMap::rectAt(int i, int j)
     rect.setWidth(dist.width() + size.width());
     rect.setHeight(dist.height() + size.height());
     return rect;
+}
+
+QPoint BoxMap::posToDataCoord(const QPointF &pos)
+{
+    bool ok;
+    return posToDataCoord(pos,&ok);
+}
+
+QPoint BoxMap::posToDataCoord(const QPointF &pos, bool *ok)
+{
+    QPoint coord(-1,-1);
+    //determine j
+    coord.ry() = calculateIndex(pos.x(),corner.x(),size.width(),dist.width(),ok);
+    if(!*ok){
+        return QPoint(-1,-1);
+    }
+    //determine i
+    coord.rx() = calculateIndex(pos.y(),corner.y(),size.height(),dist.height(),ok);
+    if(!*ok){
+        return QPoint(-1,-1);
+    }
+
+    return coord;
+}
+
+qreal BoxMap::smallerEdge(const qreal &pos, const qreal &corner, const qreal &size, const qreal &dist) const
+{
+    return (pos - corner - dist / 2 - size) / (dist + size);
+}
+
+qreal BoxMap::largerEdge(const qreal &pos, const qreal &corner, const qreal &size, const qreal &dist) const
+{
+    return (pos - corner - dist / 2) / (dist + size);
+}
+
+int BoxMap::calculateIndex(const qreal &pos, const qreal &corner, const qreal &size, const qreal &dist, bool *ok) const
+{
+    //i1 >= i2
+    int i1 = qFloor(largerEdge(pos,corner,size,dist)),
+        i2 = qFloor(smallerEdge(pos,corner,size,dist));
+    if(i1 != i2)
+    {
+        *ok = true;
+        return i1;
+    }
+    else{
+        *ok = false;
+        return -1;
+    }
+}
+
+QVector<int> BoxMap::coverIndex(const qreal &corner, const qreal &size, const qreal &dist, qreal min, qreal max)
+{
+    Q_ASSERT(min < max);
+
+    //min增大方向第一个smallerEdge
+    int CeilIncreaseSmallerEdge = qCeil(smallerEdge(min,corner,size,dist));
+    //max减小方向第一个largerEdge
+    int FloorDecreaseLargerEdge = qFloor(largerEdge(max,corner,size,dist));
+
+    //result
+    QVector<int> indexes;
+    indexes.push_back(CeilIncreaseSmallerEdge);
+    if(CeilIncreaseSmallerEdge != FloorDecreaseLargerEdge){
+        indexes.push_back(FloorDecreaseLargerEdge);
+    }
+    return indexes;
+}
+
+QVector<QPoint> BoxMap::coverDataCoords(const QRectF &entityBox)
+{
+    //行坐标集
+    QVector<int> rowIndexes = coverIndex(corner.y(),size.height(),dist.height(),entityBox.top(),entityBox.bottom());
+    //纵坐标集
+    QVector<int> colIndexes = coverIndex(corner.x(),size.width(),dist.width(),entityBox.left(),entityBox.right());
+    //组合
+    QVector<QPoint> coverCoords;
+    for(int r:rowIndexes){
+        for(int c:colIndexes){
+            coverCoords.push_back(QPoint(r,c));
+        }
+    }
+    return coverCoords;
 }
 
 void BoxMap::draw(QPainter &painter, bool isDebugMode)

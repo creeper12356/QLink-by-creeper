@@ -47,6 +47,7 @@ void Box::copyStyle(const Box *other)
 {
     this->head = other->head;
     this->breakSound = other->breakSound;
+    this->breakScore = other->breakScore;
     this->entityBox.setSize(other->entityBox.size());
     this->isMovable = other->isMovable;
 }
@@ -62,6 +63,11 @@ bool Box::setBreakSound(const QString &path)
 void Box::setBreakSoundVolume(qreal v)
 {
     breakSound->setVolume(v);
+}
+
+void Box::setBreakScore(int bs)
+{
+    breakScore = bs;
 }
 void Box::draw(QPainter &painter,bool isDebugMode)
 {

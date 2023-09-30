@@ -103,7 +103,7 @@ public:
 
 protected:
     void deleteBoxAt(const QPoint& pt);//从游戏中完全删除位于pt的箱子，被tryLink函数调用
-    void updateScore(Role* player,const LinkRoute* route);
+    int calculateScore(int size,int turn,int breakScore);//计算加分
     bool tryActivate(const QPoint &target, Box*& entityTarget, Role* player);//尝试激活方块
     bool tryDeactivate(const QPoint& target,Box*& entityTarget,Role* player);//尝试取消激活方块,返回是否更新isActivated字段
     void addRawRoute(LinkRoute*& route);//加入由updateScore生成的路径
@@ -116,8 +116,9 @@ protected:
     bool isHint() const;//判断是否处于提示状态
     void startHintTimer();
     void pauseHintTimer();
-    void clearHint();//清空所有提示记录
+    QVector<QPoint> clearHint();//清空所有提示记录，返回所有清空点坐标
     void updateHint();//更新提示
+    bool localHint(const QPoint& standPt);//给出相对于standPt的局部提示，被hint函数调用
 private slots:
     void movePlayer(Role* player);//与moveVector::monitor绑定，处理玩家的移动
     void clockTimeOutSlot();
@@ -157,6 +158,8 @@ private slots:
     void statePrinter();
     void on_shuffle_button_clicked();//按下shuffle按钮的槽函数
     void on_hint_button_clicked();//按下hint按钮的槽函数
+    void on_clear_button_clicked();
+    void on_win_button_clicked();//删除所有箱子并通关
 
 signals:
     void gameMainDeleted();//析构函数调用时发出

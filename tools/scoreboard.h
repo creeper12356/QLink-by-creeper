@@ -16,6 +16,10 @@ public:
     ScoreBoard& operator=(const ScoreBoard& other);
     ScoreBoard& operator+=(int aScore);
     ScoreBoard& operator-=(int mScore);
+
+    void add(int aScore);
+    void minus(int mScore);
+
     //getters
     int score() const;
     const Role* player() const;

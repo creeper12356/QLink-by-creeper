@@ -19,6 +19,11 @@ int Clock::getCurTime() const
     return index();
 }
 
+int Clock::getGameTime() const
+{
+    return this->fullIndex();
+}
+
 void Clock::setUpdateInterval(int interval)
 {
     this->updateInterval = interval;

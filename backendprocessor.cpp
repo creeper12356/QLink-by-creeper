@@ -165,7 +165,7 @@ bool BackendProcessor::checkLink(const QPoint &p1, const QPoint &p2,LinkRoute*& 
 
     QStack<Tile> sta;//深度优先遍历辅助栈
     LinkRoute route;//记录路径
-    bestRoute = new LinkRoute;//最短路径，存储在堆上，便于发送指针
+    bestRoute = new LinkRoute;//最短路径，存储在堆上
     int result = 0;//记录从p1到p2路径总数
 
     sta.push(startTile);
@@ -215,7 +215,6 @@ bool BackendProcessor::checkLink(const QPoint &p1, const QPoint &p2,LinkRoute*& 
             }
             else if(curTile.pos == p2)//找到终点
             {
-                //.test
                 route.rturn() = curTile.turn;
                 if(result == 0)
                 {
@@ -245,71 +244,74 @@ bool BackendProcessor::checkLink(const QPoint &p1, const QPoint &p2,LinkRoute*& 
     return true;
 }
 
-QPoint BackendProcessor::hintFrom(const QPoint &startPt) const
+QVector<QPoint> BackendProcessor::hintFrom(const QPoint &startPt) const
 {
+    QVector<QPoint> ans;
     Tile startTile;
-
     startTile.pos = startPt;
     startTile.depth = 0;
-
     QStack<Tile> sta;//深度优先遍历辅助栈
     LinkRoute route;//记录路径
 
     sta.push(startTile);
-
-    while(!sta.empty())
-    {
+    while(!sta.empty()){
         Tile lastTile = sta.pop();
         route.limitSize(lastTile.depth);
         route.appendNode(lastTile.pos,linkRoute::no_dir);
 
         //遍历四个方向搜寻
-        for(int i = 0;i <= 3;++i)
-        {
+        for(int i = 0;i <= 3;++i){
             QPoint curPt = entity::unitDisplacement(lastTile.pos,entity::dir(i));
-            if(!isGeneralizedLegal(curPt))//路径不满足广义合法
-            {
+            if(!isGeneralizedLegal(curPt)){//不满足广义合法
                 continue;
             }
-
             Tile curTile;
             curTile.pos = curPt;
             curTile.turn = lastTile.turn;
             curTile.dir = entity::dir(i);
             curTile.depth = lastTile.depth + 1;
-
             //上一个节点方向改变
-            if(lastTile.dir != curTile.dir)
-            {
+            if(lastTile.dir != curTile.dir){
                 ++curTile.turn;
             }
             //检查是否回退
-            if(entity::opsiteDir(lastTile.dir) == curTile.dir)
-            {
+            if(entity::opsiteDir(lastTile.dir) == curTile.dir){
                 continue;
             }
-
             //超过两次转弯不合法
-            if(curTile.turn > 2)
-            {
+            if(curTile.turn > 2){
                 continue;
             }
-
             //找到相邻的空节点
-            if(dataAt(curTile.pos) == null)
-            {
+            if(dataAt(curTile.pos) == null){
                 sta.push(curTile);
             }
             else if(dataAt(curTile.pos) == dataAt(startTile.pos) //找到可以连接的方块
-                    && !linkBoxes->getPtrDataAt(curTile.pos)->isLocked)//且未上锁
-            {
-                return curTile.pos;
+                    && !linkBoxes->getPtrDataAt(curTile.pos)->isLocked){//且未上锁
+                if(!ans.contains(curTile.pos)){
+                    ans.push_back(curTile.pos);
+                }
             }
         }
     }
-    //no endPt
-    return QPoint(-1,-1);
+    return ans;
 }
+
+void BackendProcessor::shuffleVector(QVector<QPoint> &targetVec) const
+{
+    int size = targetVec.size();
+    qreal factor = QRandomGenerator::global()->bounded(3.0) + 1;//1-3随机实数
+    qDebug() << "factor " << factor;
+    qDebug() << "shuffle for " << factor * size << " times.";
+    //随机交换factor * size 次
+    int times = factor * size;
+    for(int i = 1;i <= times ;++i){
+        int i1 = QRandomGenerator::global()->bounded(size),
+            i2 = QRandomGenerator::global()->bounded(size);
+        qSwap(targetVec[i1],targetVec[i2]);
+    }
+}
+
 QVector<QPoint> BackendProcessor::hint() const
 {
     QVector<QPoint> ans;
@@ -327,23 +329,74 @@ QVector<QPoint> BackendProcessor::hint() const
             }
         }
     }
-    //shuffle for times
-    for(int i = 0;i <= traversePos.size() - 1;++i){
-        int i1 = QRandomGenerator::global()->bounded(traversePos.size()),
-            i2 = QRandomGenerator::global()->bounded(traversePos.size());
-        qSwap(traversePos[i1],traversePos[i2]);
-    }
-    qDebug() << "traverPos" << traversePos;
+    shuffleVector(traversePos);
 
-    for(int i = 0;i <= traversePos.size() - 1;++i){
-        QPoint endPt = hintFrom(traversePos[i]);
-        if(endPt.x() != -1){
-            ans.push_back(traversePos[i]);
-            ans.push_back(endPt);
-            return ans;
+    for(const QPoint& startPt:traversePos){
+        QVector<QPoint> endPts = hintFrom(startPt);
+        if(!endPts.isEmpty()){
+            ans.push_back(startPt);
+            ans.push_back(endPts[0]);
+            break;
         }
     }
-    //no solve
+    return ans;
+}
+
+QVector<QPoint> BackendProcessor::hint(const QPoint &standPt) const
+{
+    QVector<QPoint> ans;
+
+    QVector<QPoint> reachablePts = reachableFrom(standPt);
+
+    //find solution
+    for(const QPoint& startPt:reachablePts){
+        QVector<QPoint> endPts = hintFrom(startPt);
+        for(const QPoint& endPt:endPts){
+            if(reachablePts.contains(endPt)){
+                ans.push_back(startPt);
+                ans.push_back(endPt);
+                return ans;
+            }
+        }
+    }
+    return ans;
+}
+
+QVector<QPoint> BackendProcessor::reachableFrom(const QPoint &startPt) const
+{
+    //边界情况，重定向到(-1,-1)
+    if(!isGeneralizedLegal(startPt)){
+        return reachableFrom(QPoint(-1,-1));
+    }
+    //using bfs traverse
+    QVector<QPoint> ans;
+    QQueue<QPoint> qu;
+    QVector<QPoint> visited;
+    qu.push_back(startPt);
+    QPoint cur;
+    while(!qu.empty()){
+        cur = qu.front();
+        qu.pop_front();
+        visited.push_back(cur);
+        //遍历四个方向
+        for(int i = 0;i <= 3;++i){
+            QPoint tar = entity::unitDisplacement(cur,entity::dir(i));
+            if(!isGeneralizedLegal(tar)){
+                continue;
+            }
+            if(visited.contains(tar)){
+                continue;
+            }
+            if(dataAt(tar) == null){
+                if(!qu.contains(tar)){
+                    qu.push_back(tar);
+                }
+            }
+            else{
+                    ans.push_back(tar);
+            }
+        }
+    }
     return ans;
 }
 

@@ -153,7 +153,7 @@ void GameMain::initGameClk(const Record &record)
                 settings->getLevels()[item][record.getCurLevel() - 1]
                 ->operator[]("basic").toObject()
                 ["gameTime"].toInt() * SECOND);//游戏总时间
-    qDebug() << "gametime" << record.getBasic().gameTime;
+
     gameClk->setTime(record.getBasic().gameTime * SECOND);
     gameClk->setGeometry(10,0,950,25);
     connect(gameClk,&Clock::timeout,this,&GameMain::clockTimeOutSlot);
@@ -258,14 +258,16 @@ void GameMain::paintEvent(QPaintEvent *event)
 }
 void GameMain::mousePressEvent(QMouseEvent *event)
 {
-    QPoint pos = event->pos() - background->getCorner();
-    qDebug() << pos;
+    QPointF pos = event->pos() - background->getCorner();
 
     if(!isDebugMode)
         return ;
     Role* player = players[0];
     player->setPos(pos);
-    repaint();
+    for(auto pt:processor->hintFrom(linkBoxes->posToDataCoord(pos))){
+        linkBoxes->getPtrDataAt(pt)->isHighlighted = true;
+    }
+    update();
 }
 void GameMain::mouseMoveEvent(QMouseEvent *event)
 {
@@ -392,17 +394,11 @@ void GameMain::deleteBoxAt(const QPoint &pt)
     //从linkBoxes中删除实体
     linkBoxes->removeBoxAt(pt);
     emit boxDeleted();
-
 }
 
-void GameMain::updateScore(Role *player, const LinkRoute *route)
+int GameMain::calculateScore(int size, int turn, int breakScore)
 {
-    int score = scoreBoards[player]->score();
-    qDebug() << "size:" << route->size();
-    qDebug() << "turn:" << route->turn();
-    qDebug() << "add: " << (route->size() + 1) * (route->turn() + 1);
-    score += (route->size() + 1) * (route->turn() + 1);//加分
-    scoreBoards[player]->setScore(score);//update scoreboard
+    return (size + 1) * (turn + 1) + breakScore;
 }
 
 bool GameMain::tryActivate(const QPoint& target,Box *&entityTarget, Role *player)
@@ -442,9 +438,11 @@ bool GameMain::tryDeactivate(const QPoint &target, Box *&entityTarget, Role *pla
 
 void GameMain::addRawRoute(LinkRoute *&route)
 {
+    //update route
     route->updateDir();
     route->removeFirst();
     route->removeLast();
+
     routes.push_back(route);
     QTimer::singleShot(routeLifeSpan * SECOND,this,[this,route]//定时消除路径
     {
@@ -491,8 +489,7 @@ void GameMain::repaintSlot()
 }
 bool GameMain::tryLink(Role *player)
 {
-    if(activatedBoxes[player].size() != 2)
-    {
+    if(activatedBoxes[player].size() != 2){
         return false;
     }
     QPoint frontPt = activatedBoxes[player].front();
@@ -513,7 +510,9 @@ bool GameMain::tryLink(Role *player)
     frontBox->isLocked = true;
     backBox->isLocked = true;
     addRawRoute(route);
-    updateScore(player,route);
+    scoreBoards[player]->add(calculateScore(route->size(),
+                                            route->turn(),
+                                            frontBox->getBreakScore()));
     for(auto& p:players)
     {
         activatedBoxes[p].removeAll(frontPt);
@@ -558,7 +557,7 @@ void GameMain::processPropBoxTarget(const QPoint &target,Box*& entityTarget, Rol
     //技能函数
     propBox->execProp(this,player);
     //update score
-    scoreBoards[player]->setScore(scoreBoards[player]->score() + QRandomGenerator::global()->bounded(10));
+    scoreBoards[player]->add(entityTarget->getBreakScore());
     //删除箱子
     deleteBoxAt(target);
 }
@@ -579,8 +578,9 @@ void GameMain::pauseHintTimer()
     hintTimer.stop();
 }
 
-void GameMain::clearHint()
+QVector<QPoint> GameMain::clearHint()
 {
+    QVector<QPoint> cleared(hintBoxes);
     for(auto& pt:hintBoxes)
     {
         if(linkBoxes->getPtrDataAt(pt) != nullptr)
@@ -589,16 +589,33 @@ void GameMain::clearHint()
         }
     }
     hintBoxes.clear();
+    return cleared;
 }
 
 void GameMain::updateHint()
 {
-    clearHint();
+    QVector<QPoint> cleared = clearHint();
     //新的提示
     if(isHint())
     {
-        on_hint_button_clicked();
+        if(!cleared.empty()){
+            localHint(cleared[0]);
+        }
     }
+}
+
+bool GameMain::localHint(const QPoint &standPt)
+{
+    hintBoxes = processor->hint(standPt);
+    if(hintBoxes.size() != 2){
+        return false;
+    }
+
+    //change highlight state
+    linkBoxes->getPtrDataAt(hintBoxes.at(0))->isHighlighted = true;
+    linkBoxes->getPtrDataAt(hintBoxes.at(1))->isHighlighted = true;
+    update();
+    return true;
 }
 
 void GameMain::addTime(Role *player)
@@ -616,13 +633,11 @@ void GameMain::shuffle(Role* player)
 void GameMain::hint(Role *player)
 {
     qDebug() << "hint";
-    if(isHint())//已经处于提示状态
-    {
+    if(isHint()){//已经处于提示状态
         hintTimer.stop();
     }
     else{
-        //技能函数
-        on_hint_button_clicked();
+        localHint(linkBoxes->coverDataCoords(player->getEntityBox())[0]);//note：玩家至少覆盖一个方块
     }
     startHintTimer();
 }
@@ -747,4 +762,37 @@ void GameMain::on_hint_button_clicked()
     linkBoxes->getPtrDataAt(hintBoxes.at(0))->isHighlighted = true;
     linkBoxes->getPtrDataAt(hintBoxes.at(1))->isHighlighted = true;
     update();
+}
+
+void GameMain::on_clear_button_clicked()
+{
+    //clear all effects of all boxes
+    for(auto& box:boxes){
+        if(box->isLocked && Box::typeToDivision(box->getBoxType()) == box::plain_box){
+            box->isLocked = false;
+        }
+        if(box->isActivated){
+            box->isActivated = false;
+        }
+        if(box->isHighlighted){
+            box->isHighlighted = false;
+        }
+    }
+    for(auto& player:players){
+        activatedBoxes[player].clear();
+    }
+    update();
+}
+
+void GameMain::on_win_button_clicked()
+{
+    for(int i = 0;i <= linkBoxes->getHScale() - 1;++i){
+        for(int j = 0;j <= linkBoxes->getWScale() - 1;++j){
+            if(linkBoxes->getDataAt(i,j) != null){
+                removeBox(linkBoxes->getPtrDataAt(i,j));
+                linkBoxes->removeBoxAt(i,j);
+            }
+        }
+    }
+    emit boxDeleted();
 }

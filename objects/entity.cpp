@@ -1,8 +1,6 @@
 #include "entity.h"
 #include "widgets/gamemain.h"
 
-#define EPS 1e-8//比较浮点数时的精度
-
 entity::dir entity::opsiteDir(entity::dir d)
 {
     if(d == entity::up)
@@ -46,6 +44,23 @@ QPoint entity::unitDisplacement(const QPoint& staPt,entity::dir d)
         ++terPt.ry();
     }
     return terPt;
+}
+QPointF entity::pureMove(const QPointF& originPt,entity::dir dir,qreal step)
+{
+    QPointF terminalPt(originPt);
+    if(dir == up){
+        terminalPt.ry() -= step;
+    }
+    else if(dir == down){
+        terminalPt.ry() += step;
+    }
+    else if(dir == left){
+        terminalPt.rx() -= step;
+    }
+    else{
+        terminalPt.rx() += step;
+    }
+    return terminalPt;
 }
 Entity::Entity()
 {

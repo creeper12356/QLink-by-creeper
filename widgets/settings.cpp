@@ -23,9 +23,11 @@ Settings::~Settings()
     writeCtrlSettings();
     writeAudioSettings();
 
-    for(auto obj:roles)
-    {
+    for(auto obj:roles){
         delete obj;
+    }
+    for(auto box:boxes){
+        delete box;
     }
     for(auto& item:levels)
     {
@@ -88,14 +90,23 @@ void Settings::readBoxData()
     reader.setFileName("settings/boxes/boxlist.json");
     reader.open(QIODevice::ReadOnly);
     auto jArray = QJsonDocument::fromJson(reader.readAll()).array();
-
-    //读取每个箱子对应的id
-    int jSize = jArray.size();
-    for(int i = 0;i <= jSize - 1;++i)
-    {
-        boxes.append(jArray.at(i).toString());
-    }
     reader.close();
+
+    QJsonObject* handle;
+    //读取每个箱子data
+    for(auto id:jArray){
+        handle = new QJsonObject;
+        handle->insert("id",id);
+        reader.setFileName("settings/boxes/" + id.toString() + ".json");
+        reader.open(QIODevice::ReadOnly);
+        //merge object
+        QJsonObject box = QJsonDocument::fromJson(reader.readAll()).object();
+        reader.close();
+        for(const auto& key:box.keys()){
+            handle->insert(key,box[key]);
+        }
+        boxes.push_back(handle);
+    }
 }
 void Settings::readLevelData()
 {

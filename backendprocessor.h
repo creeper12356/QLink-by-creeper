@@ -17,7 +17,6 @@ private:
 
     BoxMap* linkBoxes;//前端
 
-    bool isLegal(const QPoint& pt) const;//判断数组行列是否合法（不越界）
     bool isGeneralizedLegal(const QPoint& pt) const;//判断数组行列是否广义合法（合法+周围一圈）
     type dataAt(int x,int y)const;
     type dataAt(const QPoint& pt) const;
@@ -27,6 +26,8 @@ public:
     BackendProcessor(const Record& record);//用于测试，从record中初始化backendProcessor对象
     BackendProcessor(BoxMap* lkBoxes);
     ~BackendProcessor(){}
+
+    bool isLegal(const QPoint& pt) const;//判断数组行列是否合法（不越界）
 
     void init2DArray();//用于测试，分配二维数组动态内存
     void load(type** d,int w,int h);//加载二维数组
@@ -40,9 +41,16 @@ public:
 
     //返回位于p1,p2的箱子能否消除，如果不能，将bestRoute置nullptr,若能，bestRoute指向堆空间的动态对象，表示最短路径
     bool checkLink(const QPoint& p1, const QPoint& p2, LinkRoute *&bestRoute) const;
-    //选择一个出发点（StartPt)，返回一个可连接的结束点(EndPt)，若不存在返回(-1,-1)
-    QPoint hintFrom(const QPoint& startPt) const;
-    QVector<QPoint> hint() const;//提示功能
+
+    //选择一个出发点（startPt)，返回所有可以连线的方块坐标
+    QVector<QPoint> hintFrom(const QPoint& startPt) const;
+protected:
+    void shuffleVector(QVector<QPoint>& targetVec) const;//随机打乱targetVec
+public:
+    QVector<QPoint> hint() const;//全局提示之一
+    QVector<QPoint> hint(const QPoint& standPt) const;//给出对于standPt可达的局部提示之一
+    //选择一个出发点（StartPt)，返回所有可以到达(reach)的方块坐标
+    QVector<QPoint> reachableFrom(const QPoint& startPt) const;
     bool isSolvable() const;//判断当前地图是否有解
 signals:
 };

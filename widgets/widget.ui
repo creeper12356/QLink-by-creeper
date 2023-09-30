@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Widget</string>
+   <string>游戏</string>
   </property>
   <widget class="QPushButton" name="shuffle_button">
    <property name="geometry">
@@ -56,6 +56,32 @@
    </property>
    <property name="text">
     <string>信息</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="clear_button">
+   <property name="geometry">
+    <rect>
+     <x>860</x>
+     <y>190</y>
+     <width>89</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>clear</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="win_button">
+   <property name="geometry">
+    <rect>
+     <x>860</x>
+     <y>230</y>
+     <width>89</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>win</string>
    </property>
   </widget>
  </widget>

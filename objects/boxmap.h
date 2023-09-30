@@ -48,6 +48,22 @@ public:
     QPointF boxPosAtData(int i,int j);//计算data[i][j]对应箱子实体的坐标
     QRectF rectAt(int i,int j);//返回boxMap位于data[i][j]对应的矩形
 
+    QPoint posToDataCoord(const QPointF& pos);//如果不区分返回值(-1,-1) 是否为缝隙，可以使用此重载
+    QPoint posToDataCoord(const QPointF& pos,bool* ok);//实体点坐标所在的boxMap箱子的行列坐标（不一定合法），ok传出是否有对应坐标
+private:
+    //to be renamed...
+    qreal smallerEdge(const qreal& pos,const qreal& corner,const qreal& size,const qreal& dist) const;
+    qreal largerEdge(const qreal& pos,const qreal& corner,const qreal& size,const qreal& dist) const;
+
+    int calculateIndex(const qreal& pos,const qreal& corner,const qreal& size,const qreal& dist,bool *ok) const;//posToDataCoord调用的抽象函数
+    //给定一维下的参数，以及从min到max的范围（要求min < max），判断该范围覆盖的方块index，并返回
+    QVector<int> coverIndex(const qreal& corner,const qreal& size,const qreal& dist,qreal min,qreal max);
+
+public:
+    //返回矩形entityBox在boxMap中覆盖到的所有箱子行列坐标的容器
+    QVector<QPoint> coverDataCoords(const QRectF& entityBox);
+public:
+
     //接口函数
     int getWScale() const{return wScale;}
     int getHScale() const{return hScale;}

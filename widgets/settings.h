@@ -13,7 +13,7 @@ class Settings : public QWidget
     Q_OBJECT
 private:
     QVector<QJsonObject*> roles;//玩家基本设置
-    QStringList boxes;//箱子 基本设置
+    QVector<QJsonObject*> boxes;
     QMap<QString,QVector<QJsonObject*>> levels;//关卡基本设置
 public:
     explicit Settings(QWidget *parent = nullptr);
@@ -21,7 +21,7 @@ public:
 
     const Ui::Settings* getUi() const{return ui;}
     const QVector<QJsonObject*>& getRoles()const{return roles;}
-    const QStringList& getBoxes() const{return boxes;}
+    const QVector<QJsonObject*>& getBoxes() const{return boxes;}
     const QMap<QString,QVector<QJsonObject*>>& getLevels() const{return levels;}
     const QVector<QJsonObject *> getLevelsInMode(gameMain::gameMode mode) const;
 
