@@ -244,6 +244,14 @@ bool BackendProcessor::checkLink(const QPoint &p1, const QPoint &p2,LinkRoute*& 
     return true;
 }
 
+bool BackendProcessor::checkLink(const QPoint &p1, const QPoint &p2) const
+{
+    LinkRoute* route = nullptr;
+    bool result = checkLink(p1,p2,route);
+    delete route;
+    return result;
+}
+
 QVector<QPoint> BackendProcessor::hintFrom(const QPoint &startPt) const
 {
     QVector<QPoint> ans;
