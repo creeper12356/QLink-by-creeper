@@ -19,9 +19,11 @@ GameMain::GameMain(QWidget *parent, Settings *&s, Record &record)
     initHintTimer();
 
     this->start();//开始游戏
+    connect(this,&GameMain::boxDeleted,this,&GameMain::boxDeletedSlot);
+
     //测试计时器
-    connect(this,&GameMain::boxDeleted,this,&GameMain::statePrinter);
-    testTimer.start(100);
+    connect(&testTimer,&QTimer::timeout,this,&GameMain::statePrinter);
+    testTimer.start(10);
 }
 
 GameMain::~GameMain()
@@ -699,7 +701,7 @@ void GameMain::saveGameToRecord()
     qDebug() << "complete save.";
 }
 //测试更新函数
-void GameMain::statePrinter()
+void GameMain::boxDeletedSlot()
 {
     if(this->isWin())
     {
@@ -795,4 +797,9 @@ void GameMain::on_win_button_clicked()
         }
     }
     emit boxDeleted();
+}
+
+void GameMain::statePrinter() const
+{
+
 }
