@@ -32,7 +32,7 @@
     <string>单人游戏</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="multi_player_button">
+  <widget class="BetterButton" name="multi_player_button">
    <property name="geometry">
     <rect>
      <x>230</x>
@@ -51,7 +51,7 @@
     <string>多人游戏</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="exit_button">
+  <widget class="BetterButton" name="exit_button">
    <property name="geometry">
     <rect>
      <x>230</x>
@@ -70,7 +70,7 @@
     <string>退出游戏</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="set_button">
+  <widget class="BetterButton" name="set_button">
    <property name="geometry">
     <rect>
      <x>230</x>

@@ -4,11 +4,15 @@
 
 class BetterButton:public QPushButton
 {
+private:
+    QSequentialAnimationGroup jump;
 public:
     BetterButton(QWidget* parent = nullptr);
+    ~BetterButton();
 protected:
-    void mouseMoveEvent(QMouseEvent *) override;
-    bool event(QEvent *e) override;
+    bool event(QEvent* event) override;
+    void mousePressEvent(QMouseEvent *)override;
+    void resizeEvent(QResizeEvent*) override;
 };
 
 #endif // BETTERBUTTON_H
