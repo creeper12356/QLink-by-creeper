@@ -28,10 +28,6 @@ bool BetterButton::event(QEvent *event)
 {
     if(event->type() == QEvent::HoverEnter){
         jump.start();
-        return true;
-    }
-    else if(event->type() == QEvent::HoverLeave){
-        return true;
     }
     return QPushButton::event(event);
 }

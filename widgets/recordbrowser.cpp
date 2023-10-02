@@ -47,21 +47,6 @@ void RecordBrowser::updateText()
         dynamic_cast<RecordItem*>(ui->recordList->item(i))->updateText();
     }
 }
-void RecordBrowser::on_recordList_currentRowChanged(int currentRow)
-{
-    for(int i = 0;i <= ui->recordList->count() - 1;++i)
-    {
-        if(i != currentRow)
-        {
-            ui->recordList->item(i)->setBackground(QColor(0,200,100,180));
-        }
-        else
-        {
-            ui->recordList->item(i)->setBackground(QColor(255,255,0));
-        }
-    }
-}
-
 void RecordBrowser::closeEvent(QCloseEvent *event)
 {
     emit browserClosed();
@@ -75,9 +60,33 @@ void RecordBrowser::keyPressEvent(QKeyEvent *event)
 }
 
 
+
 void RecordBrowser::on_recordList_itemEntered(QListWidgetItem *item)
 {
-    ui->recordList->setCurrentItem(item);
+    for(int i = 0;i <= ui->recordList->count() - 1;++i)
+       {
+           if(i == ui->recordList->currentRow()){
+               ui->recordList->item(i)->setBackground(CHOSEN_COLOR);
+           }
+           else if(ui->recordList->item(i) == item)
+           {
+               item->setBackground(HOVER_COLOR);
+           }
+           else
+           {
+               ui->recordList->item(i)->setBackground(NORMAL_COLOR);
+           }
+    }
+}
+
+void RecordBrowser::on_recordList_itemActivated(QListWidgetItem *item)
+{
+    emit recordEntered(dynamic_cast<RecordItem*>(item)->getRecord());//发出待加载存档的信号
+    for(int i = 0;i <= ui->recordList->count() - 1;++i)
+    {
+        ui->recordList->item(i)->setBackground(QColor(0,200,100,180));
+    }
+    this->hide();//必须使用hide,若使用close会重新召回主页面
 }
 
 void RecordBrowser::showEvent(QShowEvent *event)
@@ -124,17 +133,23 @@ void RecordBrowser::on_delete_record_button_clicked()
     delete delItem;
 }
 
-void RecordBrowser::on_recordList_itemActivated(QListWidgetItem *item)
-{
-    emit recordEntered(dynamic_cast<RecordItem*>(item)->getRecord());//发出待加载存档的信号
-    for(int i = 0;i <= ui->recordList->count() - 1;++i)
-    {
-        ui->recordList->item(i)->setBackground(QColor(0,200,100,180));
-    }
-    this->hide();//必须使用hide,若使用close会重新召回主页面
-}
 
 void RecordBrowser::on_cancel_button_clicked()
 {
     this->close();
+}
+
+void RecordBrowser::on_recordList_itemClicked(QListWidgetItem *item)
+{
+    ui->recordList->setCurrentItem(item);
+}
+
+void RecordBrowser::on_recordList_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
+{
+    if(current){
+        current->setBackground(CHOSEN_COLOR);
+    }
+    if(previous){
+        previous->setBackground(NORMAL_COLOR);
+    }
 }
