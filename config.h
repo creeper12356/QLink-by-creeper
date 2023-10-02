@@ -45,6 +45,8 @@
 #include <QLabel>
 #include <QMessageBox>
 
+#include <QPropertyAnimation>
+
 #include <QRandomGenerator>
 #include <QTimer>
 #include <QtMath>

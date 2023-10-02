@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>QLink</string>
   </property>
-  <widget class="QPushButton" name="single_player_button">
+  <widget class="BetterButton" name="single_player_button">
    <property name="geometry">
     <rect>
      <x>230</x>
@@ -90,6 +90,13 @@
    </property>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>BetterButton</class>
+   <extends>QPushButton</extends>
+   <header>tools/betterbutton.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
