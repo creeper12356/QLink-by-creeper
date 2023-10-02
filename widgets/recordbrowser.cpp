@@ -16,7 +16,7 @@ RecordBrowser::RecordBrowser(QWidget *parent, Settings *&sts) :
         {
             continue;
         }
-        ui->recordList->addItem(new RecordItem
+        items.append(new RecordItem
                                 (dir.path() + "/" + recordName,
                                 QFileInfo(recordName).baseName()));
     }
@@ -24,18 +24,27 @@ RecordBrowser::RecordBrowser(QWidget *parent, Settings *&sts) :
 
 RecordBrowser::~RecordBrowser()
 {
+    for(auto item:items){
+        delete item;
+    }
     delete ui;
+}
+
+void RecordBrowser::removeAllItems()
+{
+    while(ui->recordList->count() > 0){
+        ui->recordList->takeItem(0);
+    }
 }
 
 void RecordBrowser::filterRecord(gameMode mode)
 {
-    for(int i = 0;i <= ui->recordList->count() - 1;++i)
-    {
-        ui->recordList->item(i)->setHidden(
-                    dynamic_cast<RecordItem*>
-                    (ui->recordList->item(i))->getMode()!= mode);
+    for(auto item:items){
+        if(dynamic_cast<RecordItem*>(item)->getMode() == mode)//游戏模式匹配
+        {
+            ui->recordList->addItem(item);
+        }
     }
-    ui->recordList->setCurrentRow(-1);
     this->filterMode = mode;
 }
 
@@ -81,11 +90,8 @@ void RecordBrowser::on_recordList_itemEntered(QListWidgetItem *item)
 
 void RecordBrowser::on_recordList_itemActivated(QListWidgetItem *item)
 {
+    removeAllItems();
     emit recordEntered(dynamic_cast<RecordItem*>(item)->getRecord());//发出待加载存档的信号
-    for(int i = 0;i <= ui->recordList->count() - 1;++i)
-    {
-        ui->recordList->item(i)->setBackground(QColor(0,200,100,180));
-    }
     this->hide();//必须使用hide,若使用close会重新召回主页面
 }
 
@@ -117,18 +123,27 @@ void RecordBrowser::newRecord(QString recordName)
 
     RecordItem* newItem = new RecordItem("records/" + recordName + ".json",recordName);
     newItem->getRecord().readFromSettings(settings,getFilterMode(),1);//start from level 1
+    items.append(newItem);
     ui->recordList->addItem(newItem);
     this->updateText();
 }
 
 void RecordBrowser::on_delete_record_button_clicked()
 {
-    RecordItem* delItem = dynamic_cast<RecordItem*>
-            (ui->recordList->takeItem(ui->recordList->currentRow()));
-    if(delItem == nullptr)
+    int currentRow = ui->recordList->currentRow();
+    qDebug() << "currentRow: " << currentRow;
+    if(currentRow < 0)
     {
         return ;
     }
+    //record chosen
+    QString warningText = "你确定要删除这个存档吗？\n存档将会永久消失！（真的很久！）";
+    auto button = QMessageBox::warning(this,"警告",warningText,QMessageBox::Yes|QMessageBox::No);
+    if(button != QMessageBox::Yes){
+        return ;
+    }
+    RecordItem* delItem = dynamic_cast<RecordItem*>(ui->recordList->takeItem(currentRow));
+    items.removeOne(delItem);
     delItem->getRecord().setIsDeleted(true);
     delete delItem;
 }
@@ -136,6 +151,7 @@ void RecordBrowser::on_delete_record_button_clicked()
 
 void RecordBrowser::on_cancel_button_clicked()
 {
+    removeAllItems();
     this->close();
 }
 
