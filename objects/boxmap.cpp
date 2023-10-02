@@ -191,9 +191,9 @@ QVector<int> BoxMap::coverIndex(const qreal &corner, const qreal &size, const qr
     Q_ASSERT(min < max);
 
     //min增大方向第一个smallerEdge
-    int CeilIncreaseSmallerEdge = qCeil(smallerEdge(min,corner,size,dist));
+    int CeilIncreaseSmallerEdge = qCeil(smallerEdge(min,corner,size,dist) + EPS);
     //max减小方向第一个largerEdge
-    int FloorDecreaseLargerEdge = qFloor(largerEdge(max,corner,size,dist));
+    int FloorDecreaseLargerEdge = qFloor(largerEdge(max,corner,size,dist) - EPS);
 
     //result
     QVector<int> indexes;

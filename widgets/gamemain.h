@@ -154,12 +154,14 @@ protected:
     QTimer testTimer;//测试计时器
     bool isDebugMode = false;//测试模式
 private slots:
-    //仅用于测试，实时打印一些信息。
-    void statePrinter();
+    void boxDeletedSlot();
     void on_shuffle_button_clicked();//按下shuffle按钮的槽函数
     void on_hint_button_clicked();//按下hint按钮的槽函数
     void on_clear_button_clicked();
     void on_win_button_clicked();//删除所有箱子并通关
+
+    //for test.
+    void statePrinter() const;
 
 signals:
     void gameMainDeleted();//析构函数调用时发出
