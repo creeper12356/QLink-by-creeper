@@ -12,9 +12,6 @@ WelcomePage::WelcomePage(QWidget* parent) :
     settings = new Settings();
     initBrowser();
 
-    bgmPlayer = new QMediaPlayer(this);
-    bgmPlayer->setMedia(QUrl("audios/LivingMice.mp3"));
-
     QPalette palette;
     palette.setBrush(QPalette::Background, QColor(0,200,180,255));
     this->setPalette(palette);
@@ -58,8 +55,6 @@ void WelcomePage::loadNewGame(Record &record)
 void WelcomePage::startNewGame(Record &record)
 {
     loadNewGame(record);
-    bgmPlayer->setVolume(settings->getUi()->bgm_audio_slider->value());
-    bgmPlayer->play();
     gm->show();
     this->close();
 }
@@ -172,7 +167,6 @@ void WelcomePage::recordEnteredSlot(Record &record)
 void WelcomePage::gameMainDeletedSlot()
 {
     menu->winnerBoard()->setPlayer(nullptr);
-    bgmPlayer->stop();
 }
 
 void WelcomePage::keyPressEvent(QKeyEvent *event)
