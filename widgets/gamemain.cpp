@@ -559,7 +559,7 @@ bool GameMain::tryLink(Role *player)
 }
 bool GameMain::isWin() const
 {
-    if(boxes.size() == 0)//没有方块
+    if(linkBoxes->getPlainBoxes().size() == 0)//没有普通方块
     {
         qDebug() << "win!";
         return true;
@@ -652,7 +652,33 @@ void GameMain::addTime(Role *player)
 void GameMain::shuffle(Role* player)
 {
     qDebug() << "shuffle";
-    on_shuffle_button_clicked();
+    //清除所有玩家的箱子选中记录
+    for(auto player:players)
+    {
+        for(auto pt:activatedBoxes[player])
+        {
+            linkBoxes->getPtrDataAt(pt)->isActivated = false;
+        }
+        activatedBoxes[player].clear();
+    }
+    //如果原来有提示，则重新刷新提示
+    if(!hintBoxes.isEmpty())
+    {
+        clearHint();
+    }
+    //后端洗牌
+    processor->shuffle((linkBoxes->getWScale() * linkBoxes->getHScale() - boxes.size() + 1) * 10);
+
+    //如果处于提示状态，更新洗牌后的提示
+    if(isHint())
+    {
+        //提示权转换至触发shuffle的玩家
+        localHint(linkBoxes->coverDataCoords(player->getEntityBox())[0]);
+    }
+    //重画
+    update();
+
+    this->setFocus();
 
 }
 
@@ -748,31 +774,7 @@ void GameMain::boxDeletedSlot()
 
 void GameMain::on_shuffle_button_clicked()
 {
-    //清除所有玩家的箱子选中记录
-    for(auto player:players)
-    {
-        for(auto pt:activatedBoxes[player])
-        {
-            linkBoxes->getPtrDataAt(pt)->isActivated = false;
-        }
-        activatedBoxes[player].clear();
-    }
-    //如果原来有提示，则重新刷新提示
-    if(!hintBoxes.isEmpty())
-    {
-        clearHint();
-    }
-    //后端洗牌
-    processor->shuffle((linkBoxes->getWScale() * linkBoxes->getHScale() - boxes.size() + 1) * 10);
-
-    //如果处于提示状态，更新洗牌后的提示
-    if(isHint())
-    {
-        on_hint_button_clicked();
-    }
-    //重画
-    update();
-
+    shuffle(players[0]);
     this->setFocus();
 }
 
@@ -809,6 +811,7 @@ void GameMain::on_clear_button_clicked()
         activatedBoxes[player].clear();
     }
     update();
+    this->setFocus();
 }
 
 void GameMain::on_win_button_clicked()
@@ -816,7 +819,15 @@ void GameMain::on_win_button_clicked()
     emit gameWin(scoreBoards[players[0]]);
 }
 
-void GameMain::statePrinter() const
+void GameMain::statePrinter()
 {
-
+    if(QRandomGenerator::global()->bounded(500) == 9){//p == 0.002
+        if(!linkBoxes->getNullBoxes().empty()){
+            addBoxAt(linkBoxes->getNullBoxes()[
+                     QRandomGenerator::global()->bounded(
+                        linkBoxes->getNullBoxes().size())]
+                    ,box::type(QRandomGenerator::global()->bounded(5) + 8));
+            update();
+        }
+    }
 }
