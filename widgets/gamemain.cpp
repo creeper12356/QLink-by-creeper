@@ -853,24 +853,5 @@ void GameMain::on_win_button_clicked()
 
 void GameMain::statePrinter()
 {
-<<<<<<< HEAD
 
-=======
-    if(QRandomGenerator::global()->bounded(100) == 90){//p == 0.002
-        qDebug() << "generate.";
-        QVector<QPoint> nullBoxes = linkBoxes->getNullBoxes();
-        for(auto player:players){
-            for(auto pt:linkBoxes->coverDataCoords(player->getEntityBox())){
-                nullBoxes.removeOne(pt);
-            }
-        }
-        if(!nullBoxes.empty()){
-            addBoxAt(nullBoxes[
-                     QRandomGenerator::global()->bounded(
-                        nullBoxes.size())]
-                    ,box::ender_pearl);
-            update();
-        }
-    }
->>>>>>> master
 }
