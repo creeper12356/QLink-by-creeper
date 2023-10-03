@@ -37,7 +37,8 @@ protected:
     QVector<QPoint> hintBoxes;//处于提示状态（高亮状态）箱子对应的坐标 容器
     QMap<Role*,ScoreBoard*> scoreBoards;//分数板
 
-    Clock* gameClk;
+    Clock* gameClk;//游戏倒计时
+    QTimer propGeneratorTimer;//产生道具箱子计时器
 
     //标签
     gameMode mode;
@@ -48,6 +49,9 @@ protected:
     qreal hintTime = 10;//提示时间(s)
     int monitorInterval = 5;//玩家运动监听器监听周期(ms)
     qreal routeLifeSpan = 0.3;//路径存在时间（s）
+
+    qreal minGenerateInterval = 3.0;//最小生成箱子间隔(s)
+    qreal maxGenerateInterval = 3.1;//最大生成箱子间隔(s)
 
     //hint相关
     QTimer hintTimer;//游戏提示计时器
@@ -77,6 +81,7 @@ protected:
     void initProcessor();//初始化后端处理器,必须在initLinkBoxes之后调用
     void initGameClk(const Record& record);
     void initHintTimer();//初始化提示计时器
+    void initPropGeneratorTimer();
 
 public:
     //接口函数
@@ -126,6 +131,7 @@ protected:
 private slots:
     void movePlayer(Role* player);//与moveVector::monitor绑定，处理玩家的移动
     void clockTimeOutSlot();
+    void planNextGenerate();
     void repaintSlot();//重画槽函数
 
 protected:

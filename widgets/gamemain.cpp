@@ -2,7 +2,7 @@
 #include "ui_widget.h"
 #include "ui_settings.h"
 #include "record.h"
-
+#define RANDOM_GENERATE_INTERVAL RANDOM_BETWEEN(minGenerateInterval,maxGenerateInterval) * SECOND
 GameMain::GameMain(QWidget *parent, Settings *&s, Record &record)
     :QWidget(parent)
     ,ui(new Ui::Widget)
@@ -17,6 +17,7 @@ GameMain::GameMain(QWidget *parent, Settings *&s, Record &record)
     initProcessor();
     initGameClk(record);
     initHintTimer();
+    initPropGeneratorTimer();
 
     this->start();//开始游戏
     connect(this,&GameMain::boxDeleted,this,&GameMain::boxDeletedSlot);
@@ -171,6 +172,13 @@ void GameMain::initHintTimer()
        clearHint();
        repaintSlot();
     });
+}
+
+void GameMain::initPropGeneratorTimer()
+{
+    propGeneratorTimer.setInterval(RANDOM_GENERATE_INTERVAL);
+    propGeneratorTimer.setSingleShot(true);
+    connect(&propGeneratorTimer,&QTimer::timeout,this,&GameMain::planNextGenerate);
 }
 void GameMain::keyPressEvent(QKeyEvent *event)
 {
@@ -365,6 +373,8 @@ void GameMain::start()
             player->startFreezeTimer();
         }
     }
+    qDebug() << "remaining: " << propGeneratorTimer.interval();
+    propGeneratorTimer.start();
 }
 
 void GameMain::pause()
@@ -387,6 +397,8 @@ void GameMain::pause()
     {
         pauseHintTimer();
     }
+    propGeneratorTimer.setInterval(propGeneratorTimer.remainingTime());
+    propGeneratorTimer.stop();
 }
 
 bool GameMain::addBoxAt(QPoint pt, type type)
@@ -506,6 +518,26 @@ void GameMain::clockTimeOutSlot()
     gameClk->pause();
     emit gameTimeout();
     this->hide();
+}
+
+void GameMain::planNextGenerate()
+{
+    //to generate
+    qDebug() << "generate.";
+    QVector<QPoint> nullBoxes = linkBoxes->getNullBoxes();
+    for(auto player:players){
+        for(auto pt:linkBoxes->coverDataCoords(player->getEntityBox())){
+            nullBoxes.removeOne(pt);
+        }
+    }
+    if(!nullBoxes.empty()){
+        addBoxAt(nullBoxes[
+                 QRandomGenerator::global()->bounded(
+                    nullBoxes.size())]
+                ,box::ender_pearl);
+        update();
+    }
+    propGeneratorTimer.start(RANDOM_GENERATE_INTERVAL);
 }
 void GameMain::repaintSlot()
 {
@@ -818,20 +850,5 @@ void GameMain::on_win_button_clicked()
 
 void GameMain::statePrinter()
 {
-    if(QRandomGenerator::global()->bounded(10) == 9){//p == 0.002
-        QVector<QPoint> nullBoxes = linkBoxes->getNullBoxes();
-        for(auto player:players){
-            for(auto pt:linkBoxes->coverDataCoords(player->getEntityBox())){
-                nullBoxes.removeOne(pt);
-            }
-        }
-        if(!nullBoxes.empty()){
-            addBoxAt(nullBoxes[
-                     QRandomGenerator::global()->bounded(
-                        nullBoxes.size())]
-                    ,box::ender_pearl);
-            update();
-        }
-    }
-    qDebug() << hintBoxes;
+
 }
