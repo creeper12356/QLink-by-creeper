@@ -27,6 +27,10 @@ protected:
     Settings*& settings;//游戏设置
     //archive
     QVector<Box*> boxes;//箱子档案
+    //assistant data
+    QVector<QPoint> nullBoxes;//无方块坐标
+    QVector<QPoint> plainBoxes;//普通箱子坐标
+    QVector<QPoint> propBoxes;//道具箱子坐标
 
 public:
     BoxMap(Settings*& sts,const Record& record);
@@ -42,8 +46,10 @@ private:
 public:
     //实体交互
     void generateEntities(GameMain* parent);//在窗口parent中根据boxMap参数生成实体
-    void removeBoxAt(QPoint pt);//删除pt处的箱子
-    void removeBoxAt(int x,int y);
+    bool addBoxAt(const QPoint& pt, box::type type);//在pt处加入箱子（type） ，返回是否加入成功
+    bool addBoxAt(int x,int y,box::type type);//重载
+    bool removeBoxAt(QPoint pt);//删除pt处的箱子，返回是否删除成功
+    bool removeBoxAt(int x,int y);//重载
     bool swapEntityBox(const QPoint& p1,const QPoint& p2);
     QPointF boxPosAtData(int i,int j);//计算data[i][j]对应箱子实体的坐标
     QRectF rectAt(int i,int j);//返回boxMap位于data[i][j]对应的矩形
@@ -80,6 +86,11 @@ public:
     BackendProcessor* getProcessor(){return processor;}
 
     QVector<Box*>& getBoxes() {return boxes;}
+
+    const QVector<QPoint>& getNullBoxes() const{return nullBoxes;}
+    const QVector<QPoint>& getPlainBoxes() const{return plainBoxes;}
+    const QVector<QPoint>& getPropBoxes() const{return propBoxes;}
+
 public:
     void draw(QPainter& painter,bool isDebugMode);    
 };

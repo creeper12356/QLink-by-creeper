@@ -22,7 +22,6 @@ private:
     type dataAt(const QPoint& pt) const;
 
 public:
-    BackendProcessor();
     BackendProcessor(const Record& record);//用于测试，从record中初始化backendProcessor对象
     BackendProcessor(BoxMap* lkBoxes);
     ~BackendProcessor(){}
