@@ -102,7 +102,11 @@ public:
     void pause();//暂停游戏
 
 protected:
-    void deleteBoxAt(const QPoint& pt);//从游戏中完全删除位于pt的箱子，被tryLink函数调用
+    bool addBoxAt(QPoint pt,box::type type);
+    bool addBoxAt(int x,int y,box::type type);
+    bool deleteBoxAt(QPoint pt);//从游戏中完全删除位于pt的箱子，被tryLink函数调用
+    bool deleteBoxAt(int x, int y);
+
     int calculateScore(int size,int turn,int breakScore);//计算加分
     bool tryActivate(const QPoint &target, Box*& entityTarget, Role* player);//尝试激活方块
     bool tryDeactivate(const QPoint& target,Box*& entityTarget,Role* player);//尝试取消激活方块,返回是否更新isActivated字段

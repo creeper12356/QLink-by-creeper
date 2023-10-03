@@ -389,13 +389,35 @@ void GameMain::pause()
     }
 }
 
-void GameMain::deleteBoxAt(const QPoint &pt)
+bool GameMain::addBoxAt(QPoint pt, type type)
+{
+    if(!linkBoxes->addBoxAt(pt,type)){
+        return false;
+    }
+    addBox(linkBoxes->getPtrDataAt(pt));
+    return true;
+}
+
+bool GameMain::addBoxAt(int x, int y, type type)
+{
+    if(!linkBoxes->addBoxAt(x,y,type)){
+        return false;
+    }
+    addBox(linkBoxes->getPtrDataAt(x,y));
+    return true;
+}
+
+bool GameMain::deleteBoxAt(QPoint pt)
 {
     //从gameMain中移除实体
     removeBox(linkBoxes->getPtrDataAt(pt));
     //从linkBoxes中删除实体
-    linkBoxes->removeBoxAt(pt);
-    emit boxDeleted();
+    return linkBoxes->removeBoxAt(pt);
+}
+
+bool GameMain::deleteBoxAt(int x, int y)
+{
+    return deleteBoxAt(QPoint(x,y));
 }
 
 int GameMain::calculateScore(int size, int turn, int breakScore)
@@ -525,6 +547,7 @@ bool GameMain::tryLink(Role *player)
         // 删除箱子
         deleteBoxAt(frontPt);
         deleteBoxAt(backPt);
+        emit boxDeleted();
         update();
         //更新提示
         if(hintBoxes.contains(frontPt) || hintBoxes.contains(backPt))//提示箱子被消除
@@ -562,6 +585,7 @@ void GameMain::processPropBoxTarget(const QPoint &target,Box*& entityTarget, Rol
     scoreBoards[player]->add(entityTarget->getBreakScore());
     //删除箱子
     deleteBoxAt(target);
+    emit boxDeleted();
 }
 
 bool GameMain::isHint() const
@@ -715,6 +739,7 @@ void GameMain::boxDeletedSlot()
         emit gameWin(winScoreBoard);
         return ;
     }
+
     if(!processor->isSolvable()){
         emit gameTimeout("游戏无解");
     }
@@ -788,15 +813,7 @@ void GameMain::on_clear_button_clicked()
 
 void GameMain::on_win_button_clicked()
 {
-    for(int i = 0;i <= linkBoxes->getHScale() - 1;++i){
-        for(int j = 0;j <= linkBoxes->getWScale() - 1;++j){
-            if(linkBoxes->getDataAt(i,j) != null){
-                removeBox(linkBoxes->getPtrDataAt(i,j));
-                linkBoxes->removeBoxAt(i,j);
-            }
-        }
-    }
-    emit boxDeleted();
+    emit gameWin(scoreBoards[players[0]]);
 }
 
 void GameMain::statePrinter() const

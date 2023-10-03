@@ -92,16 +92,20 @@ void BoxMap::generateEntities(GameMain *parent)
         {
             if(data[i][j] == null)
             {
+                nullBoxes.append(QPoint(i,j));
                 continue;
             }
             else if(Box::typeToDivision(data[i][j]) == box::plain_box)
             {
                 ptrData[i][j] = new PlainBox;
+                plainBoxes.append(QPoint(i,j));
             }
             else if(Box::typeToDivision(data[i][j]) == box::prop_box)
             {
                 ptrData[i][j] = new PropBox;
+                propBoxes.append(QPoint(i,j));
             }
+            //init box entity data
             ptrData[i][j]->setBoxType(data[i][j]);
             ptrData[i][j]->setPos(this->boxPosAtData(i,j));
             ptrData[i][j]->copyStyle(boxes[data[i][j]]);
@@ -110,17 +114,58 @@ void BoxMap::generateEntities(GameMain *parent)
     }
 }
 
-void BoxMap::removeBoxAt(QPoint pt)
+bool BoxMap::addBoxAt(const QPoint &pt, type type)
 {
-    delete ptrData[pt.x()][pt.y()];
-    ptrData[pt.x()][pt.y()] = nullptr;
-    data[pt.x()][pt.y()] = null;
+    return addBoxAt(pt.x(),pt.y(),type);
 }
-void BoxMap::removeBoxAt(int x, int y)
+
+bool BoxMap::addBoxAt(int x, int y, type type)
 {
+    if(data[x][y] != null){
+        qDebug() << "cannot override existing box.";
+        return false;
+    }
+    if(type == null){
+        return false;
+    }
+
+    data[x][y] = type;
+    if(Box::typeToDivision(type) == plain_box){
+        ptrData[x][y] = new PlainBox;
+        plainBoxes.append(QPoint(x,y));
+    }
+    else{
+        ptrData[x][y] = new PropBox;
+        propBoxes.append(QPoint(x,y));
+    }
+    nullBoxes.removeOne(QPoint(x,y));
+    Box* newBox = ptrData[x][y];
+    newBox->setBoxType(type);
+    newBox->setPos(this->boxPosAtData(x,y));
+    newBox->copyStyle(boxes[type]);
+    return true;
+}
+
+bool BoxMap::removeBoxAt(QPoint pt)
+{
+    return removeBoxAt(pt.x(),pt.y());
+}
+bool BoxMap::removeBoxAt(int x, int y)
+{
+    if(data[x][y] == null){
+        return false;
+    }
+    if(Box::typeToDivision(data[x][y]) == plain_box){
+        plainBoxes.removeOne(QPoint(x,y));
+    }
+    else{//prop_box
+        propBoxes.removeOne(QPoint(x,y));
+    }
+    nullBoxes.append(QPoint(x,y));
     delete ptrData[x][y];
     ptrData[x][y] = nullptr;
     data[x][y] = null;
+    return true;
 }
 QPointF BoxMap::boxPosAtData(int i, int j)
 {
