@@ -165,7 +165,7 @@ private slots:
     void on_win_button_clicked();//删除所有箱子并通关
 
     //for test.
-    void statePrinter() const;
+    void statePrinter();
 
 signals:
     void gameMainDeleted();//析构函数调用时发出
