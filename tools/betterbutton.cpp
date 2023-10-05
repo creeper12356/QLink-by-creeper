@@ -52,6 +52,10 @@ bool BetterButton::event(QEvent *event)
         hoverSound->play();
         jump.start();
     }
+    else if(event->type() == QEvent::MouseButtonPress){
+        clickSound->play();
+        jump.start();
+    }
     return QPushButton::event(event);
 }
 
