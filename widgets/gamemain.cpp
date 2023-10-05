@@ -503,7 +503,7 @@ void GameMain::movePlayer(Role* player)
 
 void GameMain::clockTimeOutSlot()
 {
-    gameClk->pause();
+    this->pause();
     emit gameTimeout();
     this->hide();
 }
@@ -677,9 +677,6 @@ void GameMain::shuffle(Role* player)
     }
     //重画
     update();
-
-    this->setFocus();
-
 }
 
 void GameMain::hint(Role *player)
@@ -762,11 +759,13 @@ void GameMain::boxDeletedSlot()
                 winScoreBoard = sb;
             }
         }
+        this->pause();
         emit gameWin(winScoreBoard);
         return ;
     }
 
     if(!processor->isSolvable()){
+        this->pause();
         emit gameTimeout("游戏无解");
     }
 }
@@ -816,17 +815,25 @@ void GameMain::on_clear_button_clicked()
 
 void GameMain::on_win_button_clicked()
 {
+    this->pause();
     emit gameWin(scoreBoards[players[0]]);
 }
 
 void GameMain::statePrinter()
 {
-    if(QRandomGenerator::global()->bounded(500) == 9){//p == 0.002
-        if(!linkBoxes->getNullBoxes().empty()){
-            addBoxAt(linkBoxes->getNullBoxes()[
+    if(QRandomGenerator::global()->bounded(100) == 90){//p == 0.002
+        qDebug() << "generate.";
+        QVector<QPoint> nullBoxes = linkBoxes->getNullBoxes();
+        for(auto player:players){
+            for(auto pt:linkBoxes->coverDataCoords(player->getEntityBox())){
+                nullBoxes.removeOne(pt);
+            }
+        }
+        if(!nullBoxes.empty()){
+            addBoxAt(nullBoxes[
                      QRandomGenerator::global()->bounded(
-                        linkBoxes->getNullBoxes().size())]
-                    ,box::type(QRandomGenerator::global()->bounded(5) + 8));
+                        nullBoxes.size())]
+                    ,box::ender_pearl);
             update();
         }
     }
