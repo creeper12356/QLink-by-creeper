@@ -87,29 +87,26 @@ void RecordBrowser::showEvent(QShowEvent *event)
 
 void RecordBrowser::on_new_record_button_clicked()
 {
+    if(ui->rand_mode->isChecked()){
+        //随机模式
+        Record* nRecord = newRecord("newrecord",settings->getLevelsInMode(getFilterMode()).size());
+        if(!nRecord){
+            return ;
+        }
+        emit recordEntered(*nRecord);
+        return ;
+    }
     QInputDialog recordNameGetter(this);
     recordNameGetter.setWindowTitle("新游戏");
     recordNameGetter.setInputMode(QInputDialog::TextInput);
     recordNameGetter.setLabelText("输入存档名称");
-    connect(&recordNameGetter,&QInputDialog::textValueSelected,this,&RecordBrowser::newRecord);
+    connect(&recordNameGetter,SIGNAL(textValueSelected(QString)),this,SLOT(newRecord(QString)));
     recordNameGetter.exec();
 }
 
-void RecordBrowser::newRecord(QString recordName)
+Record* RecordBrowser::newRecord(QString recordName)
 {
-    //avoid name repeat problem.
-    for(int i = 0;i <= ui->recordList->count() - 1;++i){
-        QString existName = dynamic_cast<RecordItem*>(ui->recordList->item(i))->getName();
-        if(recordName == existName){
-            QMessageBox::warning(this,"警告","存档名已存在，创建游戏失败。");
-            return ;
-        }
-    }
-
-    RecordItem* newItem = new RecordItem("records/" + recordName + ".json",recordName);
-    newItem->getRecord().readFromSettings(settings,getFilterMode(),1);//start from level 1
-    ui->recordList->addItem(newItem);
-    this->updateText();
+    return newRecord(recordName,1);
 }
 
 void RecordBrowser::on_delete_record_button_clicked()
@@ -137,4 +134,22 @@ void RecordBrowser::on_recordList_itemActivated(QListWidgetItem *item)
 void RecordBrowser::on_cancel_button_clicked()
 {
     this->close();
+}
+
+Record* RecordBrowser::newRecord(QString recordName, int level)
+{
+    //avoid name repeat problem.
+    for(int i = 0;i <= ui->recordList->count() - 1;++i){
+        QString existName = dynamic_cast<RecordItem*>(ui->recordList->item(i))->getName();
+        if(recordName == existName){
+            QMessageBox::warning(this,"警告","存档名已存在，创建游戏失败。");
+            return nullptr;
+        }
+    }
+
+    RecordItem* newItem = new RecordItem("records/" + recordName + ".json",recordName);
+    newItem->getRecord().readFromSettings(settings,getFilterMode(),level);//start from level 1
+    ui->recordList->addItem(newItem);
+    this->updateText();
+    return &newItem->getRecord();
 }
