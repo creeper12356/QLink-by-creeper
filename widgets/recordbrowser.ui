@@ -102,6 +102,19 @@
     <string>取消</string>
    </property>
   </widget>
+  <widget class="QCheckBox" name="rand_mode">
+   <property name="geometry">
+    <rect>
+     <x>690</x>
+     <y>120</y>
+     <width>93</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>随机模式</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>
