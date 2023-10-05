@@ -17,7 +17,7 @@ GameMain::GameMain(QWidget *parent, Settings *&s, Record &record)
     initProcessor();
     initGameClk(record);
     initHintTimer();
-    initPropGeneratorTimer();
+    initPropGenerator();
 
     this->start();//开始游戏
     connect(this,&GameMain::boxDeleted,this,&GameMain::boxDeletedSlot);
@@ -174,11 +174,20 @@ void GameMain::initHintTimer()
     });
 }
 
-void GameMain::initPropGeneratorTimer()
+void GameMain::initPropGenerator()
 {
+    //初始化箱子生成计时器
     propGeneratorTimer.setInterval(RANDOM_GENERATE_INTERVAL);
     propGeneratorTimer.setSingleShot(true);
-    connect(&propGeneratorTimer,&QTimer::timeout,this,&GameMain::planNextGenerate);
+    connect(&propGeneratorTimer,&QTimer::timeout,this,&GameMain::generateProp);
+
+    //初始化生成道具列表
+    if(mode == singleMode){
+        propBoxes.append({box::clock,box::ender_pearl,box::book});
+    }
+    else{
+        propBoxes.append({box::clock,box::ender_pearl,box::book,box::snow_bucket,box::potion});
+    }
 }
 void GameMain::keyPressEvent(QKeyEvent *event)
 {
@@ -520,7 +529,7 @@ void GameMain::clockTimeOutSlot()
     this->hide();
 }
 
-void GameMain::planNextGenerate()
+void GameMain::generateProp()
 {
     //to generate
     qDebug() << "generate.";
@@ -534,7 +543,7 @@ void GameMain::planNextGenerate()
         addBoxAt(nullBoxes[
                  QRandomGenerator::global()->bounded(
                     nullBoxes.size())]
-                ,box::ender_pearl);
+                ,propBoxes[QRandomGenerator::global()->bounded(propBoxes.size())]);
         update();
     }
     propGeneratorTimer.start(RANDOM_GENERATE_INTERVAL);

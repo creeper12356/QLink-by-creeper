@@ -50,8 +50,8 @@ protected:
     int monitorInterval = 5;//玩家运动监听器监听周期(ms)
     qreal routeLifeSpan = 0.3;//路径存在时间（s）
 
-    qreal minGenerateInterval = 3.0;//最小生成箱子间隔(s)
-    qreal maxGenerateInterval = 3.1;//最大生成箱子间隔(s)
+    qreal minGenerateInterval = 10.0;//最小生成箱子间隔(s)
+    qreal maxGenerateInterval = 20.0;//最大生成箱子间隔(s)
 
     //hint相关
     QTimer hintTimer;//游戏提示计时器
@@ -61,7 +61,8 @@ protected:
     Settings*& settings;
     //游戏存档
     Record* record = nullptr;
-
+    //档案
+    QList<box::type> propBoxes;//用于随机生成的道具箱子列表
 private:
     Ui::Widget *ui;
 
@@ -81,7 +82,7 @@ protected:
     void initProcessor();//初始化后端处理器,必须在initLinkBoxes之后调用
     void initGameClk(const Record& record);
     void initHintTimer();//初始化提示计时器
-    void initPropGeneratorTimer();
+    void initPropGenerator();
 
 public:
     //接口函数
@@ -131,7 +132,7 @@ protected:
 private slots:
     void movePlayer(Role* player);//与moveVector::monitor绑定，处理玩家的移动
     void clockTimeOutSlot();
-    void planNextGenerate();
+    void generateProp();
     void repaintSlot();//重画槽函数
 
 protected:
