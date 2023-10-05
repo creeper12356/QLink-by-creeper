@@ -87,45 +87,35 @@ void LinkRoute::updateDir()
     int nodeSize = size();
     entity::dir before = entity::no_dir;
     entity::dir after = entity::no_dir;
-    for(int i = 0;i <= nodeSize - 1;++i)
-    {
+    for(int i = 0;i <= nodeSize - 1;++i){
         after = dirAfterNode(i);
-        if(i == 0)
-        {
+        if(i == 0){
             nodes[i].dir = linkRoute::nodeDir(after / 2);
         }
-        else if(i == nodeSize - 1)
-        {
+        else if(i == nodeSize - 1){
             nodes[i].dir = linkRoute::nodeDir(before / 2);
         }
-        else
-        {
+        else{
             if((before == entity::right && after == entity::up)
-                    || (before == entity::down && after == entity::left))
-            {
+                    || (before == entity::down && after == entity::left)){
                 nodes[i].dir = linkRoute::up_left;
             }
             else if((before == entity::left && after == entity::up)
-                    || (before == entity::down && after == entity::right))
-            {
+                    || (before == entity::down && after == entity::right)){
                 nodes[i].dir = linkRoute::up_right;
             }
             else if((before == entity::right && after == entity::down)
-                    || (before == entity::up && after == entity::left))
-            {
+                    || (before == entity::up && after == entity::left)){
                 nodes[i].dir = linkRoute::down_left;
             }
             else if((before == entity::left && after == entity::down)
-                    || (before == entity::up && after == entity::right))
-            {
+                    || (before == entity::up && after == entity::right)){
                 nodes[i].dir = linkRoute::down_right;
             }
-            else if(before == entity::left || before == entity::right)
-            {
+            else if(before == entity::left || before == entity::right){
                 nodes[i].dir = linkRoute::left_right;
             }
-            else if(before == entity::up || before == entity::down)
-            {
+            else if(before == entity::up || before == entity::down){
                 nodes[i].dir = linkRoute::up_down;
             }
         }
