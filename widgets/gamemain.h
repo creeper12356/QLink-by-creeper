@@ -41,6 +41,7 @@ protected:
 
     //标签
     gameMode mode;
+    bool isRandMode;
 
     //游戏参数（仅在初始化时修改才有效）
     qreal dizzyTime = 10;//迷惑时间（s）
@@ -72,7 +73,6 @@ protected:
     void initPlayerMoveKeys(Role* player,int playerNum);//初始化玩家方向键，被initPlayer调用
     Role* initPlayer(const QString& id,int playerNum);//通过id初始化玩家，成功返回玩家指针，失败返回nullptr
     void initPlayers(const Record& record);
-    void initLinkBoxes();//初始化连连看箱子地图
     void initLinkBoxes(const Record& record);
     void initProcessor();//初始化后端处理器,必须在initLinkBoxes之后调用
     void initGameClk(const Record& record);

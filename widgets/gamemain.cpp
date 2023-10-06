@@ -140,6 +140,9 @@ void GameMain::initPlayers(const Record &record)
 void GameMain::initLinkBoxes(const Record &record)
 {
     linkBoxes = new BoxMap(settings,record);
+    if(isRandMode){
+        processor->reorganize(4,4);
+    }
     linkBoxes->generateEntities(this);
 }
 void GameMain::initProcessor()

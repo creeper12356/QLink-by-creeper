@@ -17,9 +17,12 @@ BackendProcessor::BackendProcessor(const Record& record)
     }
 }
 BackendProcessor::BackendProcessor(BoxMap* lkBoxes)
-    :data(lkBoxes->getData()),wScale(lkBoxes->getWScale()),hScale(lkBoxes->getHScale())
+    :data(lkBoxes->getData()),
+      wScale(lkBoxes->getWScale()),
+      hScale(lkBoxes->getHScale()),
+      linkBoxes(lkBoxes)
 {
-    linkBoxes = lkBoxes;
+
 }
 
 void BackendProcessor::init2DArray()
@@ -413,4 +416,15 @@ bool BackendProcessor::isSolvable() const
     }
     //不存在道具
     return (hint().size() == 2);
+}
+
+void BackendProcessor::reorganize(int w, int h)
+{
+    for(int i = 0;i <= h - 1;++i){
+        for(int j = 0;j <= w - 1;++j){
+            qDebug() << "i = " << i;
+            qDebug() << "j = " << j;
+            data[i][j] = box::apple;
+        }
+    }
 }

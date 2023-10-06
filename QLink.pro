@@ -32,6 +32,7 @@ SOURCES += \
     tools/indexbar.cpp \
     tools/keylineedit.cpp \
     tools/scoreboard.cpp \
+    widgets/basicsetdialog.cpp \
     widgets/gamemain.cpp \
     widgets/menupage.cpp \
     widgets/recordbrowser.cpp \
@@ -55,6 +56,7 @@ HEADERS += \
     tools/indexbar.h \
     tools/keylineedit.h \
     tools/scoreboard.h \
+    widgets/basicsetdialog.h \
     widgets/gamemain.h \
     widgets/menupage.h \
     widgets/recordbrowser.h \
@@ -71,6 +73,7 @@ RESOURCES += \
     ../res.qrc
 
 FORMS += \
+    widgets/basicsetdialog.ui \
     widgets/menupage.ui \
     widgets/recordbrowser.ui \
     widgets/settings.ui \

@@ -2,6 +2,8 @@
 #define RECORDBROWSER_H
 #include "config.h"
 #include "recorditem.h"
+#include "basicsetdialog.h"
+
 namespace Ui {
 class RecordBrowser;
 }

@@ -93,6 +93,14 @@ void RecordBrowser::on_new_record_button_clicked()
         if(!nRecord){
             return ;
         }
+        //创建成功
+        BasicSetDialog dialog;
+        dialog.exec();
+        connect(&dialog,&BasicSetDialog::basicSetted,this,[&](QPoint scale){
+            this->hide();
+            emit recordEntered(*nRecord);
+        });
+        this->hide();
         emit recordEntered(*nRecord);
         return ;
     }
