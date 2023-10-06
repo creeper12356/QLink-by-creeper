@@ -418,13 +418,3 @@ bool BackendProcessor::isSolvable() const
     return (hint().size() == 2);
 }
 
-void BackendProcessor::reorganize(int w, int h)
-{
-    for(int i = 0;i <= h - 1;++i){
-        for(int j = 0;j <= w - 1;++j){
-            qDebug() << "i = " << i;
-            qDebug() << "j = " << j;
-            data[i][j] = box::apple;
-        }
-    }
-}

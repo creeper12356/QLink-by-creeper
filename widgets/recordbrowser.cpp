@@ -95,12 +95,14 @@ void RecordBrowser::on_new_record_button_clicked()
         }
         //创建成功
         BasicSetDialog dialog;
+        dialog.setMaxWScale(nRecord->getBasic().wScale);
+        dialog.setMaxHScale(nRecord->getBasic().hScale);
         dialog.exec();
-        connect(&dialog,&BasicSetDialog::basicSetted,this,[&](QPoint scale){
-            this->hide();
-            emit recordEntered(*nRecord);
-        });
+        if(!dialog.isSetted()){//canceled
+            return ;
+        }
         this->hide();
+        nRecord->setRandModeArg(QPoint(dialog.wScale(),dialog.hScale()));
         emit recordEntered(*nRecord);
         return ;
     }

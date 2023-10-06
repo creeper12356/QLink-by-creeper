@@ -41,7 +41,6 @@ protected:
 
     //标签
     gameMode mode;
-    bool isRandMode;
 
     //游戏参数（仅在初始化时修改才有效）
     qreal dizzyTime = 10;//迷惑时间（s）

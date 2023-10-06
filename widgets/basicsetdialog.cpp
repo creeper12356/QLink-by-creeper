@@ -6,7 +6,6 @@ BasicSetDialog::BasicSetDialog(QWidget *parent) :
     ui(new Ui::BasicSetDialog)
 {
     ui->setupUi(this);
-    connect(ui->buttonBox,&QDialogButtonBox::accepted,this,&BasicSetDialog::acceptSlot);
 }
 
 BasicSetDialog::~BasicSetDialog()
@@ -14,9 +13,20 @@ BasicSetDialog::~BasicSetDialog()
     delete ui;
 }
 
-void BasicSetDialog::acceptSlot()
+void BasicSetDialog::setMaxWScale(int w)
 {
-    qDebug() << "accepted";
-    emit basicSetted(QPoint(ui->w_input->value(),ui->h_input->value()));
+    ui->w_input->setMaximum(w);
 }
 
+void BasicSetDialog::setMaxHScale(int h)
+{
+    ui->h_input->setMaximum(h);
+}
+
+
+
+void BasicSetDialog::on_buttonBox_accepted()
+{
+    wScale_s = ui->w_input->value();
+    hScale_s = ui->h_input->value();
+}

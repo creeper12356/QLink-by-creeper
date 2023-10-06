@@ -9,6 +9,9 @@ GameMain::GameMain(QWidget *parent, Settings *&s, Record &record)
     ,settings(s)
 {
     this->record = &record;
+    if(record.isRandMode()){
+        record.reorganize(record.getRandModeArg());
+    }
     this->mode = record.getMode();
     background = new Map();
     initUi();
@@ -140,9 +143,6 @@ void GameMain::initPlayers(const Record &record)
 void GameMain::initLinkBoxes(const Record &record)
 {
     linkBoxes = new BoxMap(settings,record);
-    if(isRandMode){
-        processor->reorganize(4,4);
-    }
     linkBoxes->generateEntities(this);
 }
 void GameMain::initProcessor()

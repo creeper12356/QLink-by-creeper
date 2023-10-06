@@ -70,6 +70,16 @@ Record::~Record()
     }
 }
 
+box::type &Record::dataAt(const QPoint &pt)
+{
+    return dataAt(pt.x(),pt.y());
+}
+
+box::type &Record::dataAt(int i, int j)
+{
+    return map[i * basic.wScale + j];
+}
+
 void Record::setCurLevel(int level)
 {
     curLevel = level;
@@ -82,6 +92,18 @@ void Record::setIsDeleted(bool flag)
     {
         QFile::remove(recordFilePath);
     }
+}
+
+void Record::reorganize(QPoint scale)
+{
+    qDebug() << "reorgan.";
+    int w = scale.x(),h = scale.y();
+    for(int i = 0;i <= h - 1;++i){
+        for(int j = 0;j <= w - 1;++j){
+            dataAt(i,j) = box::apple;
+        }
+    }
+    randModeArg = scale;
 }
 
 void Record::readFromFile(const QString &recordFile)
@@ -133,7 +155,6 @@ void Record::readFromJsonObject(const QJsonObject &obj)
     {
         curLevel = obj["curLevel"].toInt();
     }
-
     basic.readFromJsonObject(obj["basic"].toObject());
 
     players.clear();

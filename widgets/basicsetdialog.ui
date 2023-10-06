@@ -22,14 +22,14 @@
      <x>290</x>
      <y>20</y>
      <width>81</width>
-     <height>241</height>
+     <height>111</height>
     </rect>
    </property>
    <property name="orientation">
     <enum>Qt::Vertical</enum>
    </property>
    <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+    <set>QDialogButtonBox::Ok</set>
    </property>
   </widget>
   <widget class="QWidget" name="">
