@@ -12,6 +12,8 @@ WelcomePage::WelcomePage(QWidget* parent) :
     settings = new Settings();
     initBrowser();
 
+    connect(settings,&Settings::enableRandModeSetted,browser,&RecordBrowser::setEnableRandMode);
+
     QPalette palette;
     palette.setBrush(QPalette::Background, QColor(0,200,180,255));
     this->setPalette(palette);
@@ -38,6 +40,7 @@ void WelcomePage::initMenu()
 void WelcomePage::initBrowser()
 {
     browser = new RecordBrowser(nullptr,settings);
+    browser->setEnableRandMode(settings->getUi()->enable_rand_mode->isChecked());//.bad insertion
     connect(browser,&RecordBrowser::recordEntered,this,&WelcomePage::recordEnteredSlot);
     connect(browser,&RecordBrowser::browserClosed,this,&WelcomePage::show);
 }

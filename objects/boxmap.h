@@ -90,7 +90,6 @@ public:
     const QVector<QPoint>& getNullBoxes() const{return nullBoxes;}
     const QVector<QPoint>& getPlainBoxes() const{return plainBoxes;}
     const QVector<QPoint>& getPropBoxes() const{return propBoxes;}
-
 public:
     void draw(QPainter& painter,bool isDebugMode);    
 };

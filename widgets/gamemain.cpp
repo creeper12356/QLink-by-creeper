@@ -9,6 +9,9 @@ GameMain::GameMain(QWidget *parent, Settings *&s, Record &record)
     ,settings(s)
 {
     this->record = &record;
+    if(record.isRandMode()){
+        record.reorganize(record.getRandModeArg());
+    }
     this->mode = record.getMode();
     background = new Map();
     initUi();

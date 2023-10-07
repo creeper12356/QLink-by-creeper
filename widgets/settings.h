@@ -24,7 +24,9 @@ public:
     const QVector<QJsonObject*>& getBoxes() const{return boxes;}
     const QMap<QString,QVector<QJsonObject*>>& getLevels() const{return levels;}
     const QVector<QJsonObject *> getLevelsInMode(gameMain::gameMode mode) const;
-
+public:
+    //setters
+    void setEnableRandMode(bool flag);//设置randMode接口，会发送enableRandModeSetted信号
 private slots:
     void on_ok_button_clicked();
     void on_entity_audio_slider_valueChanged(int value);
@@ -32,15 +34,18 @@ private slots:
 
 private:
     Ui::Settings *ui;
-
+private:
     void readPlayerData();//读取玩家数据
     void readBoxData();//读取箱子数据
     void readLevelData();//读取关卡数据
     void readCtrlSettings();//读取控制信息
     void readAudioSettings();//读取声音设置
+    void readAdvancedSettings();//读取高级设置
     void writeCtrlSettings();//写入控制信息
     void writeAudioSettings();//写入声音设置
-
+    void writeAdvancedSettings();//写入高级设置
+signals:
+    void enableRandModeSetted(bool flag);
 };
 
 #endif // SETTINGS_H
