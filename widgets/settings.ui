@@ -469,6 +469,19 @@
          <string>高级</string>
         </property>
        </widget>
+       <widget class="QCheckBox" name="checkBox">
+        <property name="geometry">
+         <rect>
+          <x>30</x>
+          <y>50</y>
+          <width>131</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>启用随机模式</string>
+        </property>
+       </widget>
       </widget>
      </widget>
     </item>
