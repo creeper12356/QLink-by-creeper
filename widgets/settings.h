@@ -29,6 +29,8 @@ public:
     void setEnableRandMode(bool flag);//设置randMode接口，会发送enableRandModeSetted信号
 private slots:
     void on_ok_button_clicked();
+    void on_entity_audio_slider_valueChanged(int value);
+
 
 private:
     Ui::Settings *ui;

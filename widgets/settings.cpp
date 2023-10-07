@@ -1,6 +1,6 @@
 #include "settings.h"
 #include "ui_settings.h"
-
+#include "tools/betterbutton.h"
 Settings::Settings(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Settings)
@@ -185,6 +185,7 @@ void Settings::readAudioSettings()
     ui->bgm_audio_slider->setValue(audioSettings.value("bgmAudio").toInt());
 
     reader.close();
+    BetterButton::setSoundVolume(ui->entity_audio_slider->value() / 100.0);
 }
 
 void Settings::readAdvancedSettings()
@@ -239,6 +240,10 @@ void Settings::writeAudioSettings()
     writer.close();
 }
 
+void Settings::on_entity_audio_slider_valueChanged(int value)
+{
+    BetterButton::setSoundVolume(value / 100.0);
+}
 void Settings::writeAdvancedSettings()
 {
     QFile writer;

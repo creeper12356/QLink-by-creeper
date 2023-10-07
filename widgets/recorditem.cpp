@@ -1,9 +1,10 @@
 #include "recorditem.h"
+#include "recordbrowser.h"
 RecordItem::RecordItem(const QString &recordPath, const QString &recordName):record(recordPath)
 {
     name = recordName;
     this->updateText();
-    this->setBackground(QColor(0,200,100,180));
+    this->setBackground(NORMAL_COLOR);
 }
 
 RecordItem::~RecordItem()
@@ -34,3 +35,4 @@ void RecordItem::updateText()
     text.append("\nlevel" + QString::number(record.getCurLevel()));
     this->setText(text);
 }
+
