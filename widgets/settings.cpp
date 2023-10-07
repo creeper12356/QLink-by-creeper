@@ -194,7 +194,6 @@ void Settings::readAdvancedSettings()
     reader.open(QIODevice::ReadOnly);
     QJsonObject advancedSettings(QJsonDocument::fromJson(reader.readAll()).object());
     reader.close();
-    qDebug() << "contains: " << advancedSettings.contains("enableRandMode");
     setEnableRandMode(advancedSettings["enableRandMode"].toBool());
 }
 void Settings::writeCtrlSettings()
