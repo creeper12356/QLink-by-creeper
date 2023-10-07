@@ -28,6 +28,7 @@ SOURCES += \
     objects/propbox.cpp \
     objects/role.cpp \
     record.cpp \
+    tools/betterbutton.cpp \
     tools/clock.cpp \
     tools/indexbar.cpp \
     tools/keylineedit.cpp \
@@ -52,6 +53,7 @@ HEADERS += \
     objects/propbox.h \
     objects/role.h \
     record.h \
+    tools/betterbutton.h \
     tools/clock.h \
     tools/indexbar.h \
     tools/keylineedit.h \

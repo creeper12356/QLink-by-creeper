@@ -824,5 +824,4 @@ void GameMain::on_win_button_clicked()
 
 void GameMain::statePrinter()
 {
-
 }
