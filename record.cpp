@@ -155,6 +155,10 @@ void Record::readFromJsonObject(const QJsonObject &obj)
     {
         curLevel = obj["curLevel"].toInt();
     }
+    if(obj.contains("randModeArg")){
+        randModeArg = QPoint(obj["randModeArg"].toArray()[0].toInt(),
+                             obj["randModeArg"].toArray()[1].toInt());
+    }
     basic.readFromJsonObject(obj["basic"].toObject());
 
     players.clear();
@@ -181,6 +185,7 @@ void Record::writeToFile(const QString &recordFile)
     QJsonObject record;
     record.insert("gameMode",mode);
     record.insert("curLevel",curLevel);
+    record.insert("randModeArg",QJsonArray({randModeArg.x(),randModeArg.y()}));
     record.insert("basic",basic.writeToJsonObject());
 
     QJsonArray playerArray;

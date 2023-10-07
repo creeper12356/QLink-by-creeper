@@ -75,17 +75,17 @@
       </item>
       <item>
        <property name="text">
-        <string>外观设置</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
         <string>声音</string>
        </property>
       </item>
       <item>
        <property name="text">
         <string>控制</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>高级</string>
        </property>
       </item>
      </widget>
@@ -116,21 +116,6 @@
         </property>
         <property name="text">
          <string>基本设置</string>
-        </property>
-       </widget>
-      </widget>
-      <widget class="QWidget" name="page_2">
-       <widget class="QLabel" name="label_2">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>10</y>
-          <width>72</width>
-          <height>15</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>外观设置</string>
         </property>
        </widget>
       </widget>
@@ -468,6 +453,21 @@
           </layout>
          </item>
         </layout>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="advanced">
+       <widget class="QLabel" name="label_2">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>10</y>
+          <width>72</width>
+          <height>15</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>高级</string>
+        </property>
        </widget>
       </widget>
      </widget>
