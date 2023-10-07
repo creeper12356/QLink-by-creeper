@@ -13,6 +13,7 @@ BoxMap::BoxMap(Settings*& sts,const Record& record)
     init2DArray();
     initProcessor(record);
 }
+
 BoxMap::~BoxMap()
 {
     //释放二维数组空间
@@ -264,6 +265,7 @@ QVector<QPoint> BoxMap::coverDataCoords(const QRectF &entityBox)
     }
     return coverCoords;
 }
+
 
 void BoxMap::draw(QPainter &painter, bool isDebugMode)
 {

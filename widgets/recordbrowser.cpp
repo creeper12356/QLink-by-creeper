@@ -47,6 +47,7 @@ void RecordBrowser::updateText()
         dynamic_cast<RecordItem*>(ui->recordList->item(i))->updateText();
     }
 }
+
 void RecordBrowser::on_recordList_currentRowChanged(int currentRow)
 {
     for(int i = 0;i <= ui->recordList->count() - 1;++i)
@@ -93,6 +94,16 @@ void RecordBrowser::on_new_record_button_clicked()
         if(!nRecord){
             return ;
         }
+        //创建成功
+        BasicSetDialog dialog;
+        dialog.setMaxWScale(nRecord->getBasic().wScale);
+        dialog.setMaxHScale(nRecord->getBasic().hScale);
+        dialog.exec();
+        if(!dialog.isSetted()){//canceled
+            return ;
+        }
+        this->hide();
+        nRecord->setRandModeArg(QPoint(dialog.wScale(),dialog.hScale()));
         emit recordEntered(*nRecord);
         return ;
     }
@@ -152,4 +163,11 @@ Record* RecordBrowser::newRecord(QString recordName, int level)
     ui->recordList->addItem(newItem);
     this->updateText();
     return &newItem->getRecord();
+}
+void RecordBrowser::setEnableRandMode(bool flag)
+{
+    if(!flag){//reset
+        ui->rand_mode->setChecked(false);
+    }
+    ui->rand_mode->setVisible(flag);
 }

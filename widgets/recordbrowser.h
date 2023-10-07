@@ -2,6 +2,8 @@
 #define RECORDBROWSER_H
 #include "config.h"
 #include "recorditem.h"
+#include "basicsetdialog.h"
+
 namespace Ui {
 class RecordBrowser;
 }
@@ -37,6 +39,10 @@ protected:
     void keyPressEvent(QKeyEvent *event) override;
 private:
     Ui::RecordBrowser *ui;
+
+public slots:
+    //ui接口
+    void setEnableRandMode(bool flag);
 signals:
     void recordEntered(Record& record);//recordItem被双击发出此信号，发给welcomepage表示加载存档
     void browserClosed();//关闭信号
