@@ -10,6 +10,7 @@ Settings::Settings(QWidget *parent) :
             &QListWidget::currentRowChanged,
             ui->stack_widget,
             &QStackedWidget::setCurrentIndex);
+    readGameArgs();
     readCtrlSettings();
     readAudioSettings();
     readAdvancedSettings();
@@ -244,6 +245,17 @@ void Settings::on_entity_audio_slider_valueChanged(int value)
 {
     BetterButton::setSoundVolume(value / 100.0);
 }
+
+void Settings::readGameArgs()
+{
+    QFile reader("settings/game_arg.json");
+    reader.open(QIODevice::ReadOnly);
+    QJsonObject obj = QJsonDocument::fromJson(reader.readAll()).object();
+    reader.close();
+    if(!args.readFromJsonObject(obj)){
+        QMessageBox::warning(this,"警告","游戏参数读取失败，游戏可能无法启动。");
+    }
+}
 void Settings::writeAdvancedSettings()
 {
     QFile writer;
@@ -255,4 +267,26 @@ void Settings::writeAdvancedSettings()
 
     writer.write(QJsonDocument(advancedSettings).toJson());
     writer.close();
+}
+
+bool GameArg::readFromJsonObject(const QJsonObject &obj)
+{
+    //check
+    for(auto& key:{
+        "dizzyTime",
+        "freezeTime",
+        "hintTime",
+        "monitorInterval",
+        "routeLifeSpan"}){
+        if(!obj.contains(key)){
+            return false;
+        }
+    }
+    dizzyTime = obj["dizzyTime"].toDouble();
+    freezeTime = obj["freezeTime"].toDouble();
+    hintTime = obj["hintTime"].toDouble();
+    monitorInterval = obj["monitorInterval"].toInt();
+    routeLifeSpan = obj["routeLifeSpan"].toDouble();
+
+    return true;
 }

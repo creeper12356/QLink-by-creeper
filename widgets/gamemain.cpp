@@ -8,6 +8,7 @@ GameMain::GameMain(QWidget *parent, Settings *&s, Record &record)
     ,ui(new Ui::Widget)
     ,settings(s)
 {
+    initGameArgs();
     this->record = &record;
     if(record.isRandMode()){
         record.reorganize(record.getRandModeArg());
@@ -49,7 +50,16 @@ void GameMain::initUi()
     ui->level_label->setText("第" + QString::number(record->getCurLevel()) +"关");
     this->setFocus();//保证按键不被按钮捕获
 //    ui->shuffle_button->hide();
-//    ui->hint_button->hide();
+    //    ui->hint_button->hide();
+}
+
+void GameMain::initGameArgs()
+{
+    dizzyTime = settings->getArgs().dizzyTime;
+    freezeTime = settings->getArgs().freezeTime;
+    hintTime = settings->getArgs().hintTime;
+    monitorInterval = settings->getArgs().monitorInterval;
+    routeLifeSpan = settings->getArgs().routeLifeSpan;
 }
 void GameMain::initPlayerMoveKeys(Role *player,int playerNum)
 {
