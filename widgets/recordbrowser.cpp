@@ -195,9 +195,7 @@ Record* RecordBrowser::newRecord(QString recordName, int level)
 void RecordBrowser::setEnableRandMode(bool flag)
 {
     if(!flag){//reset
-        qDebug() << "reset";
         ui->rand_mode->setChecked(false);
     }
-    qDebug() << "visible: " << flag;
     ui->rand_mode->setVisible(flag);
 }
