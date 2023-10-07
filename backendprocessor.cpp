@@ -17,9 +17,12 @@ BackendProcessor::BackendProcessor(const Record& record)
     }
 }
 BackendProcessor::BackendProcessor(BoxMap* lkBoxes)
-    :data(lkBoxes->getData()),wScale(lkBoxes->getWScale()),hScale(lkBoxes->getHScale())
+    :data(lkBoxes->getData()),
+      wScale(lkBoxes->getWScale()),
+      hScale(lkBoxes->getHScale()),
+      linkBoxes(lkBoxes)
 {
-    linkBoxes = lkBoxes;
+
 }
 
 void BackendProcessor::init2DArray()
@@ -414,3 +417,4 @@ bool BackendProcessor::isSolvable() const
     //不存在道具
     return (hint().size() == 2);
 }
+

@@ -12,7 +12,9 @@ Settings::Settings(QWidget *parent) :
             &QStackedWidget::setCurrentIndex);
     readCtrlSettings();
     readAudioSettings();
+    readAdvancedSettings();
 
+    connect(ui->enable_rand_mode,&QCheckBox::stateChanged,this,&Settings::enableRandModeSetted);
     readPlayerData();
     readBoxData();
     readLevelData();
@@ -22,6 +24,7 @@ Settings::~Settings()
 {
     writeCtrlSettings();
     writeAudioSettings();
+    writeAdvancedSettings();
 
     for(auto obj:roles){
         delete obj;
@@ -49,6 +52,12 @@ const QVector<QJsonObject*> Settings::getLevelsInMode(gameMain::gameMode mode) c
     {
         return levels["multi"];
     }
+}
+
+void Settings::setEnableRandMode(bool flag)
+{
+    ui->enable_rand_mode->setChecked(flag);
+    emit enableRandModeSetted(flag);
 }
 
 void Settings::on_ok_button_clicked()
@@ -178,6 +187,16 @@ void Settings::readAudioSettings()
     reader.close();
     BetterButton::setSoundVolume(ui->entity_audio_slider->value() / 100.0);
 }
+
+void Settings::readAdvancedSettings()
+{
+    QFile reader;
+    reader.setFileName("settings/advanced_settings.json");
+    reader.open(QIODevice::ReadOnly);
+    QJsonObject advancedSettings(QJsonDocument::fromJson(reader.readAll()).object());
+    reader.close();
+    setEnableRandMode(advancedSettings["enableRandMode"].toBool());
+}
 void Settings::writeCtrlSettings()
 {
     QFile writer;
@@ -224,4 +243,16 @@ void Settings::writeAudioSettings()
 void Settings::on_entity_audio_slider_valueChanged(int value)
 {
     BetterButton::setSoundVolume(value / 100.0);
+}
+void Settings::writeAdvancedSettings()
+{
+    QFile writer;
+    writer.setFileName("settings/advanced_settings.json");
+    writer.open(QIODevice::WriteOnly);
+
+    QJsonObject advancedSettings;
+    advancedSettings.insert("enableRandMode",ui->enable_rand_mode->isChecked());
+
+    writer.write(QJsonDocument(advancedSettings).toJson());
+    writer.close();
 }

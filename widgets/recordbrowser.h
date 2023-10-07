@@ -5,6 +5,7 @@
 #define NORMAL_COLOR QColor(0,190,190)
 #define HOVER_COLOR QColor(0,210,210)
 #define CHOSEN_COLOR QColor(0,255,255)
+#include "basicsetdialog.h"
 
 namespace Ui {
 class RecordBrowser;
@@ -47,6 +48,10 @@ protected:
     void keyPressEvent(QKeyEvent *event) override;
 private:
     Ui::RecordBrowser *ui;
+
+public slots:
+    //ui接口
+    void setEnableRandMode(bool flag);
 signals:
     void recordEntered(Record& record);//recordItem被双击发出此信号，发给welcomepage表示加载存档
     void browserClosed();//关闭信号
