@@ -23,7 +23,10 @@ void BasicSetDialog::setMaxHScale(int h)
     ui->h_input->setMaximum(h);
 }
 
-
+void BasicSetDialog::closeEvent(QCloseEvent *)
+{
+    on_buttonBox_accepted();
+}
 
 void BasicSetDialog::on_buttonBox_accepted()
 {

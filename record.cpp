@@ -119,8 +119,13 @@ void Record::readFromFile(const QString &recordFile)
 bool Record::readFromSettings(const Settings *settings, gameMain::gameMode mode, int level)
 {
     QJsonObject* levelSettings;//mode和level对应的设置
-    if(level > settings->getLevelsInMode(mode).size())
+    if(!isRandMode() && level == settings->getLevelsInMode(mode).size()){//非随机模式禁止访问最后一关
+        qDebug() << "error: attempt to access last level without a randmode.";
+        return false;
+    }
+    if(level > settings->getLevelsInMode(mode).size())//超出最后一关
     {
+        qDebug() << "error: level overflow.";
         return false;
     }
 
@@ -142,6 +147,7 @@ bool Record::readFromSettings(const Settings *settings, gameMain::gameMode mode,
     {
         map.push_back(box::type(box.toInt()));
     }
+    isSaved = false;
     return true;
 }
 
@@ -159,6 +165,10 @@ void Record::readFromJsonObject(const QJsonObject &obj)
         randModeArg = QPoint(obj["randModeArg"].toArray()[0].toInt(),
                              obj["randModeArg"].toArray()[1].toInt());
     }
+    if(obj.contains("isSaved")){
+        isSaved = obj["isSaved"].toBool();
+    }
+
     basic.readFromJsonObject(obj["basic"].toObject());
 
     players.clear();
@@ -186,6 +196,7 @@ void Record::writeToFile(const QString &recordFile)
     record.insert("gameMode",mode);
     record.insert("curLevel",curLevel);
     record.insert("randModeArg",QJsonArray({randModeArg.x(),randModeArg.y()}));
+    record.insert("isSaved",isSaved);
     record.insert("basic",basic.writeToJsonObject());
 
     QJsonArray playerArray;

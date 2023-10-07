@@ -10,7 +10,7 @@ GameMain::GameMain(QWidget *parent, Settings *&s, Record &record)
 {
     initGameArgs();
     this->record = &record;
-    if(record.isRandMode()){
+    if(record.isRandMode() && !record.getIsSaved()){//随机模式且为新档
         record.reorganize(record.getRandModeArg());
     }
     this->mode = record.getMode();
@@ -753,6 +753,7 @@ void GameMain::saveGameToRecord()
     }
 
     QJsonObject obj;
+    obj.insert("isSaved",true);
     obj.insert("basic",basic);
     obj.insert("playerInfos",playerInfos);
     obj.insert("map",map);
@@ -834,4 +835,5 @@ void GameMain::on_win_button_clicked()
 
 void GameMain::statePrinter()
 {
+    qDebug() << (record->getIsSaved()?"save record." : "new record.");
 }

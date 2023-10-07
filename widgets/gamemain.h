@@ -42,7 +42,7 @@ protected:
     //标签
     gameMode mode;
 
-    //游戏参数（仅在初始化时修改才有效） gameArg
+    //游戏参数（仅在初始化时修改才有效） gameArgs
     qreal dizzyTime;//迷惑时间（s）
     qreal freezeTime;//冻结时间（s）
     qreal hintTime;//提示时间(s)

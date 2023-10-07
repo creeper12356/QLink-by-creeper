@@ -28,6 +28,9 @@ public:
 
     void setMaxWScale(int w);
     void setMaxHScale(int h);
+
+protected:
+    void closeEvent(QCloseEvent *) override;
 private slots:
     void on_buttonBox_accepted();
 };

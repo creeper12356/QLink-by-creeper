@@ -269,6 +269,13 @@ void Settings::writeAdvancedSettings()
     writer.close();
 }
 
+void Settings::keyPressEvent(QKeyEvent *event)
+{
+    if(event->key() == Qt::Key_Escape){
+        this->close();
+    }
+}
+
 bool GameArg::readFromJsonObject(const QJsonObject &obj)
 {
     //check

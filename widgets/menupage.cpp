@@ -65,6 +65,11 @@ QPushButton *MenuPage::nextButton()
     return ui->next_button;
 }
 
+QPushButton *MenuPage::saveButton()
+{
+    return ui->save_button;
+}
+
 ScoreBoard *MenuPage::winnerBoard()
 {
     return ui->winner_board;
@@ -73,7 +78,7 @@ ScoreBoard *MenuPage::winnerBoard()
 void MenuPage::keyPressEvent(QKeyEvent *event)
 {
     if(event->key() == Qt::Key_Escape
-            && this->continueButton()->isVisible())
+            && this->continueButton()->isVisible())//continue
     {
         this->on_continue_button_clicked();//相当于按下继续游戏按钮
     }
@@ -84,6 +89,14 @@ void MenuPage::keyPressEvent(QKeyEvent *event)
     else if(event->key() == Qt::Key_H)//home
     {
         this->on_home_button_clicked();
+    }
+    else if(event->key() == Qt::Key_N
+            && this->nextButton()->isVisible()){//next
+        this->on_next_button_clicked();
+    }
+    else if(event->key() == Qt::Key_S
+            && this->saveButton()->isVisible()){//save
+        this->on_save_button_clicked();
     }
 }
 

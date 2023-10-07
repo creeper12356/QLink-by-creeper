@@ -56,6 +56,8 @@ private:
     void writeCtrlSettings();//写入控制信息
     void writeAudioSettings();//写入声音设置
     void writeAdvancedSettings();//写入高级设置
+protected:
+    void keyPressEvent(QKeyEvent *event) override;
 signals:
     void enableRandModeSetted(bool flag);
 };
