@@ -47,6 +47,7 @@ void RecordBrowser::updateText()
         dynamic_cast<RecordItem*>(ui->recordList->item(i))->updateText();
     }
 }
+
 void RecordBrowser::on_recordList_currentRowChanged(int currentRow)
 {
     for(int i = 0;i <= ui->recordList->count() - 1;++i)
@@ -162,4 +163,13 @@ Record* RecordBrowser::newRecord(QString recordName, int level)
     ui->recordList->addItem(newItem);
     this->updateText();
     return &newItem->getRecord();
+}
+void RecordBrowser::setEnableRandMode(bool flag)
+{
+    if(!flag){//reset
+        qDebug() << "reset";
+        ui->rand_mode->setChecked(false);
+    }
+    qDebug() << "visible: " << flag;
+    ui->rand_mode->setVisible(flag);
 }

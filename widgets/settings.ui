@@ -469,7 +469,7 @@
          <string>高级</string>
         </property>
        </widget>
-       <widget class="QCheckBox" name="checkBox">
+       <widget class="QCheckBox" name="enable_rand_mode">
         <property name="geometry">
          <rect>
           <x>30</x>
