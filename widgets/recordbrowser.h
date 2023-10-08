@@ -2,10 +2,11 @@
 #define RECORDBROWSER_H
 #include "config.h"
 #include "recorditem.h"
+#include "basicsetdialog.h"
+
 #define NORMAL_COLOR QColor(0,190,190)
 #define HOVER_COLOR QColor(0,210,210)
 #define CHOSEN_COLOR QColor(0,255,255)
-#include "basicsetdialog.h"
 
 namespace Ui {
 class RecordBrowser;

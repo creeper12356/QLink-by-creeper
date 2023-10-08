@@ -1,5 +1,6 @@
 #include "record.h"
 #include "widgets/settings.h"
+#include "objects/boxmap.h"
 
 void Basic::readFromJsonObject(const QJsonObject &obj)
 {
@@ -97,10 +98,20 @@ void Record::setIsDeleted(bool flag)
 void Record::reorganize(QPoint scale)
 {
     qDebug() << "reorgan.";
+
+    auto& boxData = BoxMap::getBoxData();
+    //init plain boxes
+    QVector<box::type> plainBoxes;
+    for(auto boxType:boxData){
+        if(Box::typeToDivision(boxType) == box::plain_box){
+            plainBoxes.push_back(boxType);
+        }
+    }
+
     int w = scale.x(),h = scale.y();
     for(int i = 0;i <= h - 1;++i){
         for(int j = 0;j <= w - 1;++j){
-            dataAt(i,j) = box::apple;
+            dataAt(i,j) = plainBoxes[QRandomGenerator::global()->bounded(plainBoxes.size())];
         }
     }
     randModeArg = scale;

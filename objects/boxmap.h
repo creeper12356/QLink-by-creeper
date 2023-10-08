@@ -12,6 +12,8 @@ QT_END_NAMESPACE
 class BoxMap:public QObject
 {
     Q_OBJECT
+private:
+    static QVector<box::type> boxData;//所有箱子的容器,count >= 1有效
 protected:
     //basic data
     int wScale;//宽度规模
@@ -90,6 +92,10 @@ public:
     const QVector<QPoint>& getNullBoxes() const{return nullBoxes;}
     const QVector<QPoint>& getPlainBoxes() const{return plainBoxes;}
     const QVector<QPoint>& getPropBoxes() const{return propBoxes;}
+public:
+    static void initBoxData();
+    static const QVector<box::type>& getBoxData() {return boxData;}
+    static int boxTypeCount() {return boxData.size();}
 public:
     void draw(QPainter& painter,bool isDebugMode);    
 };

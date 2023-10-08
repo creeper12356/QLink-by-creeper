@@ -5,6 +5,7 @@
 #include "ui_settings.h"
 #include "record.h"
 
+QVector<box::type> BoxMap::boxData;
 BoxMap::BoxMap(Settings*& sts,const Record& record)
     :settings(sts)
 {
@@ -264,6 +265,26 @@ QVector<QPoint> BoxMap::coverDataCoords(const QRectF &entityBox)
         }
     }
     return coverCoords;
+}
+
+void BoxMap::initBoxData()
+{
+    //内嵌，后续修改
+    boxData = {
+        apple,
+        beetroot,
+        beetroot_soup,
+        carrot,
+        golden_apple,
+        mushroom_stew,
+        watermelon,
+        wheat,
+        box::clock,
+        ender_pearl,
+        snow_bucket,
+        potion,
+        book
+    };
 }
 
 

@@ -2,12 +2,16 @@
 #include "ui_welcomepage.h"
 #include "record.h"
 #include "ui_settings.h"
+#include "objects/boxmap.h"
 
 WelcomePage::WelcomePage(QWidget* parent) :
     QWidget(parent),
     ui(new Ui::WelcomePage)
 {
     ui->setupUi(this);
+    //init static members
+    BoxMap::initBoxData();
+
     initMenu();
     settings = new Settings();
     initBrowser();
