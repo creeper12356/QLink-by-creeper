@@ -43,12 +43,12 @@ protected:
     //标签
     gameMode mode;
 
-    //游戏参数（仅在初始化时修改才有效）
-    qreal dizzyTime = 10;//迷惑时间（s）
-    qreal freezeTime = 3;//冻结时间（s）
-    qreal hintTime = 10;//提示时间(s)
-    int monitorInterval = 5;//玩家运动监听器监听周期(ms)
-    qreal routeLifeSpan = 0.3;//路径存在时间（s）
+    //游戏参数（仅在初始化时修改才有效） gameArgs
+    qreal dizzyTime;//迷惑时间（s）
+    qreal freezeTime;//冻结时间（s）
+    qreal hintTime;//提示时间(s)
+    int monitorInterval;//玩家运动监听器监听周期(ms)
+    qreal routeLifeSpan;//路径存在时间（s）
 
     qreal minGenerateInterval = 10.0;//最小生成箱子间隔(s)
     qreal maxGenerateInterval = 20.0;//最大生成箱子间隔(s)
@@ -74,6 +74,7 @@ public:
 protected:
     //初始化函数
     void initUi();//初始化界面
+    void initGameArgs();//初始化游戏参数
     void initPlayerMoveKeys(Role* player,int playerNum);//初始化玩家方向键，被initPlayer调用
     Role* initPlayer(const QString& id,int playerNum);//通过id初始化玩家，成功返回玩家指针，失败返回nullptr
     void initPlayers(const Record& record);

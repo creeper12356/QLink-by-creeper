@@ -41,7 +41,7 @@ private slots:
     Record* newRecord(QString recordName);//default overload : level = 1
     void on_cancel_button_clicked();
 private:
-    Record* newRecord(QString recordName,int level);//新建存档名为recordName的存档，成功返回指针，失败返回Null
+    Record* newRecord(QString recordName,int level,bool isRandMode = false);//新建存档名为recordName的存档，成功返回指针，失败返回Null
 protected:
     void showEvent(QShowEvent *event) override;
     void closeEvent(QCloseEvent *event) override;

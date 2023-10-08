@@ -8,8 +8,9 @@ GameMain::GameMain(QWidget *parent, Settings *&s, Record &record)
     ,ui(new Ui::Widget)
     ,settings(s)
 {
+    initGameArgs();
     this->record = &record;
-    if(record.isRandMode()){
+    if(record.isRandMode() && !record.getIsSaved()){//随机模式且为新档
         record.reorganize(record.getRandModeArg());
     }
     this->mode = record.getMode();
@@ -50,7 +51,16 @@ void GameMain::initUi()
     ui->level_label->setText("第" + QString::number(record->getCurLevel()) +"关");
     this->setFocus();//保证按键不被按钮捕获
 //    ui->shuffle_button->hide();
-//    ui->hint_button->hide();
+    //    ui->hint_button->hide();
+}
+
+void GameMain::initGameArgs()
+{
+    dizzyTime = settings->getArgs().dizzyTime;
+    freezeTime = settings->getArgs().freezeTime;
+    hintTime = settings->getArgs().hintTime;
+    monitorInterval = settings->getArgs().monitorInterval;
+    routeLifeSpan = settings->getArgs().routeLifeSpan;
 }
 void GameMain::initPlayerMoveKeys(Role *player,int playerNum)
 {
@@ -784,6 +794,7 @@ void GameMain::saveGameToRecord()
     }
 
     QJsonObject obj;
+    obj.insert("isSaved",true);
     obj.insert("basic",basic);
     obj.insert("playerInfos",playerInfos);
     obj.insert("map",map);
@@ -865,4 +876,6 @@ void GameMain::on_win_button_clicked()
 
 void GameMain::statePrinter()
 {
+//    qDebug() << (record->getIsSaved()?"save record." : "new record.");
+//    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss|yyyy.MM.dd");
 }

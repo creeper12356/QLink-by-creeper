@@ -59,6 +59,7 @@ void RecordBrowser::updateText()
 
 void RecordBrowser::closeEvent(QCloseEvent *event)
 {
+    removeAllItems();
     emit browserClosed();
 }
 
@@ -78,12 +79,10 @@ void RecordBrowser::on_recordList_itemEntered(QListWidgetItem *item)
            if(i == ui->recordList->currentRow()){
                ui->recordList->item(i)->setBackground(CHOSEN_COLOR);
            }
-           else if(ui->recordList->item(i) == item)
-           {
+           else if(ui->recordList->item(i) == item){
                item->setBackground(HOVER_COLOR);
            }
-           else
-           {
+           else{
                ui->recordList->item(i)->setBackground(NORMAL_COLOR);
            }
     }
@@ -105,8 +104,9 @@ void RecordBrowser::on_new_record_button_clicked()
 {
     if(ui->rand_mode->isChecked()){
         //随机模式
-        Record* nRecord = newRecord("newrecord",settings->getLevelsInMode(getFilterMode()).size());
+        Record* nRecord = newRecord("rand-" + QDateTime::currentDateTime().toString("yyyy-MM-dd-hh-mm-ss"),settings->getLevelsInMode(getFilterMode()).size(),true);
         if(!nRecord){
+            qDebug() << "cannot create new rec.";
             return ;
         }
         //创建成功
@@ -114,7 +114,8 @@ void RecordBrowser::on_new_record_button_clicked()
         dialog.setMaxWScale(nRecord->getBasic().wScale);
         dialog.setMaxHScale(nRecord->getBasic().hScale);
         dialog.exec();
-        if(!dialog.isSetted()){//canceled
+        if(!dialog.isSetted()){//canceled // actually will never happen.
+            qDebug() << "rand mode game canceled";
             return ;
         }
         this->hide();
@@ -157,7 +158,6 @@ void RecordBrowser::on_delete_record_button_clicked()
 
 void RecordBrowser::on_cancel_button_clicked()
 {
-    removeAllItems();
     this->close();
 }
 
@@ -175,7 +175,7 @@ void RecordBrowser::on_recordList_currentItemChanged(QListWidgetItem *current, Q
         previous->setBackground(NORMAL_COLOR);
     }
 }
-Record* RecordBrowser::newRecord(QString recordName, int level)
+Record* RecordBrowser::newRecord(QString recordName, int level, bool isRandMode)
 {
     //avoid name repeat problem.
     for(int i = 0;i <= ui->recordList->count() - 1;++i){
@@ -187,8 +187,12 @@ Record* RecordBrowser::newRecord(QString recordName, int level)
     }
 
     RecordItem* newItem = new RecordItem("records/" + recordName + ".json",recordName);
-    newItem->getRecord().readFromSettings(settings,getFilterMode(),level);//start from level 1
+    if(isRandMode) {//先提前标记以后会启用随机模式
+        newItem->getRecord().markRandMode();
+    }
+    newItem->getRecord().readFromSettings(settings,getFilterMode(),level);
     ui->recordList->addItem(newItem);
+    items.append(newItem);
     this->updateText();
     return &newItem->getRecord();
 }

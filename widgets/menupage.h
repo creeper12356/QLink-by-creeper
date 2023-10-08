@@ -28,6 +28,7 @@ public:
     void setInfo(const QString& str);
     QPushButton* continueButton();
     QPushButton* nextButton();
+    QPushButton* saveButton();
     ScoreBoard* winnerBoard();
 
 protected:
