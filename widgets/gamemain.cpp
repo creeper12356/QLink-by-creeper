@@ -61,6 +61,8 @@ void GameMain::initGameArgs()
     hintTime = settings->getArgs().hintTime;
     monitorInterval = settings->getArgs().monitorInterval;
     routeLifeSpan = settings->getArgs().routeLifeSpan;
+    minGenerateInterval = settings->getArgs().minGenerateInterval;
+    maxGenerateInterval = settings->getArgs().maxGenerateInterval;
 }
 void GameMain::initPlayerMoveKeys(Role *player,int playerNum)
 {

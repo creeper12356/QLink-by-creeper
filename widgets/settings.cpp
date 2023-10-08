@@ -284,16 +284,21 @@ bool GameArg::readFromJsonObject(const QJsonObject &obj)
         "freezeTime",
         "hintTime",
         "monitorInterval",
-        "routeLifeSpan"}){
+        "routeLifeSpan",
+        "minGenerateInterval",
+        "maxGenerateInterval"}){
         if(!obj.contains(key)){
             return false;
         }
     }
+    //read
     dizzyTime = obj["dizzyTime"].toDouble();
     freezeTime = obj["freezeTime"].toDouble();
     hintTime = obj["hintTime"].toDouble();
     monitorInterval = obj["monitorInterval"].toInt();
     routeLifeSpan = obj["routeLifeSpan"].toDouble();
+    minGenerateInterval = obj["minGenerateInterval"].toDouble();
+    maxGenerateInterval = obj["maxGenerateInterval"].toDouble();
 
     return true;
 }

@@ -50,8 +50,8 @@ protected:
     int monitorInterval;//玩家运动监听器监听周期(ms)
     qreal routeLifeSpan;//路径存在时间（s）
 
-    qreal minGenerateInterval = 10.0;//最小生成箱子间隔(s)
-    qreal maxGenerateInterval = 20.0;//最大生成箱子间隔(s)
+    qreal minGenerateInterval;//最小生成箱子间隔(s)
+    qreal maxGenerateInterval;//最大生成箱子间隔(s)
 
     //hint相关
     QTimer hintTimer;//游戏提示计时器
