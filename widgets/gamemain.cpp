@@ -835,5 +835,6 @@ void GameMain::on_win_button_clicked()
 
 void GameMain::statePrinter()
 {
-    qDebug() << (record->getIsSaved()?"save record." : "new record.");
+//    qDebug() << (record->getIsSaved()?"save record." : "new record.");
+//    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss|yyyy.MM.dd");
 }

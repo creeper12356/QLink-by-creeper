@@ -51,6 +51,7 @@
 #include <QRandomGenerator>
 #include <QTimer>
 #include <QtMath>
+#include <QTime>
 #include <QDebug>
 
 #define SECOND 1000
