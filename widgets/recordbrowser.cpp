@@ -118,8 +118,9 @@ void RecordBrowser::on_new_record_button_clicked()
             qDebug() << "rand mode game canceled";
             return ;
         }
-        this->hide();
         nRecord->setRandModeArg(QPoint(dialog.wScale(),dialog.hScale()));
+        this->hide();
+        removeAllItems();
         emit recordEntered(*nRecord);
         return ;
     }
