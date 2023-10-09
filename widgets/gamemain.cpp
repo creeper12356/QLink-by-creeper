@@ -779,14 +779,16 @@ void GameMain::boxDeletedSlot()
     }
 
     if(!processor->isSolvable()){
+        qDebug() << "check: not solvable.";
         for(int i = 1; i <= MAX_TRY_TIME;++i){
-            qDebug() << "try for " << i << "times.";
+            qDebug() << "try: shuffle times " << i;
             shuffle(players[QRandomGenerator::global()->bounded(players.size())]);
             if(processor->isSolvable()){
                 qDebug() << "try success.";
                 return ;
             }
         }
+        qDebug() << "try fail.";
         this->pause();
         emit gameTimeout("游戏无解");
     }

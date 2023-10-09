@@ -52,7 +52,7 @@ public:
     QVector<QPoint> hint(const QPoint& standPt) const;//给出对于standPt可达的局部提示之一
     //选择一个出发点（StartPt)，返回所有可以到达(reach)的方块坐标
     QVector<QPoint> reachableFrom(const QPoint& startPt) const;
-    bool isSolvable() const;//判断当前地图是否有解
+    bool isSolvable() const;//判断当前地图是否有解（全局有解）
 signals:
 };
 

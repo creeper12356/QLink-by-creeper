@@ -100,6 +100,7 @@ void Record::reorganize(QPoint scale)
     qDebug() << "reorgan.";
     const int& n_wScale = scale.rx();
     const int& n_hScale = scale.ry();
+    int total = n_wScale * n_hScale;
 
     auto& boxData = BoxMap::getBoxData();
     //init plain boxes
@@ -109,24 +110,25 @@ void Record::reorganize(QPoint scale)
             plainBoxes.push_back(boxType);
         }
     }
-
-    int count = n_wScale * n_hScale;
+    //generate boxes
+    int count = 0;
     for(int i = 0;i <= n_wScale - 1;++i){
         for(int j = 0;j <= n_hScale - 1;++j){
-            if(count == 1 && (n_wScale % 2) && (n_hScale % 2)){//last box with odd index.
+            if(count == total - 1 && (n_wScale % 2) && (n_hScale % 2)){//last box with odd index -> remain null.
                 dataAt(i,j) = box::null;
                 break;
             }
             dataAt(i,j) = box::type((count / 2) % plainBoxes.size());
-            --count;
+            ++count;
         }
     }
-    for(int i = 1;i <= n_wScale * n_hScale;++i)//shuffle for times
+    int r1,c1,r2,c2;
+    for(int i = 1;i <= total;++i)//shuffle for times
     {
-        int r1 = QRandomGenerator::global()->bounded(n_wScale);
-        int c1 = QRandomGenerator::global()->bounded(n_hScale);
-        int r2 = QRandomGenerator::global()->bounded(n_wScale);
-        int c2 = QRandomGenerator::global()->bounded(n_hScale);
+        r1 = QRandomGenerator::global()->bounded(n_wScale);
+        c1 = QRandomGenerator::global()->bounded(n_hScale);
+        r2 = QRandomGenerator::global()->bounded(n_wScale);
+        c2 = QRandomGenerator::global()->bounded(n_hScale);
 
         qSwap(dataAt(r1,c1),dataAt(r2,c2));
     }
