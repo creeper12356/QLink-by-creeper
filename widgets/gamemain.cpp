@@ -2,7 +2,7 @@
 #include "ui_widget.h"
 #include "ui_settings.h"
 #include "record.h"
-
+#define MAX_TRY_TIME 3
 GameMain::GameMain(QWidget *parent, Settings *&s, Record &record)
     :QWidget(parent)
     ,ui(new Ui::Widget)
@@ -761,7 +761,7 @@ void GameMain::saveGameToRecord()
     record->readFromJsonObject(obj);
     qDebug() << "complete save.";
 }
-//测试更新函数
+
 void GameMain::boxDeletedSlot()
 {
     if(this->isWin())
@@ -779,6 +779,14 @@ void GameMain::boxDeletedSlot()
     }
 
     if(!processor->isSolvable()){
+        for(int i = 1; i <= MAX_TRY_TIME;++i){
+            qDebug() << "try for " << i << "times.";
+            shuffle(players[QRandomGenerator::global()->bounded(players.size())]);
+            if(processor->isSolvable()){
+                qDebug() << "try success.";
+                return ;
+            }
+        }
         this->pause();
         emit gameTimeout("游戏无解");
     }
