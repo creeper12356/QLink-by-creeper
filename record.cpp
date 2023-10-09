@@ -98,6 +98,8 @@ void Record::setIsDeleted(bool flag)
 void Record::reorganize(QPoint scale)
 {
     qDebug() << "reorgan.";
+    const int& n_wScale = scale.rx();
+    const int& n_hScale = scale.ry();
 
     auto& boxData = BoxMap::getBoxData();
     //init plain boxes
@@ -108,13 +110,26 @@ void Record::reorganize(QPoint scale)
         }
     }
 
-    int w = scale.x(),h = scale.y();
-    for(int i = 0;i <= h - 1;++i){
-        for(int j = 0;j <= w - 1;++j){
-            dataAt(i,j) = plainBoxes[QRandomGenerator::global()->bounded(plainBoxes.size())];
+    int count = n_wScale * n_hScale;
+    for(int i = 0;i <= n_wScale - 1;++i){
+        for(int j = 0;j <= n_hScale - 1;++j){
+            if(count == 1 && (n_wScale % 2) && (n_hScale % 2)){//last box with odd index.
+                dataAt(i,j) = box::null;
+                break;
+            }
+            dataAt(i,j) = box::type((count / 2) % plainBoxes.size());
+            --count;
         }
     }
-    randModeArg = scale;
+    for(int i = 1;i <= n_wScale * n_hScale;++i)//shuffle for times
+    {
+        int r1 = QRandomGenerator::global()->bounded(n_wScale);
+        int c1 = QRandomGenerator::global()->bounded(n_hScale);
+        int r2 = QRandomGenerator::global()->bounded(n_wScale);
+        int c2 = QRandomGenerator::global()->bounded(n_hScale);
+
+        qSwap(dataAt(r1,c1),dataAt(r2,c2));
+    }
 }
 
 void Record::readFromFile(const QString &recordFile)

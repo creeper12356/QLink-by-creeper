@@ -63,7 +63,7 @@ public:
     const QPoint& getRandModeArg() const{return randModeArg;}
     int getRandModeWScale() const{return randModeArg.x();}
     int getRandModeHScale() const{return randModeArg.y();}
-    void reorganize(QPoint scale);
+    void reorganize(QPoint scale);//随机模式下打开新存档按(scale.x * scale.y) 重新组织
 
 private:
     void readFromFile(const QString& recordFilePath);//从文件recordFile中读取信息
