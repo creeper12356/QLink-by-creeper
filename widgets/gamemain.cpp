@@ -904,3 +904,10 @@ void GameMain::statePrinter()
 {
 
 }
+
+void GameMain::on_pause_button_clicked()
+{
+    QKeyEvent pauseEvent(QEvent::KeyPress,Qt::Key_Escape,Qt::NoModifier);
+    QCoreApplication::sendEvent(this,&pauseEvent);
+    this->setFocus();
+}

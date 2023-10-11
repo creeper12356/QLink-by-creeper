@@ -174,6 +174,8 @@ private slots:
     //for test.
     void statePrinter();
 
+    void on_pause_button_clicked();
+
 signals:
     void gameMainDeleted();//析构函数调用时发出
     void gameMainClosed();//游戏窗口被关闭信号，提示主菜单窗口显示
