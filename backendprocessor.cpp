@@ -2,9 +2,6 @@
 #include "objects/boxmap.h"
 #include "record.h"
 using namespace box;
-BackendProcessor::BackendProcessor():data(nullptr)
-{
-}
 
 BackendProcessor::BackendProcessor(const Record& record)
     :
@@ -20,9 +17,12 @@ BackendProcessor::BackendProcessor(const Record& record)
     }
 }
 BackendProcessor::BackendProcessor(BoxMap* lkBoxes)
-    :data(lkBoxes->getData()),wScale(lkBoxes->getWScale()),hScale(lkBoxes->getHScale())
+    :data(lkBoxes->getData()),
+      wScale(lkBoxes->getWScale()),
+      hScale(lkBoxes->getHScale()),
+      linkBoxes(lkBoxes)
 {
-    linkBoxes = lkBoxes;
+
 }
 
 void BackendProcessor::init2DArray()
@@ -410,13 +410,11 @@ QVector<QPoint> BackendProcessor::reachableFrom(const QPoint &startPt) const
 
 bool BackendProcessor::isSolvable() const
 {
-    for(int i = 0;i <= hScale - 1;++i){
-        for(int j = 0;j <= wScale - 1;++j){
-            if(Box::typeToDivision(dataAt(i,j)) == prop_box){//只要有道具存在就有解
-                return true;
-            }
-        }
+    //只要道具存在就返回true
+    if(!linkBoxes->getPropBoxes().empty()){
+        return true;
     }
     //不存在道具
     return (hint().size() == 2);
 }
+

@@ -1,6 +1,6 @@
 #include "settings.h"
 #include "ui_settings.h"
-
+#include "tools/betterbutton.h"
 Settings::Settings(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Settings)
@@ -10,9 +10,12 @@ Settings::Settings(QWidget *parent) :
             &QListWidget::currentRowChanged,
             ui->stack_widget,
             &QStackedWidget::setCurrentIndex);
+    readGameArgs();
     readCtrlSettings();
     readAudioSettings();
+    readAdvancedSettings();
 
+    connect(ui->enable_rand_mode,&QCheckBox::stateChanged,this,&Settings::enableRandModeSetted);
     readPlayerData();
     readBoxData();
     readLevelData();
@@ -22,6 +25,7 @@ Settings::~Settings()
 {
     writeCtrlSettings();
     writeAudioSettings();
+    writeAdvancedSettings();
 
     for(auto obj:roles){
         delete obj;
@@ -49,6 +53,12 @@ const QVector<QJsonObject*> Settings::getLevelsInMode(gameMain::gameMode mode) c
     {
         return levels["multi"];
     }
+}
+
+void Settings::setEnableRandMode(bool flag)
+{
+    ui->enable_rand_mode->setChecked(flag);
+    emit enableRandModeSetted(flag);
 }
 
 void Settings::on_ok_button_clicked()
@@ -176,6 +186,17 @@ void Settings::readAudioSettings()
     ui->bgm_audio_slider->setValue(audioSettings.value("bgmAudio").toInt());
 
     reader.close();
+    BetterButton::setSoundVolume(ui->entity_audio_slider->value() / 100.0);
+}
+
+void Settings::readAdvancedSettings()
+{
+    QFile reader;
+    reader.setFileName("settings/advanced_settings.json");
+    reader.open(QIODevice::ReadOnly);
+    QJsonObject advancedSettings(QJsonDocument::fromJson(reader.readAll()).object());
+    reader.close();
+    setEnableRandMode(advancedSettings["enableRandMode"].toBool());
 }
 void Settings::writeCtrlSettings()
 {
@@ -218,4 +239,66 @@ void Settings::writeAudioSettings()
 
     writer.write(QJsonDocument(audioSettings).toJson());
     writer.close();
+}
+
+void Settings::on_entity_audio_slider_valueChanged(int value)
+{
+    BetterButton::setSoundVolume(value / 100.0);
+}
+
+void Settings::readGameArgs()
+{
+    QFile reader("settings/game_arg.json");
+    reader.open(QIODevice::ReadOnly);
+    QJsonObject obj = QJsonDocument::fromJson(reader.readAll()).object();
+    reader.close();
+    if(!args.readFromJsonObject(obj)){
+        QMessageBox::warning(this,"警告","游戏参数读取失败，游戏可能无法启动。");
+    }
+}
+void Settings::writeAdvancedSettings()
+{
+    QFile writer;
+    writer.setFileName("settings/advanced_settings.json");
+    writer.open(QIODevice::WriteOnly);
+
+    QJsonObject advancedSettings;
+    advancedSettings.insert("enableRandMode",ui->enable_rand_mode->isChecked());
+
+    writer.write(QJsonDocument(advancedSettings).toJson());
+    writer.close();
+}
+
+void Settings::keyPressEvent(QKeyEvent *event)
+{
+    if(event->key() == Qt::Key_Escape){
+        this->close();
+    }
+}
+
+bool GameArg::readFromJsonObject(const QJsonObject &obj)
+{
+    //check
+    for(auto& key:{
+        "dizzyTime",
+        "freezeTime",
+        "hintTime",
+        "monitorInterval",
+        "routeLifeSpan",
+        "minGenerateInterval",
+        "maxGenerateInterval"}){
+        if(!obj.contains(key)){
+            return false;
+        }
+    }
+    //read
+    dizzyTime = obj["dizzyTime"].toDouble();
+    freezeTime = obj["freezeTime"].toDouble();
+    hintTime = obj["hintTime"].toDouble();
+    monitorInterval = obj["monitorInterval"].toInt();
+    routeLifeSpan = obj["routeLifeSpan"].toDouble();
+    minGenerateInterval = obj["minGenerateInterval"].toDouble();
+    maxGenerateInterval = obj["maxGenerateInterval"].toDouble();
+
+    return true;
 }

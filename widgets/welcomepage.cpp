@@ -2,18 +2,21 @@
 #include "ui_welcomepage.h"
 #include "record.h"
 #include "ui_settings.h"
+#include "objects/boxmap.h"
 
 WelcomePage::WelcomePage(QWidget* parent) :
     QWidget(parent),
     ui(new Ui::WelcomePage)
 {
     ui->setupUi(this);
+    //init static members
+    BoxMap::initBoxData();
+
     initMenu();
     settings = new Settings();
     initBrowser();
 
-    bgmPlayer = new QMediaPlayer(this);
-    bgmPlayer->setMedia(QUrl("audios/LivingMice.mp3"));
+    connect(settings,&Settings::enableRandModeSetted,browser,&RecordBrowser::setEnableRandMode);
 
     QPalette palette;
     palette.setBrush(QPalette::Background, QColor(0,200,180,255));
@@ -41,6 +44,7 @@ void WelcomePage::initMenu()
 void WelcomePage::initBrowser()
 {
     browser = new RecordBrowser(nullptr,settings);
+    browser->setEnableRandMode(settings->getUi()->enable_rand_mode->isChecked());//.bad insertion
     connect(browser,&RecordBrowser::recordEntered,this,&WelcomePage::recordEnteredSlot);
     connect(browser,&RecordBrowser::browserClosed,this,&WelcomePage::show);
 }
@@ -58,8 +62,6 @@ void WelcomePage::loadNewGame(Record &record)
 void WelcomePage::startNewGame(Record &record)
 {
     loadNewGame(record);
-    bgmPlayer->setVolume(settings->getUi()->bgm_audio_slider->value());
-    bgmPlayer->play();
     gm->show();
     this->close();
 }
@@ -103,8 +105,8 @@ void WelcomePage::gameWinSlot(ScoreBoard* scoreBoard,const QString& info)
     *menu->winnerBoard() = *scoreBoard;
     gm->hide();
 
-    //reach last level
-    if(gm->getRecord().getCurLevel() == settings->getLevelsInMode(gm->getGameMode()).size())
+    //reach last 2nd level
+    if(gm->getRecord().getCurLevel() >= settings->getLevelsInMode(gm->getGameMode()).size() - 1)
     {
         menu->nextButton()->hide();
     }
@@ -122,7 +124,7 @@ void WelcomePage::playNextLevel()
     if(!record.readFromSettings(settings,gm->getGameMode(),record.getCurLevel() + 1))
     {
         qDebug() << "no more levels to be played.";
-        homeClickedSlot();
+        homeClickedSlot();//return home.
     }
     delete gm;
     startNewGame(record);
@@ -148,7 +150,10 @@ void WelcomePage::homeClickedSlot()
     if(menu->getMenuMode() == menuPage::win)//load next level
     {
         Record& record = gm->getRecord();
-        record.readFromSettings(settings,gm->getGameMode(),record.getCurLevel() + 1);
+        /*如果拒绝加载下一关，就加载本关，覆盖存档记录*/
+        if(!record.readFromSettings(settings,gm->getGameMode(),record.getCurLevel() + 1)){
+            record.readFromSettings(settings,gm->getGameMode(),record.getCurLevel());
+        }
     }
     gm->close();
     menu->close();
@@ -172,7 +177,6 @@ void WelcomePage::recordEnteredSlot(Record &record)
 void WelcomePage::gameMainDeletedSlot()
 {
     menu->winnerBoard()->setPlayer(nullptr);
-    bgmPlayer->stop();
 }
 
 void WelcomePage::keyPressEvent(QKeyEvent *event)
@@ -180,7 +184,7 @@ void WelcomePage::keyPressEvent(QKeyEvent *event)
     //退出程序
     if(event->key() == Qt::Key_Escape)
     {
-        on_exit_button_clicked();
+        this->close();
     }
 }
 

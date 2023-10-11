@@ -37,17 +37,21 @@ protected:
     QVector<QPoint> hintBoxes;//处于提示状态（高亮状态）箱子对应的坐标 容器
     QMap<Role*,ScoreBoard*> scoreBoards;//分数板
 
-    Clock* gameClk;
+    Clock* gameClk;//游戏倒计时
+    QTimer propGeneratorTimer;//产生道具箱子计时器
 
     //标签
     gameMode mode;
 
-    //游戏参数（仅在初始化时修改才有效）
-    qreal dizzyTime = 10;//迷惑时间（s）
-    qreal freezeTime = 3;//冻结时间（s）
-    qreal hintTime = 10;//提示时间(s)
-    int monitorInterval = 5;//玩家运动监听器监听周期(ms)
-    qreal routeLifeSpan = 0.3;//路径存在时间（s）
+    //游戏参数（仅在初始化时修改才有效） gameArgs
+    qreal dizzyTime;//迷惑时间（s）
+    qreal freezeTime;//冻结时间（s）
+    qreal hintTime;//提示时间(s)
+    int monitorInterval;//玩家运动监听器监听周期(ms)
+    qreal routeLifeSpan;//路径存在时间（s）
+
+    qreal minGenerateInterval;//最小生成箱子间隔(s)
+    qreal maxGenerateInterval;//最大生成箱子间隔(s)
 
     //hint相关
     QTimer hintTimer;//游戏提示计时器
@@ -57,7 +61,8 @@ protected:
     Settings*& settings;
     //游戏存档
     Record* record = nullptr;
-
+    //档案
+    QList<box::type> propBoxes;//用于随机生成的道具箱子列表
 private:
     Ui::Widget *ui;
 
@@ -69,14 +74,15 @@ public:
 protected:
     //初始化函数
     void initUi();//初始化界面
+    void initGameArgs();//初始化游戏参数
     void initPlayerMoveKeys(Role* player,int playerNum);//初始化玩家方向键，被initPlayer调用
     Role* initPlayer(const QString& id,int playerNum);//通过id初始化玩家，成功返回玩家指针，失败返回nullptr
     void initPlayers(const Record& record);
-    void initLinkBoxes();//初始化连连看箱子地图
     void initLinkBoxes(const Record& record);
     void initProcessor();//初始化后端处理器,必须在initLinkBoxes之后调用
     void initGameClk(const Record& record);
     void initHintTimer();//初始化提示计时器
+    void initPropGenerator();
 
 public:
     //接口函数
@@ -102,7 +108,11 @@ public:
     void pause();//暂停游戏
 
 protected:
-    void deleteBoxAt(const QPoint& pt);//从游戏中完全删除位于pt的箱子，被tryLink函数调用
+    bool addBoxAt(QPoint pt,box::type type);
+    bool addBoxAt(int x,int y,box::type type);
+    bool deleteBoxAt(QPoint pt);//从游戏中完全删除位于pt的箱子，被tryLink函数调用
+    bool deleteBoxAt(int x, int y);
+
     int calculateScore(int size,int turn,int breakScore);//计算加分
     bool tryActivate(const QPoint &target, Box*& entityTarget, Role* player);//尝试激活方块
     bool tryDeactivate(const QPoint& target,Box*& entityTarget,Role* player);//尝试取消激活方块,返回是否更新isActivated字段
@@ -122,6 +132,7 @@ protected:
 private slots:
     void movePlayer(Role* player);//与moveVector::monitor绑定，处理玩家的移动
     void clockTimeOutSlot();
+    void generateProp();
     void repaintSlot();//重画槽函数
 
 protected:
@@ -154,12 +165,14 @@ protected:
     QTimer testTimer;//测试计时器
     bool isDebugMode = false;//测试模式
 private slots:
-    //仅用于测试，实时打印一些信息。
-    void statePrinter();
+    void boxDeletedSlot();
     void on_shuffle_button_clicked();//按下shuffle按钮的槽函数
     void on_hint_button_clicked();//按下hint按钮的槽函数
     void on_clear_button_clicked();
     void on_win_button_clicked();//删除所有箱子并通关
+
+    //for test.
+    void statePrinter();
 
 signals:
     void gameMainDeleted();//析构函数调用时发出
