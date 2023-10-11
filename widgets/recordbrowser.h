@@ -41,6 +41,8 @@ private slots:
     void on_delete_record_button_clicked();
     Record* newRecord(QString recordName);//default overload : level = 1
     void on_cancel_button_clicked();
+    void on_copy_record_button_clicked();
+
 private:
     Record* newRecord(QString recordName,int level,bool isRandMode = false);//新建存档名为recordName的存档，成功返回指针，失败返回Null
 protected:

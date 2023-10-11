@@ -1,1 +1,2 @@
-QLink.pro.user
+build-*/
+src/*.pro.user

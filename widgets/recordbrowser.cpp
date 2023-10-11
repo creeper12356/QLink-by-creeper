@@ -204,3 +204,20 @@ void RecordBrowser::setEnableRandMode(bool flag)
     }
     ui->rand_mode->setVisible(flag);
 }
+
+void RecordBrowser::on_copy_record_button_clicked()
+{
+    int currentRow = ui->recordList->currentRow();
+    if(currentRow < 0)//no item chosen
+    {
+        return ;
+    }
+    RecordItem* srcRecordItem = dynamic_cast<RecordItem*> (ui->recordList->item(currentRow));
+    Record* copyRecord = newRecord(srcRecordItem->getName() + "-copy");
+    if(!copyRecord){
+        return ;
+    }
+    *copyRecord = srcRecordItem->getRecord();
+    dynamic_cast<RecordItem*>(ui->recordList->item(ui->recordList->count() - 1))->updateText();
+    qDebug() << "copy complete.";
+}

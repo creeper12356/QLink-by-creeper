@@ -40,6 +40,7 @@ public:
     Record(const QString& recordFilePath = "");
     ~Record();
 public:
+    Record& operator=(const Record& src);//operator= will change all members but recordFilePath.
     //getters
     gameMain::gameMode getMode() const{return mode;}
     int getCurLevel() const{return curLevel;}
