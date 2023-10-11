@@ -71,6 +71,24 @@ Record::~Record()
     }
 }
 
+Record &Record::operator=(const Record &src)
+{
+    if(this == &src){
+        return *this;
+    }
+
+    this->mode = src.mode;
+    this->curLevel = src.curLevel;
+    this->basic = src.basic;
+    this->players = src.players;
+    this->map = src.map;
+
+    this->isDeleted = src.isDeleted;
+    this->randModeArg = src.randModeArg;
+    this->isSaved = src.isSaved;
+    return *this;
+}
+
 box::type &Record::dataAt(const QPoint &pt)
 {
     return dataAt(pt.x(),pt.y());
