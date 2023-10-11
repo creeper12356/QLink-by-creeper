@@ -34,7 +34,7 @@ private:
 
     //flags
     bool isDeleted = false;//若该字段为true，则析构时不写入文件
-    QPoint randModeArg = QPoint(-1,-1);
+    QPoint randModeArg = QPoint(-1,-1);//随机模式参数： 格式(new_WScale,new_HScale)
     bool isSaved = false;//是否为存档（否则称新档）
 public:
     Record(const QString& recordFilePath = "");

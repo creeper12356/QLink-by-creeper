@@ -112,8 +112,8 @@ void Record::reorganize(QPoint scale)
     }
     //generate boxes
     int count = 0;
-    for(int i = 0;i <= n_wScale - 1;++i){
-        for(int j = 0;j <= n_hScale - 1;++j){
+    for(int i = 0;i <= n_hScale - 1;++i){
+        for(int j = 0;j <= n_wScale - 1;++j){
             if(count == total - 1 && (n_wScale % 2) && (n_hScale % 2)){//last box with odd index -> remain null.
                 dataAt(i,j) = box::null;
                 break;
@@ -122,14 +122,18 @@ void Record::reorganize(QPoint scale)
             ++count;
         }
     }
+
     int r1,c1,r2,c2;
     for(int i = 1;i <= total;++i)//shuffle for times
     {
-        r1 = QRandomGenerator::global()->bounded(n_wScale);
-        c1 = QRandomGenerator::global()->bounded(n_hScale);
-        r2 = QRandomGenerator::global()->bounded(n_wScale);
-        c2 = QRandomGenerator::global()->bounded(n_hScale);
-
+        r1 = QRandomGenerator::global()->bounded(n_hScale);
+        c1 = QRandomGenerator::global()->bounded(n_wScale);
+        r2 = QRandomGenerator::global()->bounded(n_hScale);
+        c2 = QRandomGenerator::global()->bounded(n_wScale);
+        if(dataAt(r1,c1) == box::null || dataAt(r2,c2) == box::null){
+            qDebug() << "error: try swap null box!";
+            qDebug() << "swap: " << r1 << c1 << " <--> " << r2 << c2;
+        }
         qSwap(dataAt(r1,c1),dataAt(r2,c2));
     }
 }

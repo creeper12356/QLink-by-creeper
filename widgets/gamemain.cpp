@@ -297,10 +297,23 @@ void GameMain::mousePressEvent(QMouseEvent *event)
 
     if(!isDebugMode)
         return ;
-    Role* player = players[0];
-    player->setPos(pos);
-    for(auto pt:processor->hintFrom(linkBoxes->posToDataCoord(pos))){
-        linkBoxes->getPtrDataAt(pt)->isHighlighted = true;
+//    Role* player = players[0];
+//    player->setPos(pos);
+//    for(auto pt:processor->hintFrom(linkBoxes->posToDataCoord(pos))){
+//        linkBoxes->getPtrDataAt(pt)->isHighlighted = true;
+//    }
+    QMap<box::type ,int> count;
+    auto plainBoxes = linkBoxes->getPlainBoxes();
+    for(auto& plainbox:plainBoxes){
+        if(count.contains(linkBoxes->getDataAt(plainbox))){
+            ++count[linkBoxes->getDataAt(plainbox)];
+        }
+        else{
+            count[linkBoxes->getDataAt(plainbox)] = 1;
+        }
+    }
+    for(auto key:count.keys()){
+        qDebug() << "key: " << key << "\tcount: " <<count[key];
     }
     update();
 }
@@ -889,6 +902,5 @@ void GameMain::on_win_button_clicked()
 
 void GameMain::statePrinter()
 {
-//    qDebug() << (record->getIsSaved()?"save record." : "new record.");
-//    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss|yyyy.MM.dd");
+
 }
