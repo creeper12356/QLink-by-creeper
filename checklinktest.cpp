@@ -62,4 +62,6 @@ CheckLinkTest::~CheckLinkTest()
 {
 
 }
-QTEST_MAIN(CheckLinkTest)
+/* uncomment the following line when running unit tests.
+ */
+//QTEST_MAIN(CheckLinkTest)

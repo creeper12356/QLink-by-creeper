@@ -45,13 +45,21 @@
 #include <QLabel>
 #include <QMessageBox>
 
+#include <QPropertyAnimation>
+#include <QSequentialAnimationGroup>
+
 #include <QRandomGenerator>
 #include <QTimer>
 #include <QtMath>
+#include <QTime>
 #include <QDebug>
 
 #define SECOND 1000
 #define EPS 1e-8//比较浮点数时的精度
+#define RANDOM_BETWEEN(__MIN__,__MAX__) \
+    (QRandomGenerator::global()\
+    ->bounded((__MAX__) - (__MIN__))\
+    + __MIN__)
 
 namespace gameMain {
     enum gameMode{singleMode = 0,multiMode};

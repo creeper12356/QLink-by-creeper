@@ -29,10 +29,12 @@ SOURCES += \
     objects/propbox.cpp \
     objects/role.cpp \
     record.cpp \
+    tools/betterbutton.cpp \
     tools/clock.cpp \
     tools/indexbar.cpp \
     tools/keylineedit.cpp \
     tools/scoreboard.cpp \
+    widgets/basicsetdialog.cpp \
     widgets/gamemain.cpp \
     widgets/menupage.cpp \
     widgets/recordbrowser.cpp \
@@ -53,10 +55,12 @@ HEADERS += \
     objects/propbox.h \
     objects/role.h \
     record.h \
+    tools/betterbutton.h \
     tools/clock.h \
     tools/indexbar.h \
     tools/keylineedit.h \
     tools/scoreboard.h \
+    widgets/basicsetdialog.h \
     widgets/gamemain.h \
     widgets/menupage.h \
     widgets/recordbrowser.h \
@@ -73,6 +77,7 @@ RESOURCES += \
     ../res.qrc
 
 FORMS += \
+    widgets/basicsetdialog.ui \
     widgets/menupage.ui \
     widgets/recordbrowser.ui \
     widgets/settings.ui \

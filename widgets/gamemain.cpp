@@ -2,13 +2,18 @@
 #include "ui_widget.h"
 #include "ui_settings.h"
 #include "record.h"
-
+#define RANDOM_GENERATE_INTERVAL RANDOM_BETWEEN(minGenerateInterval,maxGenerateInterval) * SECOND
+#define MAX_TRY_TIME 3
 GameMain::GameMain(QWidget *parent, Settings *&s, Record &record)
     :QWidget(parent)
     ,ui(new Ui::Widget)
     ,settings(s)
 {
+    initGameArgs();
     this->record = &record;
+    if(record.isRandMode() && !record.getIsSaved()){//随机模式且为新档
+        record.reorganize(record.getRandModeArg());
+    }
     this->mode = record.getMode();
     background = new Map();
     initUi();
@@ -17,11 +22,14 @@ GameMain::GameMain(QWidget *parent, Settings *&s, Record &record)
     initProcessor();
     initGameClk(record);
     initHintTimer();
+    initPropGenerator();
 
     this->start();//开始游戏
+    connect(this,&GameMain::boxDeleted,this,&GameMain::boxDeletedSlot);
+
     //测试计时器
-    connect(this,&GameMain::boxDeleted,this,&GameMain::statePrinter);
-    testTimer.start(100);
+    connect(&testTimer,&QTimer::timeout,this,&GameMain::statePrinter);
+    testTimer.start(10);
 }
 
 GameMain::~GameMain()
@@ -44,7 +52,18 @@ void GameMain::initUi()
     ui->level_label->setText("第" + QString::number(record->getCurLevel()) +"关");
     this->setFocus();//保证按键不被按钮捕获
 //    ui->shuffle_button->hide();
-//    ui->hint_button->hide();
+    //    ui->hint_button->hide();
+}
+
+void GameMain::initGameArgs()
+{
+    dizzyTime = settings->getArgs().dizzyTime;
+    freezeTime = settings->getArgs().freezeTime;
+    hintTime = settings->getArgs().hintTime;
+    monitorInterval = settings->getArgs().monitorInterval;
+    routeLifeSpan = settings->getArgs().routeLifeSpan;
+    minGenerateInterval = settings->getArgs().minGenerateInterval;
+    maxGenerateInterval = settings->getArgs().maxGenerateInterval;
 }
 void GameMain::initPlayerMoveKeys(Role *player,int playerNum)
 {
@@ -170,6 +189,22 @@ void GameMain::initHintTimer()
        repaintSlot();
     });
 }
+
+void GameMain::initPropGenerator()
+{
+    //初始化箱子生成计时器
+    propGeneratorTimer.setInterval(RANDOM_GENERATE_INTERVAL);
+    propGeneratorTimer.setSingleShot(true);
+    connect(&propGeneratorTimer,&QTimer::timeout,this,&GameMain::generateProp);
+
+    //初始化生成道具列表
+    if(mode == singleMode){
+        propBoxes.append({box::clock,box::ender_pearl,box::book});
+    }
+    else{
+        propBoxes.append({box::clock,box::ender_pearl,box::book,box::snow_bucket,box::potion});
+    }
+}
 void GameMain::keyPressEvent(QKeyEvent *event)
 {
     if(event->isAutoRepeat())//连按无效
@@ -262,10 +297,23 @@ void GameMain::mousePressEvent(QMouseEvent *event)
 
     if(!isDebugMode)
         return ;
-    Role* player = players[0];
-    player->setPos(pos);
-    for(auto pt:processor->hintFrom(linkBoxes->posToDataCoord(pos))){
-        linkBoxes->getPtrDataAt(pt)->isHighlighted = true;
+//    Role* player = players[0];
+//    player->setPos(pos);
+//    for(auto pt:processor->hintFrom(linkBoxes->posToDataCoord(pos))){
+//        linkBoxes->getPtrDataAt(pt)->isHighlighted = true;
+//    }
+    QMap<box::type ,int> count;
+    auto plainBoxes = linkBoxes->getPlainBoxes();
+    for(auto& plainbox:plainBoxes){
+        if(count.contains(linkBoxes->getDataAt(plainbox))){
+            ++count[linkBoxes->getDataAt(plainbox)];
+        }
+        else{
+            count[linkBoxes->getDataAt(plainbox)] = 1;
+        }
+    }
+    for(auto key:count.keys()){
+        qDebug() << "key: " << key << "\tcount: " <<count[key];
     }
     update();
 }
@@ -363,6 +411,8 @@ void GameMain::start()
             player->startFreezeTimer();
         }
     }
+    qDebug() << "remaining: " << propGeneratorTimer.interval();
+    propGeneratorTimer.start();
 }
 
 void GameMain::pause()
@@ -385,15 +435,39 @@ void GameMain::pause()
     {
         pauseHintTimer();
     }
+    propGeneratorTimer.setInterval(propGeneratorTimer.remainingTime());
+    propGeneratorTimer.stop();
 }
 
-void GameMain::deleteBoxAt(const QPoint &pt)
+bool GameMain::addBoxAt(QPoint pt, type type)
+{
+    if(!linkBoxes->addBoxAt(pt,type)){
+        return false;
+    }
+    addBox(linkBoxes->getPtrDataAt(pt));
+    return true;
+}
+
+bool GameMain::addBoxAt(int x, int y, type type)
+{
+    if(!linkBoxes->addBoxAt(x,y,type)){
+        return false;
+    }
+    addBox(linkBoxes->getPtrDataAt(x,y));
+    return true;
+}
+
+bool GameMain::deleteBoxAt(QPoint pt)
 {
     //从gameMain中移除实体
     removeBox(linkBoxes->getPtrDataAt(pt));
     //从linkBoxes中删除实体
-    linkBoxes->removeBoxAt(pt);
-    emit boxDeleted();
+    return linkBoxes->removeBoxAt(pt);
+}
+
+bool GameMain::deleteBoxAt(int x, int y)
+{
+    return deleteBoxAt(QPoint(x,y));
 }
 
 int GameMain::calculateScore(int size, int turn, int breakScore)
@@ -479,9 +553,29 @@ void GameMain::movePlayer(Role* player)
 
 void GameMain::clockTimeOutSlot()
 {
-    gameClk->pause();
+    this->pause();
     emit gameTimeout();
     this->hide();
+}
+
+void GameMain::generateProp()
+{
+    //to generate
+    qDebug() << "generate.";
+    QVector<QPoint> nullBoxes = linkBoxes->getNullBoxes();
+    for(auto player:players){
+        for(auto pt:linkBoxes->coverDataCoords(player->getEntityBox())){
+            nullBoxes.removeOne(pt);
+        }
+    }
+    if(!nullBoxes.empty()){
+        addBoxAt(nullBoxes[
+                 QRandomGenerator::global()->bounded(
+                    nullBoxes.size())]
+                ,propBoxes[QRandomGenerator::global()->bounded(propBoxes.size())]);
+        update();
+    }
+    propGeneratorTimer.start(RANDOM_GENERATE_INTERVAL);
 }
 void GameMain::repaintSlot()
 {
@@ -523,6 +617,7 @@ bool GameMain::tryLink(Role *player)
         // 删除箱子
         deleteBoxAt(frontPt);
         deleteBoxAt(backPt);
+        emit boxDeleted();
         update();
         //更新提示
         if(hintBoxes.contains(frontPt) || hintBoxes.contains(backPt))//提示箱子被消除
@@ -534,7 +629,7 @@ bool GameMain::tryLink(Role *player)
 }
 bool GameMain::isWin() const
 {
-    if(boxes.size() == 0)//没有方块
+    if(linkBoxes->getPlainBoxes().size() == 0)//没有普通方块
     {
         qDebug() << "win!";
         return true;
@@ -560,6 +655,7 @@ void GameMain::processPropBoxTarget(const QPoint &target,Box*& entityTarget, Rol
     scoreBoards[player]->add(entityTarget->getBreakScore());
     //删除箱子
     deleteBoxAt(target);
+    emit boxDeleted();
 }
 
 bool GameMain::isHint() const
@@ -626,8 +722,31 @@ void GameMain::addTime(Role *player)
 void GameMain::shuffle(Role* player)
 {
     qDebug() << "shuffle";
-    on_shuffle_button_clicked();
+    //清除所有玩家的箱子选中记录
+    for(auto player:players)
+    {
+        for(auto pt:activatedBoxes[player])
+        {
+            linkBoxes->getPtrDataAt(pt)->isActivated = false;
+        }
+        activatedBoxes[player].clear();
+    }
+    //如果原来有提示，则重新刷新提示
+    if(!hintBoxes.isEmpty())
+    {
+        clearHint();
+    }
+    //后端洗牌
+    processor->shuffle((linkBoxes->getWScale() * linkBoxes->getHScale() - boxes.size() + 1) * 10);
 
+    //如果处于提示状态，更新洗牌后的提示
+    if(isHint())
+    {
+        //提示权转换至触发shuffle的玩家
+        localHint(linkBoxes->coverDataCoords(player->getEntityBox())[0]);
+    }
+    //重画
+    update();
 }
 
 void GameMain::hint(Role *player)
@@ -691,6 +810,7 @@ void GameMain::saveGameToRecord()
     }
 
     QJsonObject obj;
+    obj.insert("isSaved",true);
     obj.insert("basic",basic);
     obj.insert("playerInfos",playerInfos);
     obj.insert("map",map);
@@ -698,8 +818,8 @@ void GameMain::saveGameToRecord()
     record->readFromJsonObject(obj);
     qDebug() << "complete save.";
 }
-//测试更新函数
-void GameMain::statePrinter()
+
+void GameMain::boxDeletedSlot()
 {
     if(this->isWin())
     {
@@ -710,10 +830,23 @@ void GameMain::statePrinter()
                 winScoreBoard = sb;
             }
         }
+        this->pause();
         emit gameWin(winScoreBoard);
         return ;
     }
+
     if(!processor->isSolvable()){
+        qDebug() << "check: not solvable.";
+        for(int i = 1; i <= MAX_TRY_TIME;++i){
+            qDebug() << "try: shuffle times " << i;
+            shuffle(players[QRandomGenerator::global()->bounded(players.size())]);
+            if(processor->isSolvable()){
+                qDebug() << "try success.";
+                return ;
+            }
+        }
+        qDebug() << "try fail.";
+        this->pause();
         emit gameTimeout("游戏无解");
     }
 }
@@ -721,31 +854,7 @@ void GameMain::statePrinter()
 
 void GameMain::on_shuffle_button_clicked()
 {
-    //清除所有玩家的箱子选中记录
-    for(auto player:players)
-    {
-        for(auto pt:activatedBoxes[player])
-        {
-            linkBoxes->getPtrDataAt(pt)->isActivated = false;
-        }
-        activatedBoxes[player].clear();
-    }
-    //如果原来有提示，则重新刷新提示
-    if(!hintBoxes.isEmpty())
-    {
-        clearHint();
-    }
-    //后端洗牌
-    processor->shuffle((linkBoxes->getWScale() * linkBoxes->getHScale() - boxes.size() + 1) * 10);
-
-    //如果处于提示状态，更新洗牌后的提示
-    if(isHint())
-    {
-        on_hint_button_clicked();
-    }
-    //重画
-    update();
-
+    shuffle(players[0]);
     this->setFocus();
 }
 
@@ -782,17 +891,16 @@ void GameMain::on_clear_button_clicked()
         activatedBoxes[player].clear();
     }
     update();
+    this->setFocus();
 }
 
 void GameMain::on_win_button_clicked()
 {
-    for(int i = 0;i <= linkBoxes->getHScale() - 1;++i){
-        for(int j = 0;j <= linkBoxes->getWScale() - 1;++j){
-            if(linkBoxes->getDataAt(i,j) != null){
-                removeBox(linkBoxes->getPtrDataAt(i,j));
-                linkBoxes->removeBoxAt(i,j);
-            }
-        }
-    }
-    emit boxDeleted();
+    this->pause();
+    emit gameWin(scoreBoards[players[0]]);
+}
+
+void GameMain::statePrinter()
+{
+
 }

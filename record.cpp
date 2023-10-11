@@ -1,5 +1,6 @@
 #include "record.h"
 #include "widgets/settings.h"
+#include "objects/boxmap.h"
 
 void Basic::readFromJsonObject(const QJsonObject &obj)
 {
@@ -74,6 +75,34 @@ bool Record::fileExists() const
 {
     return QFile::exists(recordFilePath);
 }
+Record &Record::operator=(const Record &src)
+{
+    if(this == &src){
+        return *this;
+    }
+
+    this->mode = src.mode;
+    this->curLevel = src.curLevel;
+    this->basic = src.basic;
+    this->players = src.players;
+    this->map = src.map;
+
+    this->isDeleted = src.isDeleted;
+    this->randModeArg = src.randModeArg;
+    this->isSaved = src.isSaved;
+    return *this;
+}
+
+box::type &Record::dataAt(const QPoint &pt)
+{
+    return dataAt(pt.x(),pt.y());
+}
+
+box::type &Record::dataAt(int i, int j)
+{
+    return map[i * basic.wScale + j];
+
+}
 
 void Record::setCurLevel(int level)
 {
@@ -86,6 +115,49 @@ void Record::setIsDeleted(bool flag)
     if(flag)
     {
         QFile::remove(recordFilePath);
+    }
+}
+
+void Record::reorganize(QPoint scale)
+{
+    qDebug() << "reorgan.";
+    const int& n_wScale = scale.rx();
+    const int& n_hScale = scale.ry();
+    int total = n_wScale * n_hScale;
+
+    auto& boxData = BoxMap::getBoxData();
+    //init plain boxes
+    QVector<box::type> plainBoxes;
+    for(auto boxType:boxData){
+        if(Box::typeToDivision(boxType) == box::plain_box){
+            plainBoxes.push_back(boxType);
+        }
+    }
+    //generate boxes
+    int count = 0;
+    for(int i = 0;i <= n_hScale - 1;++i){
+        for(int j = 0;j <= n_wScale - 1;++j){
+            if(count == total - 1 && (n_wScale % 2) && (n_hScale % 2)){//last box with odd index -> remain null.
+                dataAt(i,j) = box::null;
+                break;
+            }
+            dataAt(i,j) = box::type((count / 2) % plainBoxes.size());
+            ++count;
+        }
+    }
+
+    int r1,c1,r2,c2;
+    for(int i = 1;i <= total;++i)//shuffle for times
+    {
+        r1 = QRandomGenerator::global()->bounded(n_hScale);
+        c1 = QRandomGenerator::global()->bounded(n_wScale);
+        r2 = QRandomGenerator::global()->bounded(n_hScale);
+        c2 = QRandomGenerator::global()->bounded(n_wScale);
+        if(dataAt(r1,c1) == box::null || dataAt(r2,c2) == box::null){
+            qDebug() << "error: try swap null box!";
+            qDebug() << "swap: " << r1 << c1 << " <--> " << r2 << c2;
+        }
+        qSwap(dataAt(r1,c1),dataAt(r2,c2));
     }
 }
 
@@ -102,8 +174,13 @@ void Record::readFromFile(const QString &recordFile)
 bool Record::readFromSettings(const Settings *settings, gameMain::gameMode mode, int level)
 {
     QJsonObject* levelSettings;//mode和level对应的设置
-    if(level > settings->getLevelsInMode(mode).size())
+    if(!isRandMode() && level == settings->getLevelsInMode(mode).size()){//非随机模式禁止访问最后一关
+        qDebug() << "error: attempt to access last level without a randmode.";
+        return false;
+    }
+    if(level > settings->getLevelsInMode(mode).size())//超出最后一关
     {
+        qDebug() << "error: level overflow.";
         return false;
     }
 
@@ -125,6 +202,7 @@ bool Record::readFromSettings(const Settings *settings, gameMain::gameMode mode,
     {
         map.push_back(box::type(box.toInt()));
     }
+    isSaved = false;
     return true;
 }
 
@@ -137,6 +215,13 @@ void Record::readFromJsonObject(const QJsonObject &obj)
     if(obj.contains("curLevel"))
     {
         curLevel = obj["curLevel"].toInt();
+    }
+    if(obj.contains("randModeArg")){
+        randModeArg = QPoint(obj["randModeArg"].toArray()[0].toInt(),
+                             obj["randModeArg"].toArray()[1].toInt());
+    }
+    if(obj.contains("isSaved")){
+        isSaved = obj["isSaved"].toBool();
     }
 
     basic.readFromJsonObject(obj["basic"].toObject());
@@ -165,6 +250,8 @@ void Record::writeToFile(const QString &recordFile)
     QJsonObject record;
     record.insert("gameMode",mode);
     record.insert("curLevel",curLevel);
+    record.insert("randModeArg",QJsonArray({randModeArg.x(),randModeArg.y()}));
+    record.insert("isSaved",isSaved);
     record.insert("basic",basic.writeToJsonObject());
 
     QJsonArray playerArray;
