@@ -1,8 +1,11 @@
+#pragma once
 #ifndef RECORDITEM_H
 #define RECORDITEM_H
 #include "config.h"
 #include "record.h"
-
+/*
+ * RecordItem: 存档条目,作为存档的前端载体
+ */
 class RecordItem:public QListWidgetItem
 {
 private:

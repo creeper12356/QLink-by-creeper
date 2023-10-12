@@ -37,8 +37,11 @@ void PropBox::bindProp()
 }
 void PropBox::execProp(GameMain* gm,Role *player)
 {
-    if(prop != nullptr)
+    if(prop != nullptr)//未绑定技能函数不允许执行
     {
         (gm->*prop)(player);
+    }
+    else{
+        qDebug() << "error: PropBox::execProp: execution without binding.";
     }
 }

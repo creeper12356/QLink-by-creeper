@@ -1,6 +1,11 @@
+#pragma once
 #ifndef BETTERBUTTON_H
 #define BETTERBUTTON_H
 #include "config.h"
+/*
+ * BetterButton:
+ * 继承自QPushButton，添加了动画和音效
+ */
 
 class BetterButton:public QPushButton
 {

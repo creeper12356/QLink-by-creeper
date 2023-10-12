@@ -4,7 +4,9 @@
 
 #include "config.h"
 #include "entity.h"
-
+/*
+ * Role： 玩家类，键盘操控的实体
+ */
 class Role:public QObject,public Entity
 {
     Q_OBJECT
@@ -12,15 +14,15 @@ protected:
     //角色属性
     qreal speed;//移动速度（绝对速度）单位：像素/秒
     //偏好属性
-    QMap<entity::dir,QPixmap*> moveImages;//与运动相关的贴图
+    QMap<entity::dir,QPixmap*> moveImages;//运动贴图
     QMap<entity::dir,int> moveKeys;//运动方向按键
     //后台属性
     entity::dir dftFaceDir;//默认面部朝向，在faceDir容器为空时使用
     QVector<entity::dir> faceDir;//存储面部朝向的栈，栈顶为当前状态
     QTimer monitor;//运动监视器
 
-    QTimer dizzyTimer;//迷惑状态计时器
-    QTimer freezeTimer;//冻结状态计时器
+    QTimer dizzyTimer;//迷惑(dizzy)状态计时器
+    QTimer freezeTimer;//冻结(freeze)状态计时器
 
     //后台参数
     //dizzy相关
@@ -34,7 +36,7 @@ public:
     Role();
     ~Role();
 public:
-    //设置函数
+    //设置函数(Setters)
     void setSpeed(qreal s);//设置速度
     void insertMoveKeys(entity::dir dir,int key);//向moveKeys中插入键值对
     void insertMoveImages(entity::dir d,const QString& path);//向moveImages中插入键值对（图片以路径传入）
@@ -47,7 +49,7 @@ public:
     //设置freezeTime
     void setFreezeTime(int ft);
 
-    //接口函数（包括读、写接口）
+    //接口函数（包括读、写接口） (Getters(R & W))
     entity::dir getDefaultFaceDir() const;//默认面朝方向
     entity::dir getFaceDir() const;
     virtual const QPixmap & getHead() const override;
@@ -74,6 +76,7 @@ public:
 protected:
     void swapDirKeys();//交换上下、左右方向按键
 public:
+    //道具效果相关
     //dizzy相关
     void initDizzyTimer();
     bool isDizzy() const{return dizzyTimer.isActive();}//是否处于dizzy状态

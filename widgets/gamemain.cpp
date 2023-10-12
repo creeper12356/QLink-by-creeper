@@ -902,7 +902,9 @@ void GameMain::on_win_button_clicked()
 
 void GameMain::statePrinter()
 {
-
+    /*
+     * 用于实时打印游戏状态
+     */
 }
 
 void GameMain::on_pause_button_clicked()

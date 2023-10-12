@@ -1,7 +1,10 @@
+#pragma once
 #ifndef CLOCK_H
 #define CLOCK_H
 #include "tools/indexbar.h"
-
+/*
+ * 游戏倒计时类
+ */
 class Clock: public IndexBar
 {
     Q_OBJECT

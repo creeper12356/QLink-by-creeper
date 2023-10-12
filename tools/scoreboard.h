@@ -1,7 +1,10 @@
 #ifndef SCOREBOARD_H
 #define SCOREBOARD_H
 #include "config.h"
-//分数板类，用于展示玩家分数
+/*
+ * ScoreBoard
+ * 分数板类，用于展示玩家分数
+ */
 class ScoreBoard : public QWidget
 {
     Q_OBJECT

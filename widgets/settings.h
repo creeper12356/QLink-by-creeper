@@ -7,6 +7,7 @@
 namespace Ui {
 class Settings;
 }
+
 struct GameArg
 {
     qreal dizzyTime;//迷惑时间（s）
@@ -32,6 +33,7 @@ public:
     explicit Settings(QWidget *parent = nullptr);
     ~Settings();
 
+    //getters
     const Ui::Settings* getUi() const{return ui;}
     const QVector<QJsonObject*>& getRoles()const{return roles;}
     const QVector<QJsonObject*>& getBoxes() const{return boxes;}
@@ -45,10 +47,10 @@ private slots:
     void on_ok_button_clicked();
     void on_entity_audio_slider_valueChanged(int value);
 
-
 private:
     Ui::Settings *ui;
 private:
+    //读写函数，分别在构造、析构时调用
     void readGameArgs();//读取游戏参数
     void readPlayerData();//读取玩家数据
     void readBoxData();//读取箱子数据

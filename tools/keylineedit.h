@@ -3,7 +3,10 @@
 #define KEYLINEEDIT_H
 #include "config.h"
 
-//a subclass of QLineEdit only used for settings ui.
+/*
+ * KeyLineEdit
+ * 继承自QLineEdit,完善了方向键的显示，用于'设置'模块
+ */
 
 class KeyLineEdit:public QLineEdit
 {

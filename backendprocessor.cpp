@@ -305,7 +305,7 @@ QVector<QPoint> BackendProcessor::hintFrom(const QPoint &startPt) const
     return ans;
 }
 
-void BackendProcessor::shuffleVector(QVector<QPoint> &targetVec) const
+void BackendProcessor::shuffleVector(QVector<QPoint> &targetVec)
 {
     int size = targetVec.size();
     qreal factor = QRandomGenerator::global()->bounded(3.0) + 1;//1-3随机实数

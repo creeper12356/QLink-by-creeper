@@ -2,8 +2,11 @@
 #ifndef MAP_H
 #define MAP_H
 #include "config.h"
-
-class Block//地图中的固定方块
+/*
+ * Map： 游戏的场景，由固定方块组成
+ */
+//地图中的固定方块
+class Block
 {
     friend class Map;
 private:

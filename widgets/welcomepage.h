@@ -7,7 +7,10 @@
 #include "menupage.h"
 #include "settings.h"
 #include "recordbrowser.h"
-
+/*
+ * WelcomePage
+ * 程序的入口，程序的最高管理窗口，协调各个窗口工作、通信
+ */
 namespace Ui {
 class WelcomePage;
 }
@@ -17,7 +20,8 @@ class WelcomePage : public QWidget
     Q_OBJECT
 
 private:
-    GameMain* gm = nullptr;//游戏窗口
+    //所有页面
+    GameMain* gm = nullptr;//当前游戏窗口
     MenuPage* menu = nullptr;//菜单页面，需要时打开
     Settings* settings = nullptr;//设置页面
     RecordBrowser* browser = nullptr;//存档选择页面

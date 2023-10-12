@@ -4,7 +4,9 @@
 #include "config.h"
 #include "plainbox.h"
 #include "propbox.h"
-//存储箱子组织方式的类
+/*
+ * 箱子地图(BoxMap)，该类用于组织、管理游戏中的箱子
+ */
 QT_BEGIN_NAMESPACE
 namespace Ui { class Widget; }
 QT_END_NAMESPACE
@@ -72,7 +74,7 @@ public:
     QVector<QPoint> coverDataCoords(const QRectF& entityBox);
 public:
 
-    //接口函数
+    //接口函数(getters)
     int getWScale() const{return wScale;}
     int getHScale() const{return hScale;}
     QPointF getCorner() const{return corner;}
@@ -93,6 +95,8 @@ public:
     const QVector<QPoint>& getPlainBoxes() const{return plainBoxes;}
     const QVector<QPoint>& getPropBoxes() const{return propBoxes;}
 public:
+    //static methods
+    //箱子种类的相关接口
     static void initBoxData();
     static const QVector<box::type>& getBoxData() {return boxData;}
     static int boxTypeCount() {return boxData.size();}

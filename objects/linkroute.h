@@ -3,17 +3,21 @@
 #define LINKROUTE_H
 #include "entity.h"
 #include "config.h"
+/*
+ * LinkRoute: 箱子消除的连线类
+ */
+
 class BoxMap;
 
 struct LinkRouteNode//节点类
 {
     QPoint pos;//行列坐标
-    linkRoute::nodeDir dir;//节点朝向
+    linkRoute::nodeDir dir;//节点取向
     LinkRouteNode(){}
     LinkRouteNode(const QPoint& p,linkRoute::nodeDir d)
         :pos(p),dir(d){}
 };
-//箱子之间连接的路径类
+
 class LinkRoute
 {
 private:
@@ -34,14 +38,16 @@ public:
     void appendNode(const QPoint& pos,linkRoute::nodeDir dir);//在后面加入节点
     void removeFirst();//删除最前面的节点
     void removeLast();//删除最后面的节点
-    //如果当前长度<=maxSize，不作处理；
-    //当前长度>maxSize,删除多余的元素
+    /*
+     * 如果当前长度<=maxSize，不作处理；
+     * 当前长度>maxSize,删除多余的元素
+     */
     void limitSize(int maxSize);
 
     int size() const;
     int& rturn() {return _turn;}
     int turn() const {return _turn;}
-    void updateDir();//根据路径上节点走向更新每个节点的dir
+    void updateDir();//根据路径上节点走向更新每个节点的取向
     void print() const;
 public:
     void draw(QPainter& painter,BoxMap* linkBoxes);

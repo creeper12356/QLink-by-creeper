@@ -1,7 +1,12 @@
+#pragma once
 #ifndef INDEXBAR_H
 #define INDEXBAR_H
 
 #include "config.h"
+/*
+ * IndexBar
+ * 可视化的进度条类
+ */
 
 class IndexBar : public QWidget
 {

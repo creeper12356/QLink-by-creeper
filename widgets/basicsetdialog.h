@@ -1,5 +1,9 @@
+#pragma once
 #ifndef BASICSETDIALOG_H
 #define BASICSETDIALOG_H
+/*
+ * 设置游戏规模对话框
+ */
 
 #include <QDialog>
 #include <QPoint>

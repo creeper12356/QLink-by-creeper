@@ -3,12 +3,14 @@
 #define BOX_H
 #include "entity.h"
 #include "config.h"
-
+/*
+ * 箱子类
+ */
 class Box:public Entity
 {
 protected:
-    box::type boxType;//箱子外观
-    box::division boxDivision;//箱子功能
+    box::type boxType;//箱子外观:apple,beet_root,...
+    box::division boxDivision;//箱子功能:plain_box,prop_box
     QPixmap* head = nullptr;
     QSoundEffect *breakSound = nullptr;//破坏音效
     bool isEntity;//是否为实体

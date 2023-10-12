@@ -1,3 +1,4 @@
+#pragma once
 #ifndef RECORDBROWSER_H
 #define RECORDBROWSER_H
 #include "config.h"
@@ -7,6 +8,10 @@
 #define NORMAL_COLOR QColor(0,190,190)
 #define HOVER_COLOR QColor(0,210,210)
 #define CHOSEN_COLOR QColor(0,255,255)
+/*
+ * RecordBrowser
+ * 存档浏览器，用于浏览所有存档
+ */
 
 namespace Ui {
 class RecordBrowser;

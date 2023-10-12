@@ -1,3 +1,4 @@
+#pragma once
 #ifndef CHECKLINKTEST_H
 #define CHECKLINKTEST_H
 //Unit test class for BackendProcessor::checkLink function.

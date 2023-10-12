@@ -1,6 +1,10 @@
 #pragma once
 #ifndef GAMEMAIN_H
 #define GAMEMAIN_H
+/*
+ * GameMain:
+ * 游戏主窗口
+ */
 
 #include "config.h"
 #include "objects/map.h"
@@ -49,7 +53,6 @@ protected:
     qreal hintTime;//提示时间(s)
     int monitorInterval;//玩家运动监听器监听周期(ms)
     qreal routeLifeSpan;//路径存在时间（s）
-
     qreal minGenerateInterval;//最小生成箱子间隔(s)
     qreal maxGenerateInterval;//最大生成箱子间隔(s)
 
@@ -82,7 +85,7 @@ protected:
     void initProcessor();//初始化后端处理器,必须在initLinkBoxes之后调用
     void initGameClk(const Record& record);
     void initHintTimer();//初始化提示计时器
-    void initPropGenerator();
+    void initPropGenerator();//初始化道具生成
 
 public:
     //接口函数
@@ -92,7 +95,7 @@ public:
     gameMain::gameMode getGameMode() const{return mode;}
     Record& getRecord(){return *record;}
 
-    //维护游戏对象函数
+    //维护游戏实体
         //添加
     void addEntity(Entity* e);//加入实体
     void addPlayer(Role* r);//加入玩家
@@ -146,7 +149,7 @@ protected:
 
     //工具函数
 protected:
-    //返回相对于player来说的另一个玩家，不存在返回Null
+    //返回相对于player来说的另一个玩家，不存在（Single player)返回Null
     Role* other(Role* player);
 
     //道具箱子技能函数
@@ -165,23 +168,22 @@ protected:
     QTimer testTimer;//测试计时器
     bool isDebugMode = false;//测试模式
 private slots:
-    void boxDeletedSlot();
+    void boxDeletedSlot();//箱子被消除时调用，检查当前是否有解，以及是否通关
     void on_shuffle_button_clicked();//按下shuffle按钮的槽函数
     void on_hint_button_clicked();//按下hint按钮的槽函数
     void on_clear_button_clicked();
     void on_win_button_clicked();//删除所有箱子并通关
+    void on_pause_button_clicked();//按下暂停按钮(==Escape)
 
     //for test.
     void statePrinter();
 
-    void on_pause_button_clicked();
-
 signals:
     void gameMainDeleted();//析构函数调用时发出
     void gameMainClosed();//游戏窗口被关闭信号，提示主菜单窗口显示
-    void gamePaused(const QString &info = "游戏暂停");//游戏暂停
-    void gameTimeout(const QString &info = "倒计时结束");//游戏倒计时结束
-    void gameWin(ScoreBoard* scoreBoard,const QString &info = "恭喜通关");//游戏通关，发送通关的玩家分数板
+    void gamePaused(const QString &info = "游戏暂停");//游戏暂停，菜单显示info
+    void gameTimeout(const QString &info = "倒计时结束");//游戏倒计时结束，菜单显示info
+    void gameWin(ScoreBoard* scoreBoard,const QString &info = "恭喜通关");//游戏通关，发送通关的玩家分数板，菜单显示info
     void boxDeleted();//箱子被移除信号
 };
 #endif // GAMEMAIN_H

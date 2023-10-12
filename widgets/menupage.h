@@ -1,7 +1,10 @@
 #pragma once
 #ifndef MENUPAGE_H
 #define MENUPAGE_H
-//游戏菜单
+/*
+ * MenuPage:
+ * 游戏菜单（暂停、超时、通关）
+ */
 #include "config.h"
 
 namespace Ui {
@@ -12,7 +15,7 @@ class MenuPage : public QWidget
 {
     Q_OBJECT
 private:
-    mode _mode = pause;
+    mode _mode = pause;//pause,timeout,win
 public:
     explicit MenuPage(QWidget *parent = nullptr);
     ~MenuPage();
@@ -26,6 +29,8 @@ public:
 
     QString info() const;
     void setInfo(const QString& str);
+
+    //ui接口
     QPushButton* continueButton();
     QPushButton* nextButton();
     QPushButton* saveButton();
@@ -43,6 +48,7 @@ private slots:
 private:
     Ui::MenuPage *ui;
 signals:
+    //按钮按下信号，主窗口接收并作出响应
     void replayClicked();
     void homeClicked();
     void continueClicked();

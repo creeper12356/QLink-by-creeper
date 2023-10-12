@@ -6,7 +6,11 @@
 #include "objects/box.h"
 #include "objects/linkroute.h"
 using namespace box;
-//专门用于处理地图后端计算分析的类
+/*
+ * BackendProcessor
+ * 处理后端计算、分析的类，只存储箱子的种类，不存储实体信息
+ */
+
 class BackendProcessor:public QObject
 {
     Q_OBJECT
@@ -34,25 +38,26 @@ public:
 
     void generateFromArray(const QJsonArray& jArray);//从JsonArray中生成箱子
     void generateFromVector(const QVector<box::type> map);//从QVector中生成箱子
+
+    //shuffle相关
     bool randomSwapOnce();//随机交换两个箱子，返回交换后是否有变化
     void shuffle(int times);//随机洗牌
     void shuffle();//随机洗牌
 
-    //返回位于p1,p2的箱子能否消除，如果不能，将bestRoute置nullptr,若能，bestRoute指向堆空间的动态对象，表示最短路径
+    //返回位于p1,p2的箱子能否消除，并传入bestRoute指针，如果可以连接，bestRoute作为最佳路径传出，否则bestRoute置为nullptr
     bool checkLink(const QPoint& p1, const QPoint& p2, LinkRoute *&bestRoute) const;
-    //overload for test
-    bool checkLink(const QPoint& p1, const QPoint& p2) const;
+    bool checkLink(const QPoint& p1, const QPoint& p2) const;//overload checkLink for test
 
-    //选择一个出发点（startPt)，返回所有可以连线的方块坐标
-    QVector<QPoint> hintFrom(const QPoint& startPt) const;
-protected:
-    void shuffleVector(QVector<QPoint>& targetVec) const;//随机打乱targetVec
-public:
-    QVector<QPoint> hint() const;//全局提示之一
+    //提示与可解性
+    QVector<QPoint> hintFrom(const QPoint& startPt) const;//选择一个出发点（startPt)，返回所有可以连线的方块坐标的容器
+    QVector<QPoint> hint() const;//给出全局提示之一
     QVector<QPoint> hint(const QPoint& standPt) const;//给出对于standPt可达的局部提示之一
-    //选择一个出发点（StartPt)，返回所有可以到达(reach)的方块坐标
-    QVector<QPoint> reachableFrom(const QPoint& startPt) const;
     bool isSolvable() const;//判断当前地图是否有解（全局有解）
+
+    //选择一个出发点（StartPt)，返回所有可以到达(reach)的方块坐标的容器
+    QVector<QPoint> reachableFrom(const QPoint& startPt) const;
+protected:
+    static void shuffleVector(QVector<QPoint>& targetVec);//随机打乱targetVec
 signals:
 };
 

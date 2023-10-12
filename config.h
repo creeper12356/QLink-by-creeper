@@ -1,7 +1,10 @@
 #pragma once
 #ifndef CONFIG_H
 #define CONFIG_H
-
+/*
+ * config.h:
+ * 所有头文件、命名空间、前置声明、枚举类型、结构体、宏
+*/
 #include <QSoundEffect>
 #include <QSound>
 #include <QMediaPlayer>
@@ -56,6 +59,8 @@
 
 #define SECOND 1000
 #define EPS 1e-8//比较浮点数时的精度
+
+//生成[MIN,MAX]之间的随机数
 #define RANDOM_BETWEEN(__MIN__,__MAX__) \
     (QRandomGenerator::global()\
     ->bounded((__MAX__) - (__MIN__))\

@@ -1,8 +1,11 @@
+#pragma once
 #ifndef RECORD_H
 #define RECORD_H
 #include "config.h"
-
-//存档类
+/*
+ * Record
+ * 游戏的存档，保存所有必要信息
+ */
 struct Basic{
     int wScale;
     int hScale;
@@ -48,12 +51,12 @@ public:
     const QVector<PlayerInfo>& getPlayers() const{return players;}
     const QVector<box::type>& getMap() const{return map;}
     bool getIsDeleted() const{return isDeleted;}
-
-    bool fileExists() const;//返回路径是否存在
     bool getIsSaved() const{return isSaved;}//存档返回true，新档（从设置中读取的）返回false
+    bool fileExists() const;//返回路径是否存在
 
     box::type& dataAt(const QPoint& pt);//返回地图对应pt坐标的map元素引用,不检查越界
     box::type& dataAt(int i,int j);//返回地图对应二维坐标[i][j]元素的引用，不检查越界
+
     //setters
     void setCurLevel(int level);
     void setIsDeleted(bool flag);
