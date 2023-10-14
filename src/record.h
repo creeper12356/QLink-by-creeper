@@ -54,7 +54,6 @@ public:
 
     bool fileExists() const;//返回路径是否存在
     bool getIsSaved() const{return isSaved;}//存档返回true，新档（从设置中读取的）返回false
-    bool fileExists() const;//返回路径是否存在
 
     box::type& dataAt(const QPoint& pt);//返回地图对应pt坐标的map元素引用,不检查越界
     box::type& dataAt(int i,int j);//返回地图对应二维坐标[i][j]元素的引用，不检查越界

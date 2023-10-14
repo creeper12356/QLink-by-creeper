@@ -1,0 +1,13 @@
+[
+    {
+        "id": "creeper",
+        "pos": [240,250],
+        "faceDir":0
+    }
+    ,
+    {
+        "id": "creeper_purple",
+        "pos": [530,250],
+        "faceDir":1
+    }
+]

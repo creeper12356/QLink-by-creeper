@@ -75,6 +75,7 @@ bool Record::fileExists() const
 {
     return QFile::exists(recordFilePath);
 }
+
 Record &Record::operator=(const Record &src)
 {
     if(this == &src){

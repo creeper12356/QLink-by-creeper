@@ -1,0 +1,9 @@
+{
+	"wScale":10,
+	"hScale":10,
+	"corner":[50,55],
+	"size":[45,45],
+	"dist":[5,15],
+
+	"gameTime":100
+}
