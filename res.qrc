@@ -1,0 +1,38 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/blocks/air.jpg</file>
+        <file>images/blocks/cobweb_wood.jpg</file>
+        <file>images/blocks/wood.jpg</file>
+        <file>images/blocks/yello_air.jpg</file>
+        <file>images/boxes/apple.png</file>
+        <file>images/boxes/beetroot.png</file>
+        <file>images/boxes/beetroot_soup.png</file>
+        <file>images/boxes/book.png</file>
+        <file>images/boxes/carrot.png</file>
+        <file>images/boxes/clock.png</file>
+        <file>images/boxes/ender_pearl.png</file>
+        <file>images/boxes/golden_apple.png</file>
+        <file>images/boxes/mushroom_stew.png</file>
+        <file>images/boxes/potion.png</file>
+        <file>images/boxes/snow_bucket.png</file>
+        <file>images/boxes/watermelon.png</file>
+        <file>images/boxes/wheat.png</file>
+        <file>images/effects/activate.png</file>
+        <file>images/effects/freeze.png</file>
+        <file>images/effects/highlight.png</file>
+        <file>images/link_route/down_left.png</file>
+        <file>images/link_route/down_right.png</file>
+        <file>images/link_route/left_right.png</file>
+        <file>images/link_route/up_down.png</file>
+        <file>images/link_route/up_left.png</file>
+        <file>images/link_route/up_right.png</file>
+        <file>audios/block.wav</file>
+        <file>audios/book.wav</file>
+        <file>audios/clock.wav</file>
+        <file>audios/ender_pearl.wav</file>
+        <file>audios/potion.wav</file>
+        <file>audios/snow_bucket.wav</file>
+        <file>audios/hover.wav</file>
+        <file>audios/click.wav</file>
+    </qresource>
+</RCC>

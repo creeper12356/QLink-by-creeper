@@ -1,0 +1,9 @@
+{
+	"dizzyTime":10,
+	"freezeTime":3,
+	"hintTime":10,
+	"monitorInterval":5,
+	"routeLifeSpan":0.3,
+	"minGenerateInterval":5,
+	"maxGenerateInterval":15
+}

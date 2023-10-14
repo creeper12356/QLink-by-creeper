@@ -1,0 +1,12 @@
+{
+    "id":"blue",
+    "isIdVisible":false,
+    "size":[21.0,50.0],
+    "speed":300,
+    "moveImages":{
+        "up":"images/roles/blue/blue_up.png",
+        "down":"images/roles/blue/blue_down.png",
+        "left":"images/roles/blue/blue_left.png",
+        "right":"images/roles/blue/blue_right.png"
+    }
+}
